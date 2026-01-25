@@ -1,0 +1,6 @@
+companies:
+  - company_id: BYND
+    ticker: BYND
+    cik: "0001655210"
+    bucket: "consumer_capital_heavy"
+    in_scope: true
