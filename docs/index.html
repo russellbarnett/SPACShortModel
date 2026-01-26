@@ -1,205 +1,226 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>SPACShortModel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SPACShortModel</title>
+    <style>
+      :root { --border:#e5e7eb; --muted:#6b7280; --bg:#ffffff; --card:#ffffff; }
+      body { font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif; margin: 28px; background: var(--bg); color:#111827; }
+      h1 { margin: 0 0 6px 0; font-size: 44px; letter-spacing: -0.02em; }
+      .sub { color: var(--muted); margin-bottom: 20px; }
+      .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; align-items: start; }
+      .card { border: 1px solid var(--border); border-radius: 10px; background: var(--card); padding: 18px; }
+      .card h2 { margin: 0 0 14px 0; font-size: 18px; }
+      table { width: 100%; border-collapse: collapse; font-size: 14px; }
+      th, td { text-align: left; padding: 10px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+      th { color: #374151; font-weight: 600; }
+      .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background:#f9fafb; font-size: 12px; }
+      .muted { color: var(--muted); }
+      .rowclick tbody tr { cursor: pointer; }
+      .rowclick tbody tr:hover { background: #fafafa; }
+      .details { margin-top: 14px; }
+      select { width: 100%; padding: 12px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 14px; background:#fff; }
+      pre { white-space: pre-wrap; word-break: break-word; font-size: 12px; background: #0b1020; color: #e5e7eb; padding: 14px; border-radius: 10px; border: 1px solid #111827; }
+      .err { color: #b91c1c; margin-top: 12px; font-weight: 600; }
+      @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <h1>SPACShortModel</h1>
+    <div class="sub" id="subtitle">Loading…</div>
 
-  <style>
-    :root {
-      --bg: #ffffff;
-      --fg: #111111;
-      --muted: #666;
-      --border: #ddd;
-      --pill: #f2f2f2;
-    }
+    <div class="grid">
+      <div class="card">
+        <h2>Latest state</h2>
+        <table class="rowclick" id="latest">
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Bucket</th>
+              <th>State</th>
+              <th>As of</th>
+              <th>c1</th>
+              <th>c2</th>
+              <th>c3</th>
+              <th>c4</th>
+              <th>In scope</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
 
-    body {
-      margin: 24px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      color: var(--fg);
-      background: var(--bg);
-    }
+        <div class="details">
+          <div class="muted" style="margin: 14px 0 10px 0;">Click a row or pick a ticker to view details_json.</div>
+          <select id="picker">
+            <option value="">Select a ticker…</option>
+          </select>
+          <div style="margin-top: 12px;">
+            <pre id="details">Select a ticker.</pre>
+          </div>
+          <div class="err" id="error"></div>
+        </div>
+      </div>
 
-    h1 {
-      margin-bottom: 4px;
-    }
-
-    .subtle {
-      color: var(--muted);
-      margin-bottom: 24px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 24px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    th, td {
-      padding: 8px 10px;
-      border-bottom: 1px solid var(--border);
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    th {
-      font-weight: 600;
-      color: var(--muted);
-    }
-
-    tr:hover {
-      background: #fafafa;
-      cursor: pointer;
-    }
-
-    .pill {
-      background: var(--pill);
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 12px;
-      display: inline-block;
-    }
-
-    .panel {
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
-    }
-
-    .panel h2 {
-      margin-top: 0;
-      margin-bottom: 12px;
-      font-size: 16px;
-    }
-
-    pre {
-      background: #fafafa;
-      border: 1px solid var(--border);
-      padding: 12px;
-      overflow-x: auto;
-      font-size: 12px;
-      border-radius: 6px;
-    }
-
-    .error {
-      color: #b00020;
-      margin-top: 12px;
-      white-space: pre-wrap;
-    }
-  </style>
-</head>
-<body>
-  <h1>SPACShortModel</h1>
-  <div id="meta" class="subtle">Loading…</div>
-
-  <div class="grid">
-    <div class="panel">
-      <h2>Latest state</h2>
-      <table id="state-table">
-        <thead>
-          <tr>
-            <th>Ticker</th>
-            <th>Bucket</th>
-            <th>State</th>
-            <th>As of</th>
-            <th>c1</th>
-            <th>c2</th>
-            <th>c3</th>
-            <th>c4</th>
-            <th>In scope</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-
-      <p class="subtle">Click a row to view details_json.</p>
-      <pre id="details">Select a ticker…</pre>
+      <div class="card">
+        <h2>Recent events</h2>
+        <table id="events">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Date</th>
+              <th>Change</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="muted" style="margin-top: 10px;">Only state changes are logged as events.</div>
+      </div>
     </div>
 
-    <div class="panel">
-      <h2>Recent events</h2>
-      <table id="events-table">
-        <thead>
-          <tr>
-            <th>Company</th>
-            <th>Date</th>
-            <th>Change</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
+    <script>
+      // Helper: tolerate different JSON shapes/keys
+      function pick(obj, keys, fallback = undefined) {
+        for (const k of keys) {
+          if (obj && Object.prototype.hasOwnProperty.call(obj, k) && obj[k] !== undefined && obj[k] !== null) return obj[k];
+        }
+        return fallback;
+      }
 
-  <div id="error" class="error"></div>
+      function normalizeCompany(row) {
+        const ticker = pick(row, ["ticker", "symbol", "company_id", "id"]);
+        const bucket = pick(row, ["bucket", "category"], "");
+        const state  = pick(row, ["state", "status"], "MONITOR");
+        const asOf   = pick(row, ["as_of", "asOf", "date"], "");
+        const inScope = !!pick(row, ["in_scope", "inScope"], true);
 
-  <script>
-    async function loadDashboard() {
-      try {
-        const res = await fetch("./dashboard.json", { cache: "no-store" });
-        if (!res.ok) {
-          throw new Error(`Failed to load dashboard.json (${res.status})`);
+        const c1 = !!pick(row, ["c1", "condition_1", "condition1"], false);
+        const c2 = !!pick(row, ["c2", "condition_2", "condition2"], false);
+        const c3 = !!pick(row, ["c3", "condition_3", "condition3"], false);
+        const c4 = !!pick(row, ["c4", "condition_4", "condition4"], false);
+
+        const details = pick(row, ["details_json", "details", "detailsJson"], null);
+
+        return { ticker, bucket, state, asOf, c1, c2, c3, c4, inScope, details, raw: row };
+      }
+
+      function normalizeEvent(e) {
+        const company = pick(e, ["ticker", "company_id", "company", "id"]);
+        const date = pick(e, ["as_of", "date", "timestamp"], "");
+        const prev = pick(e, ["prev_state", "from", "prev"], "");
+        const next = pick(e, ["new_state", "to", "next"], "");
+        const change = prev && next ? `${prev} → ${next}` : pick(e, ["change"], "");
+        return { company, date, change, raw: e };
+      }
+
+      function safeArray(x) {
+        if (Array.isArray(x)) return x;
+        return [];
+      }
+
+      function parseDetails(details) {
+        if (!details) return null;
+        if (typeof details === "object") return details;
+        try { return JSON.parse(details); } catch { return { raw: details }; }
+      }
+
+      function render(companies, events) {
+        const tbody = document.querySelector("#latest tbody");
+        const evbody = document.querySelector("#events tbody");
+        const picker = document.getElementById("picker");
+        const subtitle = document.getElementById("subtitle");
+
+        subtitle.textContent = `Loaded ${companies.length} companies.`;
+
+        // Latest table
+        tbody.innerHTML = "";
+        picker.innerHTML = `<option value="">Select a ticker…</option>`;
+
+        for (const c of companies) {
+          const tr = document.createElement("tr");
+          tr.dataset.ticker = c.ticker;
+
+          tr.innerHTML = `
+            <td>${c.ticker ?? ""}</td>
+            <td>${c.bucket ?? ""}</td>
+            <td><span class="pill">${c.state ?? ""}</span></td>
+            <td>${c.asOf ?? ""}</td>
+            <td>${c.c1 ? 1 : 0}</td>
+            <td>${c.c2 ? 1 : 0}</td>
+            <td>${c.c3 ? 1 : 0}</td>
+            <td>${c.c4 ? 1 : 0}</td>
+            <td>${c.inScope ? 1 : 0}</td>
+          `;
+
+          tr.addEventListener("click", () => showDetails(c));
+          tbody.appendChild(tr);
+
+          const opt = document.createElement("option");
+          opt.value = c.ticker;
+          opt.textContent = c.ticker;
+          picker.appendChild(opt);
         }
 
+        picker.addEventListener("change", () => {
+          const t = picker.value;
+          const c = companies.find(x => x.ticker === t);
+          if (c) showDetails(c);
+        });
+
+        // Events table
+        evbody.innerHTML = "";
+        for (const e of events) {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${e.company ?? ""}</td>
+            <td>${e.date ?? ""}</td>
+            <td>${e.change ?? ""}</td>
+          `;
+          evbody.appendChild(tr);
+        }
+      }
+
+      function showDetails(company) {
+        const pre = document.getElementById("details");
+        const picker = document.getElementById("picker");
+        picker.value = company.ticker;
+
+        const parsed = parseDetails(company.details);
+        pre.textContent = JSON.stringify(parsed ?? company.raw, null, 2);
+      }
+
+      async function loadDashboard() {
+        const err = document.getElementById("error");
+        err.textContent = "";
+
+        // IMPORTANT: On GitHub Pages under /SPACShortModel/ this is correct relative path.
+        const res = await fetch("./dashboard.json", { cache: "no-store" });
+        if (!res.ok) throw new Error(`Failed to load dashboard.json (${res.status})`);
         const data = await res.json();
-        render(data);
-      } catch (err) {
-        document.getElementById("error").textContent = err.stack || err.message;
-      }
-    }
 
-    function render(data) {
-      document.getElementById("meta").textContent =
-        `Loaded ${data.latest_state.length} companies.`;
+        // Accept multiple possible shapes:
+        // - { companies: [...], recent_events: [...] }
+        // - { companies: [...], events: [...] }
+        // - { latest: [...], events: [...] }
+        // - { rows: [...], events: [...] }
+        const rawCompanies =
+          pick(data, ["companies", "latest", "rows"], []);
+        const rawEvents =
+          pick(data, ["recent_events", "events", "history"], []);
 
-      const stateBody = document.querySelector("#state-table tbody");
-      const eventsBody = document.querySelector("#events-table tbody");
-      const details = document.getElementById("details");
+        const companies = safeArray(rawCompanies).map(normalizeCompany);
+        const events = safeArray(rawEvents).map(normalizeEvent);
 
-      stateBody.innerHTML = "";
-      eventsBody.innerHTML = "";
+        // sort companies by ticker for stable display
+        companies.sort((a,b) => (a.ticker || "").localeCompare(b.ticker || ""));
 
-      for (const row of data.latest_state) {
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-          <td>${row.ticker}</td>
-          <td>${row.bucket}</td>
-          <td><span class="pill">${row.state}</span></td>
-          <td>${row.as_of}</td>
-          <td>${row.c1}</td>
-          <td>${row.c2}</td>
-          <td>${row.c3}</td>
-          <td>${row.c4}</td>
-          <td>${row.in_scope ? 1 : 0}</td>
-        `;
-
-        tr.onclick = () => {
-          details.textContent = JSON.stringify(row.details_json, null, 2);
-        };
-
-        stateBody.appendChild(tr);
+        render(companies, events);
       }
 
-      for (const ev of data.recent_events) {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${ev.company}</td>
-          <td>${ev.as_of}</td>
-          <td>${ev.prev_state} → ${ev.new_state}</td>
-        `;
-        eventsBody.appendChild(tr);
-      }
-    }
-
-    loadDashboard();
-  </script>
-</body>
+      loadDashboard().catch(e => {
+        document.getElementById("subtitle").textContent = "Failed to load dashboard.";
+        document.getElementById("error").textContent = String(e && e.message ? e.message : e);
+      });
+    </script>
+  </body>
 </html>
