@@ -1,76 +1,113 @@
 from __future__ import annotations
-from typing import Dict, Any, List, Tuple
 
-from slidemodel.features.facts_extract import (
-    pick_tag_series,
-    quarterly_points,
-    latest_n_quarters,
-    REVENUE_TAGS,
-    GROSS_PROFIT_TAGS,
-)
+from dataclasses import dataclass
+from typing import Any, Dict, List, Tuple
 
-def _values(points: List[Dict[str, Any]]) -> List[Tuple[str, float]]:
-    # returns list of (period_end, value)
-    out = []
-    for p in points:
-        out.append((p["end"], float(p["val"])))
-    return out
+from .facts_extract import pick_tag_series, series_values, series_ends
 
-def qoq_growth(vals: List[float]) -> List[float]:
-    g = []
-    for i in range(1, len(vals)):
-        prev = vals[i-1]
-        cur = vals[i]
-        if prev == 0:
-            g.append(0.0)
-        else:
-            g.append((cur - prev) / prev)
-    return g
 
-def condition_1_from_facts(facts: Dict[str, Any]) -> Dict[str, Any]:
+# Revenue tags (keep your original intent, but widen slightly)
+REVENUE_TAGS = [
+    "Revenues",
+    "SalesRevenueNet",
+    "RevenueFromContractWithCustomerExcludingAssessedTax",
+]
+
+# Gross profit tags (many ex-SPACs won't have this)
+GROSS_PROFIT_TAGS = [
+    "GrossProfit",
+]
+
+# Operating income as fallback "margin" proxy
+OPERATING_INCOME_TAGS = [
+    "OperatingIncomeLoss",
+]
+
+
+@dataclass
+class Condition1Result:
+    revenue_tag: str
+    margin_tag: str
+    revenue_deceleration_2q: bool
+    margin_failure_2q: bool
+    condition_1: bool
+    last_date: str
+
+
+def _pct_change(new: float, old: float) -> float:
+    if old == 0:
+        return 0.0
+    return (new - old) / abs(old)
+
+
+def _two_quarter_checks(values: List[float], threshold_drop: float) -> bool:
+    """
+    Simple rule: last 2 qtrs show negative change beyond threshold.
+    Example: revenue deceleration: threshold_drop = -0.05 means drop >5%
+    """
+    if len(values) < 3:
+        return False
+    q0, q1, q2 = values[-3], values[-2], values[-1]
+    d1 = _pct_change(q1, q0)
+    d2 = _pct_change(q2, q1)
+    return (d1 <= threshold_drop) and (d2 <= threshold_drop)
+
+
+def condition_1_from_facts(facts: Dict[str, Any]) -> Condition1Result:
+    """
+    Condition 1: Revenue + margin pressure.
+
+    Margin preference order:
+      1) GrossProfit / Revenue, if GrossProfit available
+      2) OperatingIncomeLoss / Revenue, if gross profit is unavailable
+    """
+
     rev_tag, rev_series = pick_tag_series(facts, REVENUE_TAGS)
-    gp_tag, gp_series = pick_tag_series(facts, GROSS_PROFIT_TAGS)
+    rev_vals = series_values(rev_series)
+    last_date = series_ends(rev_series)[-1]
 
-    rev_q = latest_n_quarters(quarterly_points(rev_series), n=8)
-    gp_q = latest_n_quarters(quarterly_points(gp_series), n=8)
+    # Revenue deceleration: revenue shrinking two quarters in a row (tweak threshold if you want)
+    revenue_deceleration_2q = _two_quarter_checks(rev_vals, threshold_drop=-0.02)
 
-    rev = _values(rev_q)
-    gp = _values(gp_q)
+    # Try gross profit route first
+    margin_tag = ""
+    margin_vals: List[float] = []
 
-    # Align by period end date (simple inner join)
-    gp_map = {d: v for d, v in gp}
-    aligned = [(d, r, gp_map[d]) for d, r in rev if d in gp_map]
-    dates = [d for d, _, _ in aligned]
-    rev_vals = [r for _, r, _ in aligned]
-    gp_vals = [g for _, _, g in aligned]
+    try:
+        gp_tag, gp_series = pick_tag_series(facts, GROSS_PROFIT_TAGS)
+        gp_vals = series_values(gp_series)
 
-    gm_vals = [(gp_vals[i] / rev_vals[i]) if rev_vals[i] else 0.0 for i in range(len(rev_vals))]
-    growth = qoq_growth(rev_vals)
+        # Align lengths by taking the last N that match
+        n = min(len(gp_vals), len(rev_vals))
+        gp_vals = gp_vals[-n:]
+        r_vals = rev_vals[-n:]
 
-    # Need at least 3 quarters to evaluate 2-step deceleration
-    revenue_deceleration = False
-    margin_failure = False
+        # gross margin
+        margin_vals = [(gp_vals[i] / r_vals[i]) if r_vals[i] else 0.0 for i in range(n)]
+        margin_tag = gp_tag
 
-    if len(growth) >= 3:
-        # growth has length N-1 relative to rev_vals
-        # last three growth points correspond to last four quarters
-        g2, g1, g0 = growth[-3], growth[-2], growth[-1]
-        revenue_deceleration = (g0 < g1) and (g1 < g2)
+    except KeyError:
+        # Fallback to operating income margin
+        op_tag, op_series = pick_tag_series(facts, OPERATING_INCOME_TAGS)
+        op_vals = series_values(op_series)
 
-    if len(gm_vals) >= 3:
-        m2, m1, m0 = gm_vals[-3], gm_vals[-2], gm_vals[-1]
-        margin_failure = (m0 <= m1) and (m1 <= m2)
+        n = min(len(op_vals), len(rev_vals))
+        op_vals = op_vals[-n:]
+        r_vals = rev_vals[-n:]
 
-    condition_1 = revenue_deceleration and margin_failure
+        margin_vals = [(op_vals[i] / r_vals[i]) if r_vals[i] else 0.0 for i in range(n)]
+        margin_tag = op_tag
 
-    return {
-        "revenue_tag": rev_tag,
-        "gross_profit_tag": gp_tag,
-        "dates": dates,
-        "revenue": rev_vals,
-        "gross_margin": gm_vals,
-        "revenue_growth_qoq": growth,
-        "revenue_deceleration_2q": revenue_deceleration,
-        "margin_failure_2q": margin_failure,
-        "condition_1": condition_1,
-    }
+    # Margin failure: margin getting worse two quarters in a row
+    margin_failure_2q = _two_quarter_checks(margin_vals, threshold_drop=-0.01)
+
+    condition_1 = bool(revenue_deceleration_2q or margin_failure_2q)
+
+    return Condition1Result(
+        revenue_tag=rev_tag,
+        margin_tag=margin_tag,
+        revenue_deceleration_2q=revenue_deceleration_2q,
+        margin_failure_2q=margin_failure_2q,
+        condition_1=condition_1,
+        last_date=last_date,
+    )
