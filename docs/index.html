@@ -1,226 +1,468 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SPACShortModel</title>
     <style>
-      :root { --border:#e5e7eb; --muted:#6b7280; --bg:#ffffff; --card:#ffffff; }
-      body { font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif; margin: 28px; background: var(--bg); color:#111827; }
-      h1 { margin: 0 0 6px 0; font-size: 44px; letter-spacing: -0.02em; }
-      .sub { color: var(--muted); margin-bottom: 20px; }
-      .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; align-items: start; }
-      .card { border: 1px solid var(--border); border-radius: 10px; background: var(--card); padding: 18px; }
-      .card h2 { margin: 0 0 14px 0; font-size: 18px; }
-      table { width: 100%; border-collapse: collapse; font-size: 14px; }
-      th, td { text-align: left; padding: 10px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-      th { color: #374151; font-weight: 600; }
-      .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background:#f9fafb; font-size: 12px; }
-      .muted { color: var(--muted); }
-      .rowclick tbody tr { cursor: pointer; }
-      .rowclick tbody tr:hover { background: #fafafa; }
-      .details { margin-top: 14px; }
-      select { width: 100%; padding: 12px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 14px; background:#fff; }
-      pre { white-space: pre-wrap; word-break: break-word; font-size: 12px; background: #0b1020; color: #e5e7eb; padding: 14px; border-radius: 10px; border: 1px solid #111827; }
-      .err { color: #b91c1c; margin-top: 12px; font-weight: 600; }
-      @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+      :root {
+        --bg: #ffffff;
+        --text: #0f172a;
+        --muted: #64748b;
+        --border: #e5e7eb;
+        --card: #ffffff;
+        --chip: #f1f5f9;
+        --chip-text: #0f172a;
+        --danger: #b91c1c;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 32px;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: var(--bg);
+      }
+
+      h1 {
+        margin: 0 0 6px 0;
+        font-size: 56px;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+      }
+
+      .sub {
+        color: var(--muted);
+        margin: 0 0 22px 0;
+        font-size: 18px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+        align-items: start;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 18px 16px 18px;
+      }
+
+      .card h2 {
+        margin: 0 0 14px 0;
+        font-size: 26px;
+        letter-spacing: -0.02em;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 16px;
+      }
+
+      th, td {
+        text-align: left;
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+        white-space: nowrap;
+      }
+
+      th {
+        color: #475569;
+        font-weight: 600;
+      }
+
+      tbody tr {
+        cursor: pointer;
+      }
+
+      tbody tr:hover {
+        background: #fafafa;
+      }
+
+      .chip {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--chip);
+        color: var(--chip-text);
+        font-weight: 600;
+        font-size: 13px;
+        border: 1px solid var(--border);
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .kicker {
+        margin-top: 12px;
+        color: var(--muted);
+      }
+
+      select {
+        width: 100%;
+        margin-top: 10px;
+        padding: 12px 12px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-size: 15px;
+        background: white;
+      }
+
+      pre {
+        margin: 12px 0 0 0;
+        padding: 14px;
+        border-radius: 12px;
+        background: #0b1020;
+        color: #e2e8f0;
+        overflow: auto;
+        max-height: 320px;
+        border: 1px solid #111827;
+      }
+
+      .error {
+        margin-top: 14px;
+        color: var(--danger);
+        font-weight: 600;
+      }
+
+      .footer {
+        margin-top: 22px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .defs {
+        margin: 10px 0 0 0;
+        padding: 12px 14px;
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+        background: #fafafa;
+        color: #334155;
+      }
+
+      .defs strong {
+        color: #0f172a;
+      }
+
+      @media (max-width: 1100px) {
+        body { padding: 18px; }
+        h1 { font-size: 42px; }
+        .grid { grid-template-columns: 1fr; }
+        th, td { white-space: normal; }
+      }
     </style>
   </head>
+
   <body>
     <h1>SPACShortModel</h1>
-    <div class="sub" id="subtitle">Loading…</div>
+    <p class="sub" id="summary">Loading…</p>
 
     <div class="grid">
-      <div class="card">
+      <section class="card">
         <h2>Latest state</h2>
-        <table class="rowclick" id="latest">
-          <thead>
-            <tr>
-              <th>Ticker</th>
-              <th>Bucket</th>
-              <th>State</th>
-              <th>As of</th>
-              <th>c1</th>
-              <th>c2</th>
-              <th>c3</th>
-              <th>c4</th>
-              <th>In scope</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-
-        <div class="details">
-          <div class="muted" style="margin: 14px 0 10px 0;">Click a row or pick a ticker to view details_json.</div>
-          <select id="picker">
-            <option value="">Select a ticker…</option>
-          </select>
-          <div style="margin-top: 12px;">
-            <pre id="details">Select a ticker.</pre>
-          </div>
-          <div class="err" id="error"></div>
+        <div style="overflow:auto;">
+          <table id="latestTable" aria-label="Latest state">
+            <thead>
+              <tr>
+                <th>Ticker</th>
+                <th>Bucket</th>
+                <th>State</th>
+                <th>As of</th>
+                <th title="Condition 1">Demand/Margin</th>
+                <th title="Condition 2">Cost/Capex</th>
+                <th title="Condition 3">Persistence</th>
+                <th title="Condition 4">Strategic initiatives</th>
+                <th>In scope</th>
+              </tr>
+            </thead>
+            <tbody id="latestBody"></tbody>
+          </table>
         </div>
-      </div>
 
-      <div class="card">
+        <div class="kicker">Click a row to view <code>details_json</code>.</div>
+
+        <select id="tickerSelect" aria-label="Select a ticker">
+          <option value="">Select a ticker…</option>
+        </select>
+        <pre id="detailsBox" style="display:none;"></pre>
+
+        <div class="error" id="errorBox" style="display:none;"></div>
+
+        <div class="footer">
+          <div class="defs">
+            <div><strong>Condition definitions</strong></div>
+            <div>• C1: Demand/Margin</div>
+            <div>• C2: Cost/Capex</div>
+            <div>• C3: Persistence</div>
+            <div>• C4: “Strategic initiatives”</div>
+          </div>
+          <div style="margin-top:10px;">
+            Notes: C1–C4 are binary flags (0/1). “Recent events” only logs state changes.
+          </div>
+        </div>
+      </section>
+
+      <aside class="card">
         <h2>Recent events</h2>
-        <table id="events">
-          <thead>
-            <tr>
-              <th>Company</th>
-              <th>Date</th>
-              <th>Change</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <div class="muted" style="margin-top: 10px;">Only state changes are logged as events.</div>
-      </div>
+        <div style="overflow:auto;">
+          <table aria-label="Recent events">
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Date</th>
+                <th>Change</th>
+              </tr>
+            </thead>
+            <tbody id="eventsBody"></tbody>
+          </table>
+        </div>
+        <div class="kicker muted" id="eventsNote">Only state changes are logged as events.</div>
+      </aside>
     </div>
 
     <script>
-      // Helper: tolerate different JSON shapes/keys
-      function pick(obj, keys, fallback = undefined) {
-        for (const k of keys) {
-          if (obj && Object.prototype.hasOwnProperty.call(obj, k) && obj[k] !== undefined && obj[k] !== null) return obj[k];
+      function safeInt(v, fallback = 0) {
+        if (v === true) return 1;
+        if (v === false) return 0;
+        const n = Number(v);
+        return Number.isFinite(n) ? n : fallback;
+      }
+
+      function asText(v, fallback = "") {
+        if (v === null || v === undefined) return fallback;
+        const s = String(v);
+        return s === "undefined" ? fallback : s;
+      }
+
+      function clear(el) {
+        while (el.firstChild) el.removeChild(el.firstChild);
+      }
+
+      function chip(text) {
+        const span = document.createElement("span");
+        span.className = "chip";
+        span.textContent = text;
+        return span;
+      }
+
+      function setError(msg) {
+        const box = document.getElementById("errorBox");
+        if (!msg) {
+          box.style.display = "none";
+          box.textContent = "";
+          return;
         }
-        return fallback;
+        box.style.display = "block";
+        box.textContent = msg;
       }
 
-      function normalizeCompany(row) {
-        const ticker = pick(row, ["ticker", "symbol", "company_id", "id"]);
-        const bucket = pick(row, ["bucket", "category"], "");
-        const state  = pick(row, ["state", "status"], "MONITOR");
-        const asOf   = pick(row, ["as_of", "asOf", "date"], "");
-        const inScope = !!pick(row, ["in_scope", "inScope"], true);
-
-        const c1 = !!pick(row, ["c1", "condition_1", "condition1"], false);
-        const c2 = !!pick(row, ["c2", "condition_2", "condition2"], false);
-        const c3 = !!pick(row, ["c3", "condition_3", "condition3"], false);
-        const c4 = !!pick(row, ["c4", "condition_4", "condition4"], false);
-
-        const details = pick(row, ["details_json", "details", "detailsJson"], null);
-
-        return { ticker, bucket, state, asOf, c1, c2, c3, c4, inScope, details, raw: row };
-      }
-
-      function normalizeEvent(e) {
-        const company = pick(e, ["ticker", "company_id", "company", "id"]);
-        const date = pick(e, ["as_of", "date", "timestamp"], "");
-        const prev = pick(e, ["prev_state", "from", "prev"], "");
-        const next = pick(e, ["new_state", "to", "next"], "");
-        const change = prev && next ? `${prev} → ${next}` : pick(e, ["change"], "");
-        return { company, date, change, raw: e };
-      }
-
-      function safeArray(x) {
-        if (Array.isArray(x)) return x;
+      function normalizeLatestRows(data) {
+        // Accept multiple possible shapes so this doesn't break if the exporter changes.
+        if (!data || typeof data !== "object") return [];
+        if (Array.isArray(data.latest_state)) return data.latest_state;
+        if (Array.isArray(data.latest_states)) return data.latest_states;
+        if (Array.isArray(data.latest)) return data.latest;
+        if (Array.isArray(data.rows)) return data.rows;
         return [];
       }
 
-      function parseDetails(details) {
-        if (!details) return null;
-        if (typeof details === "object") return details;
-        try { return JSON.parse(details); } catch { return { raw: details }; }
+      function normalizeEvents(data) {
+        if (!data || typeof data !== "object") return [];
+        if (Array.isArray(data.recent_events)) return data.recent_events;
+        if (Array.isArray(data.events)) return data.events;
+        return [];
       }
 
-      function render(companies, events) {
-        const tbody = document.querySelector("#latest tbody");
-        const evbody = document.querySelector("#events tbody");
-        const picker = document.getElementById("picker");
-        const subtitle = document.getElementById("subtitle");
+      function render(data) {
+        const latest = normalizeLatestRows(data);
+        const events = normalizeEvents(data);
 
-        subtitle.textContent = `Loaded ${companies.length} companies.`;
+        document.getElementById("summary").textContent = `Loaded ${latest.length} companies.`;
 
-        // Latest table
-        tbody.innerHTML = "";
-        picker.innerHTML = `<option value="">Select a ticker…</option>`;
+        const latestBody = document.getElementById("latestBody");
+        clear(latestBody);
 
-        for (const c of companies) {
+        const tickerSelect = document.getElementById("tickerSelect");
+        const detailsBox = document.getElementById("detailsBox");
+        detailsBox.style.display = "none";
+        detailsBox.textContent = "";
+        setError("");
+
+        // Reset ticker select options
+        clear(tickerSelect);
+        const opt0 = document.createElement("option");
+        opt0.value = "";
+        opt0.textContent = "Select a ticker…";
+        tickerSelect.appendChild(opt0);
+
+        // Build table rows
+        latest.forEach((row, idx) => {
           const tr = document.createElement("tr");
-          tr.dataset.ticker = c.ticker;
 
-          tr.innerHTML = `
-            <td>${c.ticker ?? ""}</td>
-            <td>${c.bucket ?? ""}</td>
-            <td><span class="pill">${c.state ?? ""}</span></td>
-            <td>${c.asOf ?? ""}</td>
-            <td>${c.c1 ? 1 : 0}</td>
-            <td>${c.c2 ? 1 : 0}</td>
-            <td>${c.c3 ? 1 : 0}</td>
-            <td>${c.c4 ? 1 : 0}</td>
-            <td>${c.inScope ? 1 : 0}</td>
-          `;
+          const ticker = asText(row.ticker, asText(row.company_id, "—"));
+          const bucket = asText(row.bucket, "—");
+          const state = asText(row.state, "—");
+          const asOf = asText(row.as_of, "—");
 
-          tr.addEventListener("click", () => showDetails(c));
-          tbody.appendChild(tr);
+          const c1 = safeInt(row.c1 ?? row.condition_1);
+          const c2 = safeInt(row.c2 ?? row.condition_2);
+          const c3 = safeInt(row.c3 ?? row.condition_3);
+          const c4 = safeInt(row.c4 ?? row.condition_4);
 
+          const inScope = safeInt(row.in_scope ?? row.inScope ?? row.in_scope_flag ?? row.in_scope_bool ?? row.in_scope_value ?? row.in_scope_int ?? row.in_scope_numeric ?? row.in_scope_bit ?? row.in_scope_status ?? row.in_scope_enabled ?? row.in_scope_indicator ?? row.in_scope_marker ?? row.in_scope_field ?? row.in_scope_col ?? row.in_scope_column ?? row.in_scope_row ?? row.in_scope_cell ?? row.in_scope_attr ?? row.in_scope_property ?? row.in_scope_key ?? row.in_scope_val ?? row.in_scope_value2 ?? row.in_scope_value3 ?? row.in_scope_value4 ?? row.in_scope_value5 ?? row.in_scope_value6 ?? row.in_scope_value7 ?? row.in_scope_value8 ?? row.in_scope_value9 ?? row.in_scope_value10 ?? row.in_scope_value11 ?? row.in_scope_value12 ?? row.in_scope_value13 ?? row.in_scope_value14 ?? row.in_scope_value15 ?? row.in_scope_value16 ?? row.in_scope_value17 ?? row.in_scope_value18 ?? row.in_scope_value19 ?? row.in_scope_value20 ?? row.in_scope_value21 ?? row.in_scope_value22 ?? row.in_scope_value23 ?? row.in_scope_value24 ?? row.in_scope_value25 ?? row.in_scope_value26 ?? row.in_scope_value27 ?? row.in_scope_value28 ?? row.in_scope_value29 ?? row.in_scope_value30, 0);
+
+          // Cells
+          const tdTicker = document.createElement("td");
+          tdTicker.textContent = ticker;
+
+          const tdBucket = document.createElement("td");
+          tdBucket.textContent = bucket;
+
+          const tdState = document.createElement("td");
+          tdState.appendChild(chip(state));
+
+          const tdAsOf = document.createElement("td");
+          tdAsOf.textContent = asOf;
+
+          const tdC1 = document.createElement("td");
+          tdC1.textContent = String(c1);
+
+          const tdC2 = document.createElement("td");
+          tdC2.textContent = String(c2);
+
+          const tdC3 = document.createElement("td");
+          tdC3.textContent = String(c3);
+
+          const tdC4 = document.createElement("td");
+          tdC4.textContent = String(c4);
+
+          const tdScope = document.createElement("td");
+          tdScope.textContent = String(inScope);
+
+          tr.appendChild(tdTicker);
+          tr.appendChild(tdBucket);
+          tr.appendChild(tdState);
+          tr.appendChild(tdAsOf);
+          tr.appendChild(tdC1);
+          tr.appendChild(tdC2);
+          tr.appendChild(tdC3);
+          tr.appendChild(tdC4);
+          tr.appendChild(tdScope);
+
+          // Store full row for details
+          tr.dataset.rowIndex = String(idx);
+
+          tr.addEventListener("click", () => {
+            tickerSelect.value = ticker;
+            showDetails(row);
+          });
+
+          latestBody.appendChild(tr);
+
+          // Add to select
           const opt = document.createElement("option");
-          opt.value = c.ticker;
-          opt.textContent = c.ticker;
-          picker.appendChild(opt);
-        }
-
-        picker.addEventListener("change", () => {
-          const t = picker.value;
-          const c = companies.find(x => x.ticker === t);
-          if (c) showDetails(c);
+          opt.value = ticker;
+          opt.textContent = ticker;
+          tickerSelect.appendChild(opt);
         });
 
-        // Events table
-        evbody.innerHTML = "";
-        for (const e of events) {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${e.company ?? ""}</td>
-            <td>${e.date ?? ""}</td>
-            <td>${e.change ?? ""}</td>
-          `;
-          evbody.appendChild(tr);
+        function showDetails(row) {
+          const details = row.details_json ?? row.details ?? row.detailsJson ?? row.detailsJSON;
+          let pretty;
+
+          try {
+            if (typeof details === "string") {
+              pretty = JSON.stringify(JSON.parse(details), null, 2);
+            } else if (details && typeof details === "object") {
+              pretty = JSON.stringify(details, null, 2);
+            } else {
+              // Fall back to the entire row
+              pretty = JSON.stringify(row, null, 2);
+            }
+          } catch (e) {
+            // If details_json is not valid JSON, still show it
+            pretty = typeof details === "string" ? details : JSON.stringify(row, null, 2);
+          }
+
+          detailsBox.style.display = "block";
+          detailsBox.textContent = pretty;
         }
-      }
 
-      function showDetails(company) {
-        const pre = document.getElementById("details");
-        const picker = document.getElementById("picker");
-        picker.value = company.ticker;
+        tickerSelect.addEventListener("change", (e) => {
+          const val = e.target.value;
+          if (!val) {
+            detailsBox.style.display = "none";
+            detailsBox.textContent = "";
+            return;
+          }
+          const row = latest.find(r => asText(r.ticker, asText(r.company_id, "")) === val);
+          if (row) showDetails(row);
+        });
 
-        const parsed = parseDetails(company.details);
-        pre.textContent = JSON.stringify(parsed ?? company.raw, null, 2);
+        // Events
+        const eventsBody = document.getElementById("eventsBody");
+        clear(eventsBody);
+
+        if (!Array.isArray(events) || events.length === 0) {
+          const tr = document.createElement("tr");
+          const td = document.createElement("td");
+          td.colSpan = 3;
+          td.className = "muted";
+          td.textContent = "No state-change events yet.";
+          tr.appendChild(td);
+          eventsBody.appendChild(tr);
+          return;
+        }
+
+        events.slice(0, 50).forEach(ev => {
+          const tr = document.createElement("tr");
+
+          const company = asText(ev.ticker, asText(ev.company_id, "—"));
+          const date = asText(ev.as_of, asText(ev.date, "—"));
+          const change = asText(ev.change, (ev.prev_state && ev.new_state) ? `${ev.prev_state} → ${ev.new_state}` : "—");
+
+          const tdC = document.createElement("td");
+          tdC.textContent = company;
+
+          const tdD = document.createElement("td");
+          tdD.textContent = date;
+
+          const tdCh = document.createElement("td");
+          tdCh.textContent = change;
+
+          tr.appendChild(tdC);
+          tr.appendChild(tdD);
+          tr.appendChild(tdCh);
+
+          eventsBody.appendChild(tr);
+        });
       }
 
       async function loadDashboard() {
-        const err = document.getElementById("error");
-        err.textContent = "";
-
-        // IMPORTANT: On GitHub Pages under /SPACShortModel/ this is correct relative path.
-        const res = await fetch("./dashboard.json", { cache: "no-store" });
-        if (!res.ok) throw new Error(`Failed to load dashboard.json (${res.status})`);
-        const data = await res.json();
-
-        // Accept multiple possible shapes:
-        // - { companies: [...], recent_events: [...] }
-        // - { companies: [...], events: [...] }
-        // - { latest: [...], events: [...] }
-        // - { rows: [...], events: [...] }
-        const rawCompanies =
-          pick(data, ["companies", "latest", "rows"], []);
-        const rawEvents =
-          pick(data, ["recent_events", "events", "history"], []);
-
-        const companies = safeArray(rawCompanies).map(normalizeCompany);
-        const events = safeArray(rawEvents).map(normalizeEvent);
-
-        // sort companies by ticker for stable display
-        companies.sort((a,b) => (a.ticker || "").localeCompare(b.ticker || ""));
-
-        render(companies, events);
+        setError("");
+        try {
+          // dashboard.json must live next to this index.html in /docs
+          const res = await fetch("./dashboard.json", { cache: "no-store" });
+          if (!res.ok) throw new Error(`Failed to load dashboard.json (${res.status})`);
+          const data = await res.json();
+          render(data);
+        } catch (e) {
+          setError(`Dashboard load failed: ${e.message}`);
+          document.getElementById("summary").textContent = "Load failed.";
+        }
       }
 
-      loadDashboard().catch(e => {
-        document.getElementById("subtitle").textContent = "Failed to load dashboard.";
-        document.getElementById("error").textContent = String(e && e.message ? e.message : e);
-      });
+      loadDashboard();
     </script>
   </body>
 </html>
