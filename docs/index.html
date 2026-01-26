@@ -9,30 +9,28 @@
         --bg: #ffffff;
         --text: #0f172a;
         --muted: #64748b;
-        --border: #e5e7eb;
+        --border: #e2e8f0;
         --card: #ffffff;
         --chip: #f1f5f9;
-        --chip-text: #0f172a;
         --danger: #b91c1c;
       }
 
       * { box-sizing: border-box; }
       body {
         margin: 0;
-        padding: 32px;
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        padding: 28px;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
         color: var(--text);
         background: var(--bg);
       }
 
       h1 {
-        margin: 0 0 6px 0;
+        margin: 0 0 8px 0;
         font-size: 56px;
-        line-height: 1.05;
-        letter-spacing: -0.03em;
+        letter-spacing: -0.02em;
       }
 
-      .sub {
+      .subhead {
         color: var(--muted);
         margin: 0 0 22px 0;
         font-size: 18px;
@@ -41,33 +39,39 @@
       .grid {
         display: grid;
         grid-template-columns: 2fr 1fr;
-        gap: 20px;
+        gap: 18px;
         align-items: start;
+      }
+
+      @media (max-width: 980px) {
+        .grid { grid-template-columns: 1fr; }
       }
 
       .card {
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 12px;
-        padding: 18px 18px 16px 18px;
+        padding: 18px;
       }
 
       .card h2 {
-        margin: 0 0 14px 0;
+        margin: 0 0 12px 0;
         font-size: 26px;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.01em;
       }
 
+      .table-wrap { overflow-x: auto; }
       table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 16px;
+        min-width: 900px;
       }
 
       th, td {
-        text-align: left;
         padding: 12px 10px;
         border-bottom: 1px solid var(--border);
+        text-align: left;
+        font-size: 16px;
         vertical-align: middle;
         white-space: nowrap;
       }
@@ -77,12 +81,9 @@
         font-weight: 600;
       }
 
-      tbody tr {
-        cursor: pointer;
-      }
-
-      tbody tr:hover {
+      tr.data-row:hover {
         background: #fafafa;
+        cursor: pointer;
       }
 
       .chip {
@@ -90,98 +91,98 @@
         padding: 4px 10px;
         border-radius: 999px;
         background: var(--chip);
-        color: var(--chip-text);
-        font-weight: 600;
-        font-size: 13px;
         border: 1px solid var(--border);
+        font-weight: 600;
+        font-size: 14px;
+        letter-spacing: 0.01em;
       }
 
-      .muted {
-        color: var(--muted);
+      .muted { color: var(--muted); }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+      .error { color: var(--danger); margin-top: 10px; white-space: pre-wrap; }
+
+      .details {
+        margin-top: 14px;
+        border-top: 1px solid var(--border);
+        padding-top: 14px;
       }
 
-      .kicker {
-        margin-top: 12px;
+      .details label {
+        display: block;
         color: var(--muted);
+        margin-bottom: 8px;
       }
 
       select {
         width: 100%;
-        margin-top: 10px;
         padding: 12px 12px;
-        border: 1px solid var(--border);
         border-radius: 10px;
-        font-size: 15px;
-        background: white;
+        border: 1px solid var(--border);
+        background: #fff;
+        font-size: 16px;
       }
 
       pre {
         margin: 12px 0 0 0;
-        padding: 14px;
-        border-radius: 12px;
-        background: #0b1020;
-        color: #e2e8f0;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: #fafafa;
         overflow: auto;
-        max-height: 320px;
-        border: 1px solid #111827;
-      }
-
-      .error {
-        margin-top: 14px;
-        color: var(--danger);
-        font-weight: 600;
-      }
-
-      .footer {
-        margin-top: 22px;
-        padding-top: 14px;
-        border-top: 1px solid var(--border);
-        color: var(--muted);
-        font-size: 14px;
+        max-height: 360px;
+        font-size: 13px;
         line-height: 1.45;
       }
 
+      .footer {
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+      }
+
       .defs {
-        margin: 10px 0 0 0;
-        padding: 12px 14px;
-        border: 1px dashed var(--border);
-        border-radius: 12px;
-        background: #fafafa;
-        color: #334155;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 18px;
+        margin-top: 10px;
       }
 
-      .defs strong {
-        color: #0f172a;
+      @media (max-width: 700px) {
+        .defs { grid-template-columns: 1fr; }
+        table { min-width: 960px; }
       }
 
-      @media (max-width: 1100px) {
-        body { padding: 18px; }
-        h1 { font-size: 42px; }
-        .grid { grid-template-columns: 1fr; }
-        th, td { white-space: normal; }
+      .def-item b {
+        color: var(--text);
+      }
+
+      .small {
+        font-size: 14px;
       }
     </style>
   </head>
 
   <body>
     <h1>SPACShortModel</h1>
-    <p class="sub" id="summary">Loading…</p>
+    <p class="subhead" id="subhead">Loading…</p>
 
     <div class="grid">
       <section class="card">
         <h2>Latest state</h2>
-        <div style="overflow:auto;">
-          <table id="latestTable" aria-label="Latest state">
+
+        <div class="table-wrap">
+          <table>
             <thead>
               <tr>
                 <th>Ticker</th>
                 <th>Bucket</th>
                 <th>State</th>
                 <th>As of</th>
-                <th title="Condition 1">Demand/Margin</th>
-                <th title="Condition 2">Cost/Capex</th>
-                <th title="Condition 3">Persistence</th>
-                <th title="Condition 4">Strategic initiatives</th>
+                <th>Demand/Margin</th>
+                <th>Cost/Capex</th>
+                <th>Persistence</th>
+                <th>Strategic initiatives</th>
                 <th>In scope</th>
               </tr>
             </thead>
@@ -189,33 +190,31 @@
           </table>
         </div>
 
-        <div class="kicker">Click a row to view <code>details_json</code>.</div>
-
-        <select id="tickerSelect" aria-label="Select a ticker">
-          <option value="">Select a ticker…</option>
-        </select>
-        <pre id="detailsBox" style="display:none;"></pre>
-
-        <div class="error" id="errorBox" style="display:none;"></div>
+        <div class="details">
+          <label for="tickerSelect">Click a row or pick a ticker to view <span class="mono">details_json</span>.</label>
+          <select id="tickerSelect">
+            <option value="">Select a ticker…</option>
+          </select>
+          <pre id="detailsPre" class="mono muted">No ticker selected.</pre>
+        </div>
 
         <div class="footer">
-          <div class="defs">
-            <div><strong>Condition definitions</strong></div>
-            <div>• C1: Demand/Margin</div>
-            <div>• C2: Cost/Capex</div>
-            <div>• C3: Persistence</div>
-            <div>• C4: “Strategic initiatives”</div>
-          </div>
-          <div style="margin-top:10px;">
-            Notes: C1–C4 are binary flags (0/1). “Recent events” only logs state changes.
+          <div class="small"><b>Condition definitions</b></div>
+          <div class="defs small">
+            <div class="def-item"><b>C1:</b> Demand/Margin</div>
+            <div class="def-item"><b>C2:</b> Cost/Capex</div>
+            <div class="def-item"><b>C3:</b> Persistence</div>
+            <div class="def-item"><b>C4:</b> “Strategic initiatives”</div>
           </div>
         </div>
+
+        <div id="err" class="error"></div>
       </section>
 
       <aside class="card">
         <h2>Recent events</h2>
-        <div style="overflow:auto;">
-          <table aria-label="Recent events">
+        <div class="table-wrap">
+          <table style="min-width: 520px">
             <thead>
               <tr>
                 <th>Company</th>
@@ -223,242 +222,220 @@
                 <th>Change</th>
               </tr>
             </thead>
-            <tbody id="eventsBody"></tbody>
+            <tbody id="eventsBody">
+              <tr>
+                <td colspan="3" class="muted">Only state changes are logged as events.</td>
+              </tr>
+            </tbody>
           </table>
         </div>
-        <div class="kicker muted" id="eventsNote">Only state changes are logged as events.</div>
       </aside>
     </div>
 
     <script>
-      function safeInt(v, fallback = 0) {
+      const $ = (id) => document.getElementById(id);
+
+      function safeParseJSON(s) {
+        try { return JSON.parse(s); } catch { return null; }
+      }
+
+      function asInt(v) {
         if (v === true) return 1;
         if (v === false) return 0;
         const n = Number(v);
-        return Number.isFinite(n) ? n : fallback;
-      }
-
-      function asText(v, fallback = "") {
-        if (v === null || v === undefined) return fallback;
-        const s = String(v);
-        return s === "undefined" ? fallback : s;
-      }
-
-      function clear(el) {
-        while (el.firstChild) el.removeChild(el.firstChild);
-      }
-
-      function chip(text) {
-        const span = document.createElement("span");
-        span.className = "chip";
-        span.textContent = text;
-        return span;
+        return Number.isFinite(n) ? n : 0;
       }
 
       function setError(msg) {
-        const box = document.getElementById("errorBox");
-        if (!msg) {
-          box.style.display = "none";
-          box.textContent = "";
-          return;
+        $("err").textContent = msg || "";
+      }
+
+      function normalizePayload(raw) {
+        // Expected from export_dashboard.py:
+        // { companies: [...], latest_state: [...], events: [...] }
+        const companies = Array.isArray(raw?.companies) ? raw.companies : [];
+        const latest = Array.isArray(raw?.latest_state) ? raw.latest_state : [];
+        const events = Array.isArray(raw?.events) ? raw.events : [];
+        return { companies, latest, events };
+      }
+
+      function buildCompanyMap(companies) {
+        const m = new Map();
+        for (const c of companies) {
+          if (!c || !c.company_id) continue;
+          m.set(String(c.company_id), c);
         }
-        box.style.display = "block";
-        box.textContent = msg;
+        return m;
       }
 
-      function normalizeLatestRows(data) {
-        // Accept multiple possible shapes so this doesn't break if the exporter changes.
-        if (!data || typeof data !== "object") return [];
-        if (Array.isArray(data.latest_state)) return data.latest_state;
-        if (Array.isArray(data.latest_states)) return data.latest_states;
-        if (Array.isArray(data.latest)) return data.latest;
-        if (Array.isArray(data.rows)) return data.rows;
-        return [];
-      }
+      function renderLatest({ companies, latest }) {
+        const companyMap = buildCompanyMap(companies);
 
-      function normalizeEvents(data) {
-        if (!data || typeof data !== "object") return [];
-        if (Array.isArray(data.recent_events)) return data.recent_events;
-        if (Array.isArray(data.events)) return data.events;
-        return [];
-      }
-
-      function render(data) {
-        const latest = normalizeLatestRows(data);
-        const events = normalizeEvents(data);
-
-        document.getElementById("summary").textContent = `Loaded ${latest.length} companies.`;
-
-        const latestBody = document.getElementById("latestBody");
-        clear(latestBody);
-
-        const tickerSelect = document.getElementById("tickerSelect");
-        const detailsBox = document.getElementById("detailsBox");
-        detailsBox.style.display = "none";
-        detailsBox.textContent = "";
-        setError("");
-
-        // Reset ticker select options
-        clear(tickerSelect);
-        const opt0 = document.createElement("option");
-        opt0.value = "";
-        opt0.textContent = "Select a ticker…";
-        tickerSelect.appendChild(opt0);
-
-        // Build table rows
-        latest.forEach((row, idx) => {
-          const tr = document.createElement("tr");
-
-          const ticker = asText(row.ticker, asText(row.company_id, "—"));
-          const bucket = asText(row.bucket, "—");
-          const state = asText(row.state, "—");
-          const asOf = asText(row.as_of, "—");
-
-          const c1 = safeInt(row.c1 ?? row.condition_1);
-          const c2 = safeInt(row.c2 ?? row.condition_2);
-          const c3 = safeInt(row.c3 ?? row.condition_3);
-          const c4 = safeInt(row.c4 ?? row.condition_4);
-
-          const inScope = safeInt(row.in_scope ?? row.inScope ?? row.in_scope_flag ?? row.in_scope_bool ?? row.in_scope_value ?? row.in_scope_int ?? row.in_scope_numeric ?? row.in_scope_bit ?? row.in_scope_status ?? row.in_scope_enabled ?? row.in_scope_indicator ?? row.in_scope_marker ?? row.in_scope_field ?? row.in_scope_col ?? row.in_scope_column ?? row.in_scope_row ?? row.in_scope_cell ?? row.in_scope_attr ?? row.in_scope_property ?? row.in_scope_key ?? row.in_scope_val ?? row.in_scope_value2 ?? row.in_scope_value3 ?? row.in_scope_value4 ?? row.in_scope_value5 ?? row.in_scope_value6 ?? row.in_scope_value7 ?? row.in_scope_value8 ?? row.in_scope_value9 ?? row.in_scope_value10 ?? row.in_scope_value11 ?? row.in_scope_value12 ?? row.in_scope_value13 ?? row.in_scope_value14 ?? row.in_scope_value15 ?? row.in_scope_value16 ?? row.in_scope_value17 ?? row.in_scope_value18 ?? row.in_scope_value19 ?? row.in_scope_value20 ?? row.in_scope_value21 ?? row.in_scope_value22 ?? row.in_scope_value23 ?? row.in_scope_value24 ?? row.in_scope_value25 ?? row.in_scope_value26 ?? row.in_scope_value27 ?? row.in_scope_value28 ?? row.in_scope_value29 ?? row.in_scope_value30, 0);
-
-          // Cells
-          const tdTicker = document.createElement("td");
-          tdTicker.textContent = ticker;
-
-          const tdBucket = document.createElement("td");
-          tdBucket.textContent = bucket;
-
-          const tdState = document.createElement("td");
-          tdState.appendChild(chip(state));
-
-          const tdAsOf = document.createElement("td");
-          tdAsOf.textContent = asOf;
-
-          const tdC1 = document.createElement("td");
-          tdC1.textContent = String(c1);
-
-          const tdC2 = document.createElement("td");
-          tdC2.textContent = String(c2);
-
-          const tdC3 = document.createElement("td");
-          tdC3.textContent = String(c3);
-
-          const tdC4 = document.createElement("td");
-          tdC4.textContent = String(c4);
-
-          const tdScope = document.createElement("td");
-          tdScope.textContent = String(inScope);
-
-          tr.appendChild(tdTicker);
-          tr.appendChild(tdBucket);
-          tr.appendChild(tdState);
-          tr.appendChild(tdAsOf);
-          tr.appendChild(tdC1);
-          tr.appendChild(tdC2);
-          tr.appendChild(tdC3);
-          tr.appendChild(tdC4);
-          tr.appendChild(tdScope);
-
-          // Store full row for details
-          tr.dataset.rowIndex = String(idx);
-
-          tr.addEventListener("click", () => {
-            tickerSelect.value = ticker;
-            showDetails(row);
-          });
-
-          latestBody.appendChild(tr);
-
-          // Add to select
-          const opt = document.createElement("option");
-          opt.value = ticker;
-          opt.textContent = ticker;
-          tickerSelect.appendChild(opt);
+        // Enrich latest rows with company metadata (ticker/bucket/in_scope)
+        const rows = latest.map((ms) => {
+          const cid = String(ms.company_id ?? "");
+          const c = companyMap.get(cid) || {};
+          return {
+            company_id: cid,
+            ticker: c.ticker ?? cid,
+            bucket: c.bucket ?? "—",
+            in_scope: asInt(c.in_scope),
+            as_of: ms.as_of ?? "",
+            state: ms.state ?? "—",
+            c1: asInt(ms.condition_1),
+            c2: asInt(ms.condition_2),
+            c3: asInt(ms.condition_3),
+            c4: asInt(ms.condition_4),
+            details_json: ms.details_json ?? null
+          };
         });
 
-        function showDetails(row) {
-          const details = row.details_json ?? row.details ?? row.detailsJson ?? row.detailsJSON;
-          let pretty;
+        // Sort by ticker
+        rows.sort((a, b) => String(a.ticker).localeCompare(String(b.ticker)));
 
-          try {
-            if (typeof details === "string") {
-              pretty = JSON.stringify(JSON.parse(details), null, 2);
-            } else if (details && typeof details === "object") {
-              pretty = JSON.stringify(details, null, 2);
-            } else {
-              // Fall back to the entire row
-              pretty = JSON.stringify(row, null, 2);
-            }
-          } catch (e) {
-            // If details_json is not valid JSON, still show it
-            pretty = typeof details === "string" ? details : JSON.stringify(row, null, 2);
-          }
+        // Subhead
+        $("subhead").textContent = `Loaded ${rows.length} companies.`;
 
-          detailsBox.style.display = "block";
-          detailsBox.textContent = pretty;
+        // Table
+        const body = $("latestBody");
+        body.innerHTML = "";
+        for (const r of rows) {
+          const tr = document.createElement("tr");
+          tr.className = "data-row";
+          tr.dataset.cid = r.company_id;
+
+          tr.innerHTML = `
+            <td>${escapeHtml(String(r.ticker))}</td>
+            <td>${escapeHtml(String(r.bucket))}</td>
+            <td><span class="chip">${escapeHtml(String(r.state))}</span></td>
+            <td>${escapeHtml(String(r.as_of))}</td>
+            <td>${r.c1}</td>
+            <td>${r.c2}</td>
+            <td>${r.c3}</td>
+            <td>${r.c4}</td>
+            <td>${r.in_scope}</td>
+          `;
+
+          tr.addEventListener("click", () => selectCompany(rows, r.company_id));
+          body.appendChild(tr);
         }
 
-        tickerSelect.addEventListener("change", (e) => {
-          const val = e.target.value;
-          if (!val) {
-            detailsBox.style.display = "none";
-            detailsBox.textContent = "";
+        // Dropdown
+        const sel = $("tickerSelect");
+        sel.innerHTML = `<option value="">Select a ticker…</option>`;
+        for (const r of rows) {
+          const opt = document.createElement("option");
+          opt.value = r.company_id;
+          opt.textContent = String(r.ticker);
+          sel.appendChild(opt);
+        }
+
+        sel.onchange = () => {
+          const cid = sel.value;
+          if (!cid) {
+            $("detailsPre").textContent = "No ticker selected.";
             return;
           }
-          const row = latest.find(r => asText(r.ticker, asText(r.company_id, "")) === val);
-          if (row) showDetails(row);
-        });
+          selectCompany(rows, cid);
+        };
 
-        // Events
-        const eventsBody = document.getElementById("eventsBody");
-        clear(eventsBody);
+        // If there’s exactly one row, auto-select it (nice for initial debugging)
+        if (rows.length === 1) selectCompany(rows, rows[0].company_id);
+      }
 
-        if (!Array.isArray(events) || events.length === 0) {
-          const tr = document.createElement("tr");
-          const td = document.createElement("td");
-          td.colSpan = 3;
-          td.className = "muted";
-          td.textContent = "No state-change events yet.";
-          tr.appendChild(td);
-          eventsBody.appendChild(tr);
+      function selectCompany(rows, companyId) {
+        const r = rows.find(x => String(x.company_id) === String(companyId));
+        if (!r) return;
+
+        $("tickerSelect").value = String(companyId);
+
+        // details_json might already be a JSON string or null.
+        // If it’s a string, pretty print it. If not, show something sane.
+        if (!r.details_json) {
+          $("detailsPre").textContent = "No details_json available for this ticker yet.";
           return;
         }
 
-        events.slice(0, 50).forEach(ev => {
+        const parsed = (typeof r.details_json === "string") ? safeParseJSON(r.details_json) : r.details_json;
+        if (!parsed) {
+          $("detailsPre").textContent = String(r.details_json);
+          return;
+        }
+        $("detailsPre").textContent = JSON.stringify(parsed, null, 2);
+      }
+
+      function renderEvents({ companies, events }) {
+        const companyMap = buildCompanyMap(companies);
+        const tbody = $("eventsBody");
+        tbody.innerHTML = "";
+
+        if (!events.length) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="3" class="muted">No state-change events yet.</td>
+            </tr>
+            <tr>
+              <td colspan="3" class="muted">Only state changes are logged as events.</td>
+            </tr>
+          `;
+          return;
+        }
+
+        // Show up to 50 most recent
+        const slice = events.slice(0, 50);
+
+        for (const e of slice) {
+          const cid = String(e.company_id ?? "");
+          const c = companyMap.get(cid) || {};
+          const ticker = c.ticker ?? cid;
+
+          const prev = e.prev_state ?? "—";
+          const next = e.new_state ?? "—";
+          const asOf = e.as_of ?? "—";
+
           const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${escapeHtml(String(ticker))}</td>
+            <td>${escapeHtml(String(asOf))}</td>
+            <td>${escapeHtml(String(prev))} → ${escapeHtml(String(next))}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
 
-          const company = asText(ev.ticker, asText(ev.company_id, "—"));
-          const date = asText(ev.as_of, asText(ev.date, "—"));
-          const change = asText(ev.change, (ev.prev_state && ev.new_state) ? `${ev.prev_state} → ${ev.new_state}` : "—");
-
-          const tdC = document.createElement("td");
-          tdC.textContent = company;
-
-          const tdD = document.createElement("td");
-          tdD.textContent = date;
-
-          const tdCh = document.createElement("td");
-          tdCh.textContent = change;
-
-          tr.appendChild(tdC);
-          tr.appendChild(tdD);
-          tr.appendChild(tdCh);
-
-          eventsBody.appendChild(tr);
-        });
+      function escapeHtml(str) {
+        return str
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
       }
 
       async function loadDashboard() {
         setError("");
+
+        // dashboard.json lives next to this index.html (in /docs on GitHub Pages)
+        const url = `dashboard.json?t=${Date.now()}`;
+
+        let raw;
         try {
-          // dashboard.json must live next to this index.html in /docs
-          const res = await fetch("./dashboard.json", { cache: "no-store" });
-          if (!res.ok) throw new Error(`Failed to load dashboard.json (${res.status})`);
-          const data = await res.json();
-          render(data);
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${url}`);
+          raw = await res.json();
         } catch (e) {
-          setError(`Dashboard load failed: ${e.message}`);
-          document.getElementById("summary").textContent = "Load failed.";
+          $("subhead").textContent = "Failed to load dashboard.json.";
+          setError(String(e));
+          return;
+        }
+
+        const data = normalizePayload(raw);
+
+        try {
+          renderLatest(data);
+          renderEvents(data);
+        } catch (e) {
+          setError(`Render error: ${String(e)}\n\n(If you just changed the JSON schema, refresh after you re-export + commit docs/dashboard.json.)`);
         }
       }
 

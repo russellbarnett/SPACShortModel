@@ -144,8 +144,18 @@
   ],
   "latest_state": [
     {
+      "company_id": "APPH",
+      "as_of": "2026-01-26",
+      "state": "OUT_OF_SCOPE",
+      "condition_1": 0,
+      "condition_2": 0,
+      "condition_3": 0,
+      "condition_4": 0,
+      "details_json": "{\"status\": \"out_of_scope\", \"reason\": \"Ticker marked in_scope=false in config.\", \"c1\": {\"condition_1\": false}, \"c2\": {\"condition_2\": false}, \"c3\": {\"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
+    },
+    {
       "company_id": "ASTS",
-      "as_of": "2026-01-25",
+      "as_of": "2026-01-26",
       "state": "MONITOR",
       "condition_1": 0,
       "condition_2": 0,
@@ -155,7 +165,7 @@
     },
     {
       "company_id": "AVPT",
-      "as_of": "2026-01-25",
+      "as_of": "2026-01-26",
       "state": "MONITOR",
       "condition_1": 0,
       "condition_2": 0,
@@ -164,8 +174,18 @@
       "details_json": "{\"c1\": {\"revenue_tag\": \"RevenueFromContractWithCustomerExcludingAssessedTax\", \"gross_profit_tag\": \"GrossProfit\", \"dates\": [\"2024-09-30\", \"2024-09-30\", \"2024-09-30\", \"2025-03-31\", \"2025-06-30\", \"2025-06-30\", \"2025-09-30\", \"2025-09-30\"], \"revenue\": [241299000.0, 88804000.0, 88804000.0, 93064000.0, 195082000.0, 102018000.0, 304810000.0, 109728000.0], \"gross_margin\": [0.2800799008698751, 0.7610355389396875, 0.7610355389396875, 0.7431982291756211, 0.3872166576106458, 0.7404477641200572, 0.2676519799219186, 0.7435021143190435], \"revenue_growth_qoq\": [-0.6319752671996154, 0.0, 0.04797081212557993, 1.0962133585489555, -0.47705067612593677, 1.9878060734380207, -0.640011810636134], \"revenue_deceleration_2q\": false, \"margin_failure_2q\": false, \"condition_1\": false}, \"c2\": {\"revenue_tag\": \"RevenueFromContractWithCustomerExcludingAssessedTax\", \"opex_tag\": \"OperatingExpenses\", \"opex_derived\": false, \"dates\": [\"2024-09-30\", \"2025-03-31\", \"2025-06-30\", \"2025-09-30\"], \"revenue\": [88804000.0, 93064000.0, 102018000.0, 109728000.0], \"opex\": [59931000.0, 65878000.0, 68445000.0, 73454000.0], \"revenue_growth_qoq\": [0.04797081212557993, 0.09621335854895556, 0.07557489854731518], \"opex_growth_qoq\": [0.09923078206604262, 0.03896596739427426, 0.0731828475418219], \"opex_up_2q\": true, \"negative_leverage_2q\": false, \"condition_2\": false}, \"c3\": {\"capex_tag\": \"PaymentsToAcquirePropertyPlantAndEquipment\", \"rnd_tag\": \"ResearchAndDevelopmentExpense\", \"ocf_tag\": \"NetCashProvidedByUsedInOperatingActivities\", \"capex_continues_2q\": true, \"rnd_continues_2q\": false, \"cash_burn_persists_2q\": false, \"no_slope_improvement\": false, \"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
     },
     {
+      "company_id": "BOWL",
+      "as_of": "2026-01-26",
+      "state": "OUT_OF_SCOPE",
+      "condition_1": 0,
+      "condition_2": 0,
+      "condition_3": 0,
+      "condition_4": 0,
+      "details_json": "{\"status\": \"out_of_scope\", \"reason\": \"Ticker marked in_scope=false in config.\", \"c1\": {\"condition_1\": false}, \"c2\": {\"condition_2\": false}, \"c3\": {\"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
+    },
+    {
       "company_id": "BYND",
-      "as_of": "2026-01-25",
+      "as_of": "2026-01-26",
       "state": "MONITOR",
       "condition_1": 0,
       "condition_2": 0,
@@ -174,8 +194,28 @@
       "details_json": "{\"c1\": {\"revenue_tag\": \"RevenueFromContractWithCustomerExcludingAssessedTax\", \"gross_profit_tag\": \"GrossProfit\", \"dates\": [\"2024-09-28\", \"2024-09-28\", \"2024-09-28\", \"2025-03-29\", \"2025-06-28\", \"2025-06-28\", \"2025-09-27\", \"2025-09-27\"], \"revenue\": [249794000.0, 81006000.0, 81006000.0, 68731000.0, 143689000.0, 74958000.0, 213907000.0, 70218000.0], \"gross_margin\": [0.05727919805920078, 0.17662889168703552, 0.17662889168703552, -0.01549519139835009, 0.059788849529191515, 0.11461084874196216, 0.03379973539902855, 0.10296505169614628], \"revenue_growth_qoq\": [-0.6757087840380473, 0.0, -0.1515319852850406, 1.090599583885001, -0.47833167465846377, 1.8536914005176233, -0.6717358478217169], \"revenue_deceleration_2q\": false, \"margin_failure_2q\": false, \"condition_1\": false}, \"c2\": {\"revenue_tag\": \"RevenueFromContractWithCustomerExcludingAssessedTax\", \"opex_tag\": \"OperatingExpenses\", \"opex_derived\": false, \"dates\": [\"2024-09-28\", \"2025-03-29\", \"2025-06-28\", \"2025-09-27\"], \"revenue\": [81006000.0, 68731000.0, 74958000.0, 70218000.0], \"opex\": [45217000.0, 55134000.0, 43503000.0, 119561000.0], \"revenue_growth_qoq\": [-0.1515319852850406, 0.09059958388500094, -0.06323541183062514], \"opex_growth_qoq\": [0.21932016719375455, -0.21095875503319186, 1.748339194998046], \"opex_up_2q\": false, \"negative_leverage_2q\": false, \"condition_2\": false}, \"c3\": {\"capex_tag\": \"PaymentsToAcquirePropertyPlantAndEquipment\", \"rnd_tag\": \"ResearchAndDevelopmentExpense\", \"ocf_tag\": \"NetCashProvidedByUsedInOperatingActivities\", \"capex_continues_2q\": true, \"rnd_continues_2q\": false, \"cash_burn_persists_2q\": true, \"no_slope_improvement\": false, \"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
     },
     {
+      "company_id": "DNA",
+      "as_of": "2026-01-26",
+      "state": "OUT_OF_SCOPE",
+      "condition_1": 0,
+      "condition_2": 0,
+      "condition_3": 0,
+      "condition_4": 0,
+      "details_json": "{\"status\": \"out_of_scope\", \"reason\": \"Ticker marked in_scope=false in config.\", \"c1\": {\"condition_1\": false}, \"c2\": {\"condition_2\": false}, \"c3\": {\"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
+    },
+    {
+      "company_id": "DNUT",
+      "as_of": "2026-01-26",
+      "state": "OUT_OF_SCOPE",
+      "condition_1": 0,
+      "condition_2": 0,
+      "condition_3": 0,
+      "condition_4": 0,
+      "details_json": "{\"status\": \"out_of_scope\", \"reason\": \"Ticker marked in_scope=false in config.\", \"c1\": {\"condition_1\": false}, \"c2\": {\"condition_2\": false}, \"c3\": {\"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
+    },
+    {
       "company_id": "EVGO",
-      "as_of": "2026-01-25",
+      "as_of": "2026-01-26",
       "state": "MONITOR",
       "condition_1": 0,
       "condition_2": 0,
@@ -184,8 +224,28 @@
       "details_json": "{\"c1\": {\"revenue_tag\": \"Revenues\", \"gross_profit_tag\": \"GrossProfit\", \"dates\": [], \"revenue\": [], \"gross_margin\": [], \"revenue_growth_qoq\": [], \"revenue_deceleration_2q\": false, \"margin_failure_2q\": false, \"condition_1\": false}, \"c2\": {\"revenue_tag\": \"Revenues\", \"opex_tag\": \"OperatingExpenses\", \"opex_derived\": false, \"dates\": [], \"revenue\": [], \"opex\": [], \"revenue_growth_qoq\": [], \"opex_growth_qoq\": [], \"opex_up_2q\": false, \"negative_leverage_2q\": false, \"condition_2\": false}, \"c3\": {\"capex_tag\": \"PaymentsToAcquirePropertyPlantAndEquipment\", \"rnd_tag\": \"ResearchAndDevelopmentExpense\", \"ocf_tag\": \"NetCashProvidedByUsedInOperatingActivities\", \"capex_continues_2q\": true, \"rnd_continues_2q\": false, \"cash_burn_persists_2q\": false, \"no_slope_improvement\": false, \"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
     },
     {
+      "company_id": "HIMS",
+      "as_of": "2026-01-26",
+      "state": "OUT_OF_SCOPE",
+      "condition_1": 0,
+      "condition_2": 0,
+      "condition_3": 0,
+      "condition_4": 0,
+      "details_json": "{\"status\": \"out_of_scope\", \"reason\": \"Ticker marked in_scope=false in config.\", \"c1\": {\"condition_1\": false}, \"c2\": {\"condition_2\": false}, \"c3\": {\"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
+    },
+    {
+      "company_id": "IONQ",
+      "as_of": "2026-01-26",
+      "state": "OUT_OF_SCOPE",
+      "condition_1": 0,
+      "condition_2": 0,
+      "condition_3": 0,
+      "condition_4": 0,
+      "details_json": "{\"status\": \"out_of_scope\", \"reason\": \"Ticker marked in_scope=false in config.\", \"c1\": {\"condition_1\": false}, \"c2\": {\"condition_2\": false}, \"c3\": {\"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
+    },
+    {
       "company_id": "LCID",
-      "as_of": "2026-01-25",
+      "as_of": "2026-01-26",
       "state": "MONITOR",
       "condition_1": 0,
       "condition_2": 0,
@@ -195,7 +255,7 @@
     },
     {
       "company_id": "LILM",
-      "as_of": "2026-01-25",
+      "as_of": "2026-01-26",
       "state": "MONITOR",
       "condition_1": 0,
       "condition_2": 0,
@@ -205,7 +265,7 @@
     },
     {
       "company_id": "OWLT",
-      "as_of": "2026-01-25",
+      "as_of": "2026-01-26",
       "state": "MONITOR",
       "condition_1": 0,
       "condition_2": 0,
@@ -214,8 +274,28 @@
       "details_json": "{\"c1\": {\"revenue_tag\": \"RevenueFromContractWithCustomerExcludingAssessedTax\", \"gross_profit_tag\": \"GrossProfit\", \"dates\": [\"2024-09-30\", \"2024-09-30\", \"2024-09-30\", \"2025-03-31\", \"2025-06-30\", \"2025-06-30\", \"2025-09-30\", \"2025-09-30\"], \"revenue\": [57571000.0, 22122000.0, 22122000.0, 21104000.0, 47167000.0, 26063000.0, 79155000.0, 31988000.0], \"gross_margin\": [0.20055236143197097, 0.5219238766838441, 0.5219238766838441, 0.5366755117513268, 0.28367290690525154, 0.5133714461113456, 0.20466173962478681, 0.506439914968113], \"revenue_growth_qoq\": [-0.6157440377968074, 0.0, -0.04601753910134707, 1.2349791508718726, -0.4474314669154282, 2.0370640371407744, -0.5958814983260691], \"revenue_deceleration_2q\": false, \"margin_failure_2q\": false, \"condition_1\": false}, \"c2\": {\"revenue_tag\": \"RevenueFromContractWithCustomerExcludingAssessedTax\", \"opex_tag\": \"OperatingExpenses\", \"opex_derived\": false, \"dates\": [\"2024-09-30\", \"2025-03-31\", \"2025-06-30\", \"2025-09-30\"], \"revenue\": [22122000.0, 21104000.0, 26063000.0, 31988000.0], \"opex\": [16368000.0, 13997000.0, 15299000.0, 14984000.0], \"revenue_growth_qoq\": [-0.04601753910134707, 0.23497915087187263, 0.22733376817710932], \"opex_growth_qoq\": [-0.14485581622678398, 0.09301993284275202, -0.020589581018367213], \"opex_up_2q\": false, \"negative_leverage_2q\": false, \"condition_2\": false}, \"c3\": {\"capex_tag\": \"PaymentsToAcquirePropertyPlantAndEquipment\", \"rnd_tag\": \"ResearchAndDevelopmentExpense\", \"ocf_tag\": \"NetCashProvidedByUsedInOperatingActivities\", \"capex_continues_2q\": true, \"rnd_continues_2q\": false, \"cash_burn_persists_2q\": true, \"no_slope_improvement\": false, \"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
     },
     {
+      "company_id": "PLBY",
+      "as_of": "2026-01-26",
+      "state": "OUT_OF_SCOPE",
+      "condition_1": 0,
+      "condition_2": 0,
+      "condition_3": 0,
+      "condition_4": 0,
+      "details_json": "{\"status\": \"out_of_scope\", \"reason\": \"Ticker marked in_scope=false in config.\", \"c1\": {\"condition_1\": false}, \"c2\": {\"condition_2\": false}, \"c3\": {\"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
+    },
+    {
+      "company_id": "QS",
+      "as_of": "2026-01-26",
+      "state": "OUT_OF_SCOPE",
+      "condition_1": 0,
+      "condition_2": 0,
+      "condition_3": 0,
+      "condition_4": 0,
+      "details_json": "{\"status\": \"out_of_scope\", \"reason\": \"Ticker marked in_scope=false in config.\", \"c1\": {\"condition_1\": false}, \"c2\": {\"condition_2\": false}, \"c3\": {\"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
+    },
+    {
       "company_id": "RKLB",
-      "as_of": "2026-01-25",
+      "as_of": "2026-01-26",
       "state": "MONITOR",
       "condition_1": 0,
       "condition_2": 0,
@@ -224,8 +304,18 @@
       "details_json": "{\"c1\": {\"revenue_tag\": \"RevenueFromContractWithCustomerExcludingAssessedTax\", \"gross_profit_tag\": \"GrossProfit\", \"dates\": [\"2024-09-30\", \"2024-09-30\", \"2024-09-30\", \"2025-03-31\", \"2025-06-30\", \"2025-06-30\", \"2025-09-30\", \"2025-09-30\"], \"revenue\": [303826000.0, 104808000.0, 104808000.0, 122569000.0, 267067000.0, 144498000.0, 422147000.0, 155080000.0], \"gross_margin\": [0.09214484606320723, 0.2671170139683994, 0.2671170139683994, 0.2875686348097806, 0.17369424151991822, 0.32102866475660563, 0.13576787232883333, 0.36957699251998966], \"revenue_growth_qoq\": [-0.6550393975499135, 0.0, 0.16946225478971072, 1.1789114702738865, -0.4589447591802806, 1.9214729615634818, -0.6326398150407323], \"revenue_deceleration_2q\": false, \"margin_failure_2q\": false, \"condition_1\": false}, \"c2\": {\"revenue_tag\": \"RevenueFromContractWithCustomerExcludingAssessedTax\", \"opex_tag\": \"OperatingExpenses\", \"opex_derived\": false, \"dates\": [\"2024-09-30\", \"2025-03-31\", \"2025-06-30\", \"2025-09-30\"], \"revenue\": [104808000.0, 122569000.0, 144498000.0, 155080000.0], \"opex\": [79895000.0, 94435000.0, 106027000.0, 116283000.0], \"revenue_growth_qoq\": [0.16946225478971072, 0.17891147027388654, 0.07323284751346039], \"opex_growth_qoq\": [0.18198886037924777, 0.12275109863927569, 0.09673007818763145], \"opex_up_2q\": true, \"negative_leverage_2q\": false, \"condition_2\": false}, \"c3\": {\"capex_tag\": \"PaymentsToAcquirePropertyPlantAndEquipment\", \"rnd_tag\": \"ResearchAndDevelopmentExpense\", \"ocf_tag\": \"NetCashProvidedByUsedInOperatingActivities\", \"capex_continues_2q\": true, \"rnd_continues_2q\": false, \"cash_burn_persists_2q\": true, \"no_slope_improvement\": false, \"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
     },
     {
+      "company_id": "SHCR",
+      "as_of": "2026-01-26",
+      "state": "OUT_OF_SCOPE",
+      "condition_1": 0,
+      "condition_2": 0,
+      "condition_3": 0,
+      "condition_4": 0,
+      "details_json": "{\"status\": \"out_of_scope\", \"reason\": \"Ticker marked in_scope=false in config.\", \"c1\": {\"condition_1\": false}, \"c2\": {\"condition_2\": false}, \"c3\": {\"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
+    },
+    {
       "company_id": "SKIN",
-      "as_of": "2026-01-25",
+      "as_of": "2026-01-26",
       "state": "MONITOR",
       "condition_1": 0,
       "condition_2": 0,
@@ -234,8 +324,18 @@
       "details_json": "{\"c1\": {\"revenue_tag\": \"RevenueFromContractWithCustomerExcludingAssessedTax\", \"gross_profit_tag\": \"GrossProfit\", \"dates\": [\"2024-09-30\", \"2024-09-30\", \"2024-09-30\", \"2025-03-31\", \"2025-06-30\", \"2025-06-30\", \"2025-09-30\", \"2025-09-30\"], \"revenue\": [250799000.0, 78802000.0, 78802000.0, 69580000.0, 147767000.0, 78187000.0, 218422000.0, 70655000.0], \"gross_margin\": [0.16207799871610334, 0.5158371614933631, 0.5158371614933631, 0.6981891348088531, 0.3323610819736477, 0.6281351119751365, 0.20892584080358206, 0.6458707805533932], \"revenue_growth_qoq\": [-0.6857961953596307, 0.0, -0.11702748661201492, 1.1236993388904857, -0.4708764473799969, 1.79358461125251, -0.6765206801512668], \"revenue_deceleration_2q\": false, \"margin_failure_2q\": false, \"condition_1\": false}, \"c2\": {\"revenue_tag\": \"RevenueFromContractWithCustomerExcludingAssessedTax\", \"opex_tag\": \"OperatingExpenses\", \"opex_derived\": false, \"dates\": [\"2024-09-30\", \"2025-03-31\", \"2025-06-30\", \"2025-09-30\"], \"revenue\": [78802000.0, 69580000.0, 78187000.0, 70655000.0], \"opex\": [62164000.0, 60603000.0, 51812000.0, 51876000.0], \"revenue_growth_qoq\": [-0.11702748661201492, 0.12369933889048577, -0.09633315001215036], \"opex_growth_qoq\": [-0.02511099671835789, -0.14505882547068627, 0.0012352350806762913], \"opex_up_2q\": false, \"negative_leverage_2q\": false, \"condition_2\": false}, \"c3\": {\"capex_tag\": \"PaymentsToAcquirePropertyPlantAndEquipment\", \"rnd_tag\": \"ResearchAndDevelopmentExpense\", \"ocf_tag\": \"NetCashProvidedByUsedInOperatingActivities\", \"capex_continues_2q\": true, \"rnd_continues_2q\": false, \"cash_burn_persists_2q\": false, \"no_slope_improvement\": false, \"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
     },
     {
+      "company_id": "SOFI",
+      "as_of": "2026-01-26",
+      "state": "OUT_OF_SCOPE",
+      "condition_1": 0,
+      "condition_2": 0,
+      "condition_3": 0,
+      "condition_4": 0,
+      "details_json": "{\"status\": \"out_of_scope\", \"reason\": \"Ticker marked in_scope=false in config.\", \"c1\": {\"condition_1\": false}, \"c2\": {\"condition_2\": false}, \"c3\": {\"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}"
+    },
+    {
       "company_id": "STEM",
-      "as_of": "2026-01-25",
+      "as_of": "2026-01-26",
       "state": "MONITOR",
       "condition_1": 0,
       "condition_2": 0,
