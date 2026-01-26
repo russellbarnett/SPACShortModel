@@ -10,6 +10,7 @@ from slidemodel.edgar.submissions import (
     fetch_submissions,
     recent_8k_accessions_with_dates,
 )
+from slidemodel.notify.slack import notify
 from slidemodel.edgar.filing_text import fetch_8k_text
 from slidemodel.features.condition1 import condition_1_from_facts
 from slidemodel.features.condition2 import condition_2_from_facts
@@ -117,6 +118,8 @@ def run(
         )
 
         if new_state != prev:
+            notify(f"{c['ticker']} {prev} → {new_state} | c1={int(flags.condition_1)} c2={int(flags.condition_2)} c3={int(flags.condition_3)} c4={int(flags.condition_4)}")
+        
             write_event(
                 conn,
                 {
