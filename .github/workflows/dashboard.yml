@@ -24,13 +24,25 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies (non-interactive)
+      - name: Install dependencies (force local slidemodel)
         env:
           PIP_NO_INPUT: "1"
         run: |
           python -m pip install --upgrade pip wheel setuptools
+
+          # IMPORTANT: do not allow any previously-installed slidemodel to survive
+          pip uninstall -y slidemodel || true
+
+          # Install third-party deps only (requirements.txt must NOT include slidemodel git line)
           pip install --no-input -r requirements.txt
+
+          # Install *this repo* as the slidemodel package
           pip install --no-input -e .
+
+      - name: Verify CLI includes export-dashboard
+        run: |
+          python -c "import slidemodel; print('slidemodel from:', slidemodel.__file__)"
+          python -m slidemodel.cli -h
 
       - name: Init DB (if needed)
         run: |
