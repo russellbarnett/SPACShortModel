@@ -28,6 +28,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install -e .
+
+      - name: Init DB (if needed)
+        run: |
+          python -m slidemodel.cli init-db
 
       - name: Run model evaluation
         env:
