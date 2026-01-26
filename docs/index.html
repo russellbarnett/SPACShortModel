@@ -1,139 +1,205 @@
 <!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>SlideModel</title>
-    <style>
-      body { font-family: -apple-system, system-ui, Segoe UI, Roboto, Arial; margin: 24px; }
-      h1 { margin: 0 0 10px 0; }
-      .muted { color: #666; margin: 0 0 16px 0; }
-      table { border-collapse: collapse; width: 100%; }
-      th, td { border-bottom: 1px solid #eee; padding: 10px 8px; text-align: left; font-size: 14px; }
-      th { background: #fafafa; position: sticky; top: 0; z-index: 1; }
-      .pill { padding: 2px 8px; border-radius: 999px; background: #f2f2f2; display: inline-block; }
-      .grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 18px; align-items: start; }
-      .card { border: 1px solid #eee; border-radius: 10px; padding: 14px; }
-      pre { white-space: pre-wrap; word-break: break-word; background:#fafafa; padding:10px; border-radius:8px; max-height: 360px; overflow:auto; }
-      tr:hover { background: #fbfbfb; }
-      .small { font-size: 12px; color: #777; }
-    </style>
-  </head>
-  <body>
-    <h1>SlideModel</h1>
-    <div class="muted" id="meta">Loading…</div>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>SPACShortModel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <div class="grid">
-      <div class="card">
-        <h3 style="margin:0 0 10px 0;">Latest state</h3>
-        <table id="stateTable">
-          <thead>
-            <tr>
-              <th>Ticker</th>
-              <th>Bucket</th>
-              <th>State</th>
-              <th>As of</th>
-              <th>c1</th><th>c2</th><th>c3</th><th>c4</th>
-              <th>In scope</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #111111;
+      --muted: #666;
+      --border: #ddd;
+      --pill: #f2f2f2;
+    }
 
-        <div class="small" style="margin-top:10px;">Click a row to view details_json.</div>
-        <pre id="details">Select a ticker…</pre>
-      </div>
+    body {
+      margin: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--fg);
+      background: var(--bg);
+    }
 
-      <div class="card">
-        <h3 style="margin:0 0 10px 0;">Recent events</h3>
-        <table id="eventsTable">
-          <thead>
-            <tr>
-              <th>Company</th>
-              <th>Date</th>
-              <th>Change</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+    h1 {
+      margin-bottom: 4px;
+    }
+
+    .subtle {
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    tr:hover {
+      background: #fafafa;
+      cursor: pointer;
+    }
+
+    .pill {
+      background: var(--pill);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      display: inline-block;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    pre {
+      background: #fafafa;
+      border: 1px solid var(--border);
+      padding: 12px;
+      overflow-x: auto;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    .error {
+      color: #b00020;
+      margin-top: 12px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>SPACShortModel</h1>
+  <div id="meta" class="subtle">Loading…</div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>Latest state</h2>
+      <table id="state-table">
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Bucket</th>
+            <th>State</th>
+            <th>As of</th>
+            <th>c1</th>
+            <th>c2</th>
+            <th>c3</th>
+            <th>c4</th>
+            <th>In scope</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <p class="subtle">Click a row to view details_json.</p>
+      <pre id="details">Select a ticker…</pre>
     </div>
 
-    <script>
-      const byId = new Map();
+    <div class="panel">
+      <h2>Recent events</h2>
+      <table id="events-table">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Date</th>
+            <th>Change</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
 
-      function td(text) {
-        const el = document.createElement("td");
-        el.textContent = text;
-        return el;
-      }
+  <div id="error" class="error"></div>
 
-      function pill(text) {
-        const s = document.createElement("span");
-        s.className = "pill";
-        s.textContent = text;
-        return s;
-      }
-
-      async function main() {
+  <script>
+    async function loadDashboard() {
+      try {
         const res = await fetch("./dashboard.json", { cache: "no-store" });
-        if (!res.ok) throw new Error("Failed to load dashboard.json: " + res.status);
+        if (!res.ok) {
+          throw new Error(`Failed to load dashboard.json (${res.status})`);
+        }
+
         const data = await res.json();
+        render(data);
+      } catch (err) {
+        document.getElementById("error").textContent = err.stack || err.message;
+      }
+    }
 
-        const companies = data.companies || [];
-        const latest = data.latest_state || [];
-        const events = data.events || [];
+    function render(data) {
+      document.getElementById("meta").textContent =
+        `Loaded ${data.latest_state.length} companies.`;
 
-        companies.forEach(c => byId.set(c.company_id, c));
+      const stateBody = document.querySelector("#state-table tbody");
+      const eventsBody = document.querySelector("#events-table tbody");
+      const details = document.getElementById("details");
 
-        document.getElementById("meta").textContent =
-          `Loaded ${latest.length} companies.`;
+      stateBody.innerHTML = "";
+      eventsBody.innerHTML = "";
 
-        const tbody = document.querySelector("#stateTable tbody");
-        tbody.innerHTML = "";
+      for (const row of data.latest_state) {
+        const tr = document.createElement("tr");
 
-        latest.forEach(s => {
-          const c = byId.get(s.company_id) || {};
-          const tr = document.createElement("tr");
-          tr.style.cursor = "pointer";
+        tr.innerHTML = `
+          <td>${row.ticker}</td>
+          <td>${row.bucket}</td>
+          <td><span class="pill">${row.state}</span></td>
+          <td>${row.as_of}</td>
+          <td>${row.c1}</td>
+          <td>${row.c2}</td>
+          <td>${row.c3}</td>
+          <td>${row.c4}</td>
+          <td>${row.in_scope ? 1 : 0}</td>
+        `;
 
-          tr.appendChild(td(c.ticker || s.company_id));
-          tr.appendChild(td(c.bucket || ""));
-          const st = document.createElement("td");
-          st.appendChild(pill(s.state || ""));
-          tr.appendChild(st);
+        tr.onclick = () => {
+          details.textContent = JSON.stringify(row.details_json, null, 2);
+        };
 
-          tr.appendChild(td(s.as_of || ""));
-          tr.appendChild(td(String(Number(!!s.condition_1))));
-          tr.appendChild(td(String(Number(!!s.condition_2))));
-          tr.appendChild(td(String(Number(!!s.condition_3))));
-          tr.appendChild(td(String(Number(!!s.condition_4))));
-          tr.appendChild(td(String(Number(!!c.in_scope))));
-
-          tr.addEventListener("click", () => {
-            document.getElementById("details").textContent =
-              s.details_json || "(no details_json)";
-          });
-
-          tbody.appendChild(tr);
-        });
-
-        const etbody = document.querySelector("#eventsTable tbody");
-        etbody.innerHTML = "";
-        events.forEach(e => {
-          const c = byId.get(e.company_id) || {};
-          const tr = document.createElement("tr");
-          tr.appendChild(td(c.ticker || e.company_id));
-          tr.appendChild(td(e.as_of || ""));
-          tr.appendChild(td(`${e.prev_state} -> ${e.new_state}`));
-          etbody.appendChild(tr);
-        });
+        stateBody.appendChild(tr);
       }
 
-      main().catch(err => {
-        document.getElementById("meta").textContent = "Failed to load dashboard.";
-        console.error(err);
-      });
-    </script>
-  </body>
+      for (const ev of data.recent_events) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${ev.company}</td>
+          <td>${ev.as_of}</td>
+          <td>${ev.prev_state} → ${ev.new_state}</td>
+        `;
+        eventsBody.appendChild(tr);
+      }
+    }
+
+    loadDashboard();
+  </script>
+</body>
 </html>
