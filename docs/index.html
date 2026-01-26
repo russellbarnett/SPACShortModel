@@ -30,19 +30,20 @@
         --pill-bd:#dbe4f0;
         --pill-tx:#0f172a;
 
-        --g-stable-bg:#ecfdf3; --g-stable-bd:#b7e3c0; --g-stable-tx:#166534;
-        --g-watch-bg:#fff7ed;  --g-watch-bd:#fed7aa;  --g-watch-tx:#9a3412;
-        --g-elev-bg:#fff1f2;   --g-elev-bd:#fecdd3;   --g-elev-tx:#9f1239;
-        --g-crit-bg:#fee2e2;   --g-crit-bd:#fca5a5;   --g-crit-tx:#7f1d1d;
-
-        --dot-stable:#16a34a;
-        --dot-watch:#f59e0b;
-        --dot-elev:#f97316;
-        --dot-crit:#ef4444;
-        --dot-oos:#94a3b8;
+        --p0:#16a34a;
+        --p1:#f59e0b;
+        --p2:#f97316;
+        --p3:#ef4444;
+        --p4:#b91c1c;
       }
 
       *{box-sizing:border-box}
+
+      html, body{
+        height:auto;
+        overflow-y:auto;
+      }
+
       body{
         margin:0;
         font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
@@ -53,10 +54,12 @@
       .wrap{
         max-width: 1120px;
         margin: 0 auto;
-        padding: 28px 18px 40px;
+        padding: 28px 18px 44px;
       }
 
-      header{ margin-bottom: 18px; }
+      header{
+        margin-bottom: 14px;
+      }
 
       h1{
         font-size: 56px;
@@ -71,16 +74,15 @@
         margin: 0;
       }
 
-      .grid{
-        display:grid;
-        grid-template-columns: 1.45fr 1fr;
-        gap: 16px;
-        align-items: start;
+      @media (max-width: 980px){
+        h1{font-size: 44px;}
       }
 
-      @media (max-width: 980px){
-        .grid{grid-template-columns: 1fr;}
-        h1{font-size: 44px;}
+      .stack{
+        display:flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
       }
 
       .card{
@@ -88,18 +90,23 @@
         border: 1px solid var(--line);
         border-radius: var(--radius);
         box-shadow: var(--shadow);
-        overflow:hidden;
+        overflow: visible;
       }
 
       .card-head{
-        padding: 18px 18px 10px;
+        padding: 18px 18px 12px;
         border-bottom: 1px solid var(--line);
       }
 
       .card-title{
-        font-size: 36px;
+        font-size: 32px;
         letter-spacing: -0.02em;
         margin: 0 0 10px;
+      }
+
+      .small{
+        font-size: 12px;
+        color: var(--muted);
       }
 
       .controls{
@@ -128,7 +135,52 @@
         background: transparent;
       }
 
-      .control select{ min-width: 160px; }
+      .control select{
+        min-width: 160px;
+      }
+
+      .meta{
+        margin-left: auto;
+        color: var(--muted);
+        font-size: 13px;
+        padding: 4px 0;
+      }
+
+      .table-wrap{
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      table{
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 0;
+        table-layout: auto;
+      }
+
+      th, td{
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: middle;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      th{
+        font-size: 13px;
+        color: #334155;
+        background: #fbfdff;
+      }
+
+      tbody tr:hover{ background: #fbfdff; }
+
+      .ticker{
+        font-weight: 900;
+        letter-spacing: .02em;
+      }
+
+      .muted{ color: var(--muted); }
 
       .chip{
         display:inline-flex;
@@ -145,96 +197,30 @@
         white-space: nowrap;
       }
 
-      .chip.stable{ background: var(--g-stable-bg); border-color: var(--g-stable-bd); color: var(--g-stable-tx); }
-      .chip.watch{  background: var(--g-watch-bg);  border-color: var(--g-watch-bd);  color: var(--g-watch-tx); }
-      .chip.elev{   background: var(--g-elev-bg);   border-color: var(--g-elev-bd);   color: var(--g-elev-tx); }
-      .chip.crit{   background: var(--g-crit-bg);   border-color: var(--g-crit-bd);   color: var(--g-crit-tx); }
-      .chip.oos{    background: #f1f5f9; border-color:#e2e8f0; color:#475569; }
+      .chip.ok{ background: var(--ok-bg); border-color: var(--ok-bd); color: var(--ok-tx); }
+      .chip.bad{ background: var(--bad-bg); border-color: var(--bad-bd); color: var(--bad-tx); }
+      .chip.warn{ background: var(--warn-bg); border-color: var(--warn-bd); color: var(--warn-tx); }
 
       .dot{
-        width: 9px;
-        height: 9px;
+        width: 10px;
+        height: 10px;
         border-radius: 999px;
         display:inline-block;
       }
 
-      .muted{ color: var(--muted); }
-      .small{ font-size: 12px; color: var(--muted); }
-
-      .table-wrap{ overflow: hidden; }
-
-      table{
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      th, td{
-        padding: 12px 12px;
-        border-bottom: 1px solid var(--line);
-        vertical-align: middle;
-        text-align: left;
-      }
-
-      th{
-        font-size: 13px;
-        color: #334155;
-        background: #fbfdff;
-        position: sticky;
-        top: 0;
-        z-index: 2;
-        white-space: nowrap;
-      }
-
-      tbody tr:hover{ background: #fbfdff; }
-
-      .ticker{
-        font-weight: 900;
-        letter-spacing: .02em;
-        white-space: nowrap;
-      }
-
-      .bucket{
-        color:#0f172a;
-        white-space: nowrap;
-      }
-
-      .trigs{
-        display:flex;
-        gap:6px;
-        flex-wrap: wrap;
-      }
-
-      .badge{
-        display:inline-flex;
-        align-items:center;
-        padding: 3px 8px;
-        border-radius: 999px;
-        font-weight: 900;
-        font-size: 12px;
-        border: 1px solid #fecdd3;
-        background: #fff1f2;
-        color: #9f1239;
-        white-space: nowrap;
-      }
-
-      .badge.ok{
-        border-color:#dbe4f0;
-        background:#f1f5f9;
-        color:#334155;
-        font-weight: 800;
-      }
-
       .spark{
-        width: 110px;
+        width: 120px;
         height: 24px;
         display:block;
       }
+
       .spark path{
         fill: none;
         stroke: #2563eb;
         stroke-width: 2;
         opacity: .85;
       }
+
       .spark .baseline{
         stroke: #cbd5e1;
         stroke-width: 1;
@@ -245,32 +231,29 @@
         display:flex;
         gap:10px;
         align-items:center;
-        justify-content:flex-start;
       }
 
       .pct{
         font-weight: 900;
         font-size: 13px;
-        white-space: nowrap;
       }
 
       .pct.up{ color: #166534; }
       .pct.down{ color: #9f1239; }
       .pct.flat{ color: var(--muted); }
 
-      .scope{
-        font-weight: 900;
-        white-space: nowrap;
+      .note{
+        padding: 12px 18px;
+        color: var(--muted);
+        font-size: 14px;
       }
 
-      .scope.in{ color:#166534; }
-      .scope.out{ color:#475569; }
-
       .footer{
-        margin-top: 16px;
         padding: 14px 18px;
         border-top: 1px solid var(--line);
         background: #fbfdff;
+        border-bottom-left-radius: var(--radius);
+        border-bottom-right-radius: var(--radius);
       }
 
       .defs{
@@ -291,17 +274,33 @@
         color: #0f172a;
       }
 
-      .defs b{ display:inline-block; min-width: 26px; }
+      .defs b{
+        display:inline-block;
+        min-width: 26px;
+      }
 
-      .events table{ width: 100%; }
-      .events td, .events th{ white-space: nowrap; }
-      .note{ padding: 14px 18px; color: var(--muted); font-size: 14px; }
+      /* Make the page feel “dashboard-y” without forcing nested scroll */
+      .events-grid{
+        display:grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+        align-items: start;
+      }
+      @media (max-width: 980px){
+        .events-grid{ grid-template-columns: 1fr; }
+      }
 
-      /* Responsive tightening */
-      @media (max-width: 760px){
-        th:nth-child(2), td:nth-child(2){ display:none; } /* Bucket */
-        th:nth-child(4), td:nth-child(4){ display:none; } /* As of */
-        .spark{ width: 90px; }
+      /* Slightly tighten table for better “see more without scrolling” */
+      .tight th, .tight td{ padding: 10px 12px; }
+
+      /* On smaller screens, hide low-signal columns first */
+      @media (max-width: 980px){
+        .col-bucket{ display:none; }
+        .spark{ width: 100px; }
+      }
+      @media (max-width: 720px){
+        .col-asof{ display:none; }
+        .col-price{ display:none; }
       }
     </style>
   </head>
@@ -313,11 +312,36 @@
         <p class="sub" id="subtitle">Loading…</p>
       </header>
 
-      <div class="grid">
+      <div class="stack">
+        <!-- Events FIRST, full width -->
+        <section class="card">
+          <div class="card-head">
+            <h2 class="card-title" style="margin:0;">Recent events</h2>
+            <div class="small" style="margin-top:6px;">Only state changes are logged as events.</div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="tight">
+              <thead>
+                <tr>
+                  <th style="width: 140px;">Company</th>
+                  <th style="width: 140px;">Date</th>
+                  <th>Change</th>
+                </tr>
+              </thead>
+              <tbody id="events"></tbody>
+            </table>
+          </div>
+
+          <div class="note" id="eventsNote"></div>
+        </section>
+
+        <!-- Latest state SECOND, full width -->
         <section class="card">
           <div class="card-head">
             <div style="display:flex; gap:12px; align-items:baseline; flex-wrap:wrap;">
               <h2 class="card-title" style="margin:0;">Latest state</h2>
+              <div class="meta" id="updated">Updated: —</div>
             </div>
 
             <div class="controls" style="margin-top:12px;">
@@ -327,7 +351,7 @@
               </div>
 
               <div class="control">
-                <span class="small">Scope</span>
+                <span class="small">Show</span>
                 <select id="scope">
                   <option value="all">All</option>
                   <option value="in">In scope only</option>
@@ -336,35 +360,29 @@
               </div>
 
               <div class="control">
-                <span class="small">Grade</span>
-                <select id="gradeFilter">
+                <span class="small">State</span>
+                <select id="stateFilter">
                   <option value="all">All</option>
-                  <option value="CRITICAL">Critical</option>
-                  <option value="ELEVATED">Elevated</option>
-                  <option value="WATCH">Watch</option>
-                  <option value="STABLE">Stable</option>
-                  <option value="OUT_OF_SCOPE">Out of scope</option>
                 </select>
-              </div>
-
-              <div class="control" style="min-width: 260px;">
-                <span class="small" id="updated">Updated: —</span>
               </div>
             </div>
           </div>
 
           <div class="table-wrap">
-            <table>
+            <table class="tight">
               <thead>
                 <tr>
-                  <th>Ticker</th>
-                  <th>Bucket</th>
-                  <th>State</th>
-                  <th>As of</th>
-                  <th>Pressure</th>
-                  <th>Triggers</th>
-                  <th>Price (1m)</th>
-                  <th>In scope</th>
+                  <th style="width: 90px;">Ticker</th>
+                  <th class="col-bucket" style="width: 240px;">Bucket</th>
+                  <th style="width: 130px;">State</th>
+                  <th class="col-asof" style="width: 110px;">As of</th>
+                  <th style="width: 140px;">Pressure</th>
+                  <th style="width: 140px;">Demand/Margin</th>
+                  <th style="width: 140px;">Cost/Capex</th>
+                  <th style="width: 130px;">Persistence</th>
+                  <th style="width: 170px;">Strategic initiatives</th>
+                  <th class="col-price" style="width: 220px;">Price (1m)</th>
+                  <th style="width: 90px;">Scope</th>
                 </tr>
               </thead>
               <tbody id="rows"></tbody>
@@ -379,54 +397,48 @@
               <li><b>C4:</b> “Strategic initiatives”</li>
             </ul>
             <div class="small" style="margin-top:10px;">
-              Pressure score is 0–10 (conditions weighted + 1m price stress). Triggers show only the conditions currently firing.
+              Pressure is the count of triggered conditions (C1–C4). “OK” means not triggered; “FLAG” means triggered.
+              Price sparkline renders only when dashboard.json includes 1-month closes for that ticker.
             </div>
           </div>
         </section>
-
-        <aside class="card events">
-          <div class="card-head">
-            <h2 class="card-title" style="margin:0;">Recent events</h2>
-            <div class="small" style="margin-top:6px;">Only state changes are logged as events.</div>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Company</th>
-                  <th>Date</th>
-                  <th>Change</th>
-                </tr>
-              </thead>
-              <tbody id="events"></tbody>
-            </table>
-          </div>
-
-          <div class="note" id="eventsNote"></div>
-        </aside>
       </div>
     </div>
 
     <script>
-      function pctClass(p){
-        const n = Number(p);
-        if(!Number.isFinite(n)) return "flat";
-        if(n > 0.25) return "up";
-        if(n < -0.25) return "down";
-        return "flat";
+      function safeInt(v){
+        const n = Number(v);
+        return Number.isFinite(n) ? n : 0;
       }
 
-      function fmtPct(p){
-        const n = Number(p);
-        if(!Number.isFinite(n)) return "n/a";
-        const sign = n > 0 ? "+" : "";
-        return `${sign}${n.toFixed(1)}%`;
+      function ynChip(flag){
+        const on = !!flag;
+        if(on) return `<span class="chip bad">FLAG</span>`;
+        return `<span class="chip ok">OK</span>`;
+      }
+
+      function pressureDot(score){
+        const s = safeInt(score);
+        let c = "var(--p0)";
+        if(s === 1) c = "var(--p1)";
+        if(s === 2) c = "var(--p2)";
+        if(s === 3) c = "var(--p3)";
+        if(s >= 4) c = "var(--p4)";
+        return `<span class="dot" style="background:${c}"></span>`;
+      }
+
+      function pressureLabel(score){
+        const s = safeInt(score);
+        if(s === 0) return "Stable";
+        if(s === 1) return "Watch";
+        if(s === 2) return "Elevated";
+        if(s === 3) return "High";
+        return "Critical";
       }
 
       function svgSparkline(values){
         if(!Array.isArray(values) || values.length < 2) return "";
-        const w = 110, h = 24, pad = 2;
+        const w = 120, h = 24, pad = 2;
 
         const clean = values.map(v => Number(v)).filter(v => Number.isFinite(v));
         if(clean.length < 2) return "";
@@ -458,6 +470,21 @@
         `;
       }
 
+      function pctClass(p){
+        const n = Number(p);
+        if(!Number.isFinite(n)) return "flat";
+        if(n > 0.25) return "up";
+        if(n < -0.25) return "down";
+        return "flat";
+      }
+
+      function fmtPct(p){
+        const n = Number(p);
+        if(!Number.isFinite(n)) return "n/a";
+        const sign = n > 0 ? "+" : "";
+        return `${sign}${n.toFixed(1)}%`;
+      }
+
       function priceCell(row){
         const p = row.price_1m;
         if(!p || !Array.isArray(p.closes) || p.closes.length < 2){
@@ -474,61 +501,41 @@
         `;
       }
 
-      function gradeDot(grade){
-        if(grade === "CRITICAL") return `style="background:var(--dot-crit)"`;
-        if(grade === "ELEVATED") return `style="background:var(--dot-elev)"`;
-        if(grade === "WATCH") return `style="background:var(--dot-watch)"`;
-        if(grade === "STABLE") return `style="background:var(--dot-stable)"`;
-        return `style="background:var(--dot-oos)"`;
+      function buildStateOptions(rows){
+        const states = new Set(rows.map(r => String(r.state || "").trim()).filter(Boolean));
+        const sel = document.getElementById("stateFilter");
+        const current = sel.value || "all";
+        const opts = ["all", ...Array.from(states).sort()];
+        sel.innerHTML = opts.map(s => `<option value="${s}">${s === "all" ? "All" : s}</option>`).join("");
+        sel.value = opts.includes(current) ? current : "all";
       }
 
-      function gradeChip(grade, score){
-        if(grade === "CRITICAL") return `<span class="chip crit"><span class="dot" ${gradeDot(grade)}></span>${grade} · ${score}</span>`;
-        if(grade === "ELEVATED") return `<span class="chip elev"><span class="dot" ${gradeDot(grade)}></span>${grade} · ${score}</span>`;
-        if(grade === "WATCH") return `<span class="chip watch"><span class="dot" ${gradeDot(grade)}></span>${grade} · ${score}</span>`;
-        if(grade === "STABLE") return `<span class="chip stable"><span class="dot" ${gradeDot(grade)}></span>${grade} · ${score}</span>`;
-        return `<span class="chip oos"><span class="dot" ${gradeDot(grade)}></span>${grade}</span>`;
-      }
-
-      function triggersCell(trigs){
-        if(!Array.isArray(trigs) || trigs.length === 0){
-          return `<div class="trigs"><span class="badge ok">None</span></div>`;
+      function normalizeData(data){
+        const companiesById = new Map();
+        for(const c of (data.companies || [])){
+          companiesById.set(String(c.company_id), c);
         }
-        return `<div class="trigs">${trigs.map(t => `<span class="badge">${t}</span>`).join("")}</div>`;
-      }
 
-      function scopeCell(v){
-        const n = Number(v);
-        if(n === 1) return `<span class="scope in">✅</span>`;
-        return `<span class="scope out">⛔</span>`;
-      }
+        const latest = (data.latest_state || []).map(ms => {
+          const company = companiesById.get(String(ms.company_id)) || {};
+          const inScope = !!company.in_scope;
+          const c1 = !!ms.condition_1;
+          const c2 = !!ms.condition_2;
+          const c3 = !!ms.condition_3;
+          const c4 = !!ms.condition_4;
+          const pressure = [c1,c2,c3,c4].reduce((a,b)=>a+(b?1:0),0);
 
-      function normalize(data){
-        const latest = (data.latest_state || []).map(r => ({
-          ticker: r.ticker || r.company_id,
-          bucket: r.bucket || "—",
-          state: r.state || "—",
-          as_of: r.as_of || "",
-          in_scope: Number(r.in_scope) === 1 ? 1 : 0,
-
-          pressure_score: (typeof r.pressure_score === "number") ? r.pressure_score : null,
-          pressure_grade: r.pressure_grade || (Number(r.in_scope) === 1 ? "STABLE" : "OUT_OF_SCOPE"),
-          triggered_conditions: r.triggered_conditions || [],
-
-          price_1m: r.price_1m || null
-        }));
-
-        // Sort: highest pressure first, then biggest drop
-        latest.sort((a,b) => {
-          const as = (a.pressure_score === null ? -1 : a.pressure_score);
-          const bs = (b.pressure_score === null ? -1 : b.pressure_score);
-          if(bs !== as) return bs - as;
-
-          const ar = a.price_1m?.pct_change;
-          const br = b.price_1m?.pct_change;
-          const arn = (typeof ar === "number") ? ar : 999;
-          const brn = (typeof br === "number") ? br : 999;
-          return arn - brn;
+          return {
+            company_id: ms.company_id,
+            ticker: company.ticker || ms.ticker || ms.company_id,
+            bucket: company.bucket || ms.bucket || "—",
+            in_scope: inScope ? 1 : 0,
+            as_of: ms.as_of || "",
+            state: ms.state || (inScope ? "MONITOR" : "OUT_OF_SCOPE"),
+            c1, c2, c3, c4,
+            pressure,
+            price_1m: ms.price_1m || null,
+          };
         });
 
         const events = (data.events || []).map(e => ({
@@ -538,23 +545,7 @@
           new_state: e.new_state
         }));
 
-        return { latest, events };
-      }
-
-      function applyFilters(rows){
-        const q = (document.getElementById("q").value || "").trim().toLowerCase();
-        const scope = document.getElementById("scope").value;
-        const grade = document.getElementById("gradeFilter").value;
-
-        return rows.filter(r => {
-          if(scope === "in" && r.in_scope !== 1) return false;
-          if(scope === "out" && r.in_scope !== 0) return false;
-          if(grade !== "all" && String(r.pressure_grade) !== grade) return false;
-
-          if(!q) return true;
-          const hay = `${r.ticker} ${r.bucket} ${r.state} ${r.pressure_grade}`.toLowerCase();
-          return hay.includes(q);
-        });
+        return { latest, events, companiesById };
       }
 
       function renderLatest(rows){
@@ -562,34 +553,63 @@
         tbody.innerHTML = rows.map(r => `
           <tr>
             <td class="ticker">${r.ticker}</td>
-            <td class="bucket">${r.bucket}</td>
+            <td class="col-bucket">${r.bucket || "—"}</td>
             <td><span class="chip">${r.state}</span></td>
-            <td class="muted">${r.as_of}</td>
-            <td>${gradeChip(r.pressure_grade, (r.pressure_score ?? "—"))}</td>
-            <td>${triggersCell(r.triggered_conditions)}</td>
-            <td>${priceCell(r)}</td>
-            <td>${scopeCell(r.in_scope)}</td>
+            <td class="col-asof">${r.as_of || ""}</td>
+            <td>
+              <span class="chip">
+                ${pressureDot(r.pressure)}
+                ${r.pressure} (${pressureLabel(r.pressure)})
+              </span>
+            </td>
+            <td>${ynChip(r.c1)}</td>
+            <td>${ynChip(r.c2)}</td>
+            <td>${ynChip(r.c3)}</td>
+            <td>${ynChip(r.c4)}</td>
+            <td class="col-price">${priceCell(r)}</td>
+            <td>${r.in_scope ? "IN" : "OUT"}</td>
           </tr>
         `).join("");
       }
 
-      function renderEvents(events, companies){
+      function renderEvents(events, companiesById){
         const tbody = document.getElementById("events");
-        const byId = new Map((companies || []).map(c => [String(c.company_id), c]));
+        const note = document.getElementById("eventsNote");
+
         if(!events.length){
           tbody.innerHTML = `<tr><td colspan="3" class="muted">No state-change events yet.</td></tr>`;
+          note.textContent = "";
           return;
         }
-        tbody.innerHTML = events.slice(0, 30).map(e => {
-          const t = byId.get(String(e.company_id))?.ticker || e.company_id;
+
+        tbody.innerHTML = events.slice(0, 25).map(e => {
+          const ticker = companiesById.get(String(e.company_id))?.ticker || e.company_id;
           return `
             <tr>
-              <td class="ticker">${t}</td>
-              <td class="muted">${e.as_of || ""}</td>
+              <td class="ticker">${ticker}</td>
+              <td>${e.as_of || ""}</td>
               <td><span class="chip">${e.prev_state} → ${e.new_state}</span></td>
             </tr>
           `;
         }).join("");
+
+        note.textContent = "";
+      }
+
+      function applyFilters(allRows){
+        const q = (document.getElementById("q").value || "").trim().toLowerCase();
+        const scope = document.getElementById("scope").value;
+        const state = document.getElementById("stateFilter").value;
+
+        return allRows.filter(r => {
+          if(scope === "in" && r.in_scope !== 1) return false;
+          if(scope === "out" && r.in_scope !== 0) return false;
+          if(state !== "all" && String(r.state) !== state) return false;
+
+          if(!q) return true;
+          const hay = `${r.ticker} ${r.bucket} ${r.state}`.toLowerCase();
+          return hay.includes(q);
+        });
       }
 
       async function load(){
@@ -597,20 +617,22 @@
         if(!res.ok) throw new Error(`Failed to load dashboard.json (${res.status})`);
         const data = await res.json();
 
-        const { latest, events } = normalize(data);
+        const { latest, events, companiesById } = normalizeData(data);
 
         document.getElementById("subtitle").textContent = `Loaded ${latest.length} companies.`;
         document.getElementById("updated").textContent = `Updated: ${data.generated_at || "—"}`;
 
+        buildStateOptions(latest);
+
         function rerender(){
           const filtered = applyFilters(latest);
           renderLatest(filtered);
-          renderEvents(events, data.companies || []);
+          renderEvents(events, companiesById);
         }
 
         document.getElementById("q").addEventListener("input", rerender);
         document.getElementById("scope").addEventListener("change", rerender);
-        document.getElementById("gradeFilter").addEventListener("change", rerender);
+        document.getElementById("stateFilter").addEventListener("change", rerender);
 
         rerender();
       }
@@ -618,7 +640,9 @@
       load().catch(err => {
         document.getElementById("subtitle").textContent = "Dashboard failed to load.";
         document.getElementById("rows").innerHTML =
-          `<tr><td colspan="8" style="color:#b91c1c; font-weight:900;">${err.message}</td></tr>`;
+          `<tr><td colspan="11" style="color:#b91c1c; font-weight:900;">${err.message}</td></tr>`;
+        document.getElementById("events").innerHTML =
+          `<tr><td colspan="3" style="color:#b91c1c; font-weight:900;">${err.message}</td></tr>`;
       });
     </script>
   </body>
