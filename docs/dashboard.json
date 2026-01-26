@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-01-26T17:34:55.631042+00:00",
+  "generated_at": "2026-01-26T17:54:10.807334+00:00",
   "summary": {
     "companies_total": 20,
     "latest_rows": 20,
@@ -10,7 +10,14 @@
       "NO_DATA": 0,
       "ERROR": 0
     },
-    "prices_1m_available": 16
+    "prices_1m_available": 16,
+    "pressure_grades": {
+      "STABLE": 8,
+      "WATCH": 2,
+      "ELEVATED": 0,
+      "CRITICAL": 0,
+      "OUT_OF_SCOPE": 10
+    }
   },
   "companies": [
     {
@@ -167,7 +174,15 @@
       "condition_3": 0,
       "condition_4": 0,
       "details_json": "{\"status\": \"out_of_scope\", \"reason\": \"Ticker marked in_scope=false in config.\", \"c1\": {\"condition_1\": false}, \"c2\": {\"condition_2\": false}, \"c3\": {\"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}",
-      "price_1m": null
+      "price_1m": null,
+      "price_metrics": {
+        "return_1m_pct": null,
+        "drawdown_1m_pct": null,
+        "vol_1m_daily_pct": null
+      },
+      "pressure_score": null,
+      "pressure_grade": "OUT_OF_SCOPE",
+      "triggered_conditions": []
     },
     {
       "company_id": "ASTS",
@@ -205,13 +220,21 @@
           103.5,
           116.37,
           113.57,
-          106.8
+          106.42
         ],
-        "pct_change": 23.5,
+        "pct_change": 23.06,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": 23.06,
+        "drawdown_1m_pct": -17.36,
+        "vol_1m_daily_pct": 7.83
+      },
+      "pressure_score": 1,
+      "pressure_grade": "STABLE",
+      "triggered_conditions": []
     },
     {
       "company_id": "AVPT",
@@ -249,13 +272,21 @@
           12.52,
           12.51,
           12.59,
-          12.72
+          12.735
         ],
-        "pct_change": -6.68,
+        "pct_change": -6.57,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": -6.57,
+        "drawdown_1m_pct": -11.62,
+        "vol_1m_daily_pct": 1.89
+      },
+      "pressure_score": 0,
+      "pressure_grade": "STABLE",
+      "triggered_conditions": []
     },
     {
       "company_id": "BOWL",
@@ -269,7 +300,15 @@
       "condition_3": 0,
       "condition_4": 0,
       "details_json": "{\"status\": \"out_of_scope\", \"reason\": \"Ticker marked in_scope=false in config.\", \"c1\": {\"condition_1\": false}, \"c2\": {\"condition_2\": false}, \"c3\": {\"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}",
-      "price_1m": null
+      "price_1m": null,
+      "price_metrics": {
+        "return_1m_pct": null,
+        "drawdown_1m_pct": null,
+        "vol_1m_daily_pct": null
+      },
+      "pressure_score": null,
+      "pressure_grade": "OUT_OF_SCOPE",
+      "triggered_conditions": []
     },
     {
       "company_id": "BYND",
@@ -307,13 +346,21 @@
           0.9359,
           0.9341,
           0.9151,
-          0.89275
+          0.89665
         ],
-        "pct_change": -16.57,
+        "pct_change": -16.2,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": -16.2,
+        "drawdown_1m_pct": -23.36,
+        "vol_1m_daily_pct": 5.02
+      },
+      "pressure_score": 4,
+      "pressure_grade": "WATCH",
+      "triggered_conditions": []
     },
     {
       "company_id": "DNA",
@@ -351,13 +398,21 @@
           9.78,
           10.7,
           10.02,
-          10.07
+          10.13
         ],
-        "pct_change": 14.56,
+        "pct_change": 15.24,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": 15.24,
+        "drawdown_1m_pct": -8.53,
+        "vol_1m_daily_pct": 4.29
+      },
+      "pressure_score": null,
+      "pressure_grade": "OUT_OF_SCOPE",
+      "triggered_conditions": []
     },
     {
       "company_id": "DNUT",
@@ -395,13 +450,21 @@
           3.49,
           3.41,
           3.39,
-          3.3101
+          3.315
         ],
-        "pct_change": -24.25,
+        "pct_change": -24.14,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": -24.14,
+        "drawdown_1m_pct": -25.17,
+        "vol_1m_daily_pct": 3.28
+      },
+      "pressure_score": null,
+      "pressure_grade": "OUT_OF_SCOPE",
+      "triggered_conditions": []
     },
     {
       "company_id": "EVGO",
@@ -439,13 +502,21 @@
           3.09,
           3.1,
           3.09,
-          3.095
+          3.1
         ],
-        "pct_change": -1.75,
+        "pct_change": -1.59,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": -1.59,
+        "drawdown_1m_pct": -8.78,
+        "vol_1m_daily_pct": 2.79
+      },
+      "pressure_score": 0,
+      "pressure_grade": "STABLE",
+      "triggered_conditions": []
     },
     {
       "company_id": "HIMS",
@@ -483,13 +554,21 @@
           28.89,
           30.52,
           29.62,
-          30.375
+          30.5
         ],
-        "pct_change": -13.34,
+        "pct_change": -12.98,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": -12.98,
+        "drawdown_1m_pct": -18.53,
+        "vol_1m_daily_pct": 3.04
+      },
+      "pressure_score": null,
+      "pressure_grade": "OUT_OF_SCOPE",
+      "triggered_conditions": []
     },
     {
       "company_id": "IONQ",
@@ -527,13 +606,21 @@
           48.33,
           49.33,
           47.25,
-          45.735
+          45.9
         ],
-        "pct_change": -15.09,
+        "pct_change": -14.78,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": -14.78,
+        "drawdown_1m_pct": -16.69,
+        "vol_1m_daily_pct": 3.94
+      },
+      "pressure_score": null,
+      "pressure_grade": "OUT_OF_SCOPE",
+      "triggered_conditions": []
     },
     {
       "company_id": "LCID",
@@ -571,13 +658,21 @@
           11.47,
           11.47,
           11.06,
-          11.015
+          11.01
         ],
-        "pct_change": -10.45,
+        "pct_change": -10.49,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": -10.49,
+        "drawdown_1m_pct": -20.89,
+        "vol_1m_daily_pct": 5.15
+      },
+      "pressure_score": 3,
+      "pressure_grade": "WATCH",
+      "triggered_conditions": []
     },
     {
       "company_id": "LILM",
@@ -591,7 +686,15 @@
       "condition_3": 0,
       "condition_4": 0,
       "details_json": "{\"c1\": {\"revenue_tag\": \"RevenueFromContractWithCustomerExcludingAssessedTax\", \"gross_profit_tag\": \"GrossProfit\", \"dates\": [\"2024-09-30\", \"2024-09-30\", \"2024-09-30\", \"2025-03-31\", \"2025-06-30\", \"2025-06-30\", \"2025-09-30\", \"2025-09-30\"], \"revenue\": [613868000.0, 231571000.0, 231571000.0, 275235000.0, 555312000.0, 280077000.0, 866049000.0, 310737000.0], \"gross_margin\": [0.09882417718467162, 0.2619714903852382, 0.2619714903852382, 0.23988228241321052, 0.1287150286685683, 0.2552048186748644, 0.08642582579045759, 0.24087572448726738], \"revenue_growth_qoq\": [-0.6227674353444063, 0.0, 0.18855556179314337, 1.017592239359093, -0.4956402887025672, 2.092181792864105, -0.64120159482893], \"revenue_deceleration_2q\": false, \"margin_failure_2q\": false, \"condition_1\": false}, \"c2\": {\"revenue_tag\": \"RevenueFromContractWithCustomerExcludingAssessedTax\", \"opex_tag\": \"OperatingExpenses\", \"opex_derived\": false, \"dates\": [\"2024-09-30\", \"2025-03-31\", \"2025-06-30\", \"2025-09-30\"], \"revenue\": [231571000.0, 275235000.0, 280077000.0, 310737000.0], \"opex\": [48577000.0, 50335000.0, 55555000.0, 54988000.0], \"revenue_growth_qoq\": [0.18855556179314337, 0.01759223935909314, 0.10946989577866087], \"opex_growth_qoq\": [0.03618996644502542, 0.10370517532532035, -0.01020610206102061], \"opex_up_2q\": false, \"negative_leverage_2q\": false, \"condition_2\": false}, \"c3\": {\"capex_tag\": \"PaymentsToAcquirePropertyPlantAndEquipment\", \"rnd_tag\": \"ResearchAndDevelopmentExpense\", \"ocf_tag\": \"NetCashProvidedByUsedInOperatingActivities\", \"capex_continues_2q\": true, \"rnd_continues_2q\": false, \"cash_burn_persists_2q\": false, \"no_slope_improvement\": false, \"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}",
-      "price_1m": null
+      "price_1m": null,
+      "price_metrics": {
+        "return_1m_pct": null,
+        "drawdown_1m_pct": null,
+        "vol_1m_daily_pct": null
+      },
+      "pressure_score": 0,
+      "pressure_grade": "STABLE",
+      "triggered_conditions": []
     },
     {
       "company_id": "OWLT",
@@ -629,13 +732,21 @@
           13.7,
           13.28,
           12.97,
-          13.67
+          13.74
         ],
-        "pct_change": -8.32,
+        "pct_change": -7.85,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": -7.85,
+        "drawdown_1m_pct": -21.49,
+        "vol_1m_daily_pct": 3.61
+      },
+      "pressure_score": 2,
+      "pressure_grade": "STABLE",
+      "triggered_conditions": []
     },
     {
       "company_id": "PLBY",
@@ -673,13 +784,21 @@
           1.83,
           1.86,
           1.83,
-          1.74
+          1.735
         ],
-        "pct_change": 1.16,
+        "pct_change": 0.87,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": 0.87,
+        "drawdown_1m_pct": -11.93,
+        "vol_1m_daily_pct": 2.71
+      },
+      "pressure_score": null,
+      "pressure_grade": "OUT_OF_SCOPE",
+      "triggered_conditions": []
     },
     {
       "company_id": "QS",
@@ -717,13 +836,21 @@
           11.05,
           10.8,
           10.36,
-          10.0495
+          10.08
         ],
-        "pct_change": -12.69,
+        "pct_change": -12.42,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": -12.42,
+        "drawdown_1m_pct": -12.42,
+        "vol_1m_daily_pct": 3.14
+      },
+      "pressure_score": null,
+      "pressure_grade": "OUT_OF_SCOPE",
+      "triggered_conditions": []
     },
     {
       "company_id": "RKLB",
@@ -761,13 +888,21 @@
           87.82,
           87.98,
           88.9,
-          83.23
+          83.355
         ],
-        "pct_change": 7.32,
+        "pct_change": 7.49,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": 7.49,
+        "drawdown_1m_pct": -13.44,
+        "vol_1m_daily_pct": 4.67
+      },
+      "pressure_score": 1,
+      "pressure_grade": "STABLE",
+      "triggered_conditions": []
     },
     {
       "company_id": "SHCR",
@@ -781,7 +916,15 @@
       "condition_3": 0,
       "condition_4": 0,
       "details_json": "{\"status\": \"out_of_scope\", \"reason\": \"Ticker marked in_scope=false in config.\", \"c1\": {\"condition_1\": false}, \"c2\": {\"condition_2\": false}, \"c3\": {\"condition_3\": false}, \"c4\": {\"initiative_detected\": false, \"keyword\": null, \"snippet\": null, \"filing_accession\": null, \"filing_filename\": null, \"condition_4\": false}}",
-      "price_1m": null
+      "price_1m": null,
+      "price_metrics": {
+        "return_1m_pct": null,
+        "drawdown_1m_pct": null,
+        "vol_1m_daily_pct": null
+      },
+      "pressure_score": null,
+      "pressure_grade": "OUT_OF_SCOPE",
+      "triggered_conditions": []
     },
     {
       "company_id": "SKIN",
@@ -825,7 +968,15 @@
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": 1.66,
+        "drawdown_1m_pct": -7.95,
+        "vol_1m_daily_pct": 3.49
+      },
+      "pressure_score": 0,
+      "pressure_grade": "STABLE",
+      "triggered_conditions": []
     },
     {
       "company_id": "SOFI",
@@ -863,13 +1014,21 @@
           25.64,
           26.09,
           25.85,
-          25.804
+          25.995
         ],
-        "pct_change": -5.65,
+        "pct_change": -4.95,
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": -4.95,
+        "drawdown_1m_pct": -12.94,
+        "vol_1m_daily_pct": 2.87
+      },
+      "pressure_score": null,
+      "pressure_grade": "OUT_OF_SCOPE",
+      "triggered_conditions": []
     },
     {
       "company_id": "STEM",
@@ -913,7 +1072,15 @@
         "start": "2025-12-22",
         "end": "2026-01-26",
         "source": "stooq"
-      }
+      },
+      "price_metrics": {
+        "return_1m_pct": 7.3,
+        "drawdown_1m_pct": -11.66,
+        "vol_1m_daily_pct": 4.71
+      },
+      "pressure_score": 1,
+      "pressure_grade": "STABLE",
+      "triggered_conditions": []
     }
   ],
   "events": []
