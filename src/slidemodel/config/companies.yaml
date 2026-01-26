@@ -4,3 +4,117 @@ companies:
     cik: "0001655210"
     bucket: "consumer_capital_heavy"
     in_scope: true
+
+  - company_id: SKIN
+    ticker: SKIN
+    cik: "0001818093"
+    bucket: "consumer_capital_heavy"
+    in_scope: true
+
+  - company_id: DNUT
+    ticker: DNUT
+    cik: "0001854078"
+    bucket: "consumer_capital_heavy"
+    in_scope: false
+
+  - company_id: OWLT
+    ticker: OWLT
+    cik: "0001816708"
+    bucket: "consumer_capital_heavy"
+    in_scope: true
+
+  - company_id: PLBY
+    ticker: PLBY
+    cik: "0001803914"
+    bucket: "consumer_capital_heavy"
+    in_scope: false
+
+  - company_id: SHCR
+    ticker: SHCR
+    cik: "0001847398"
+    bucket: "consumer_capital_heavy"
+    in_scope: false
+
+  - company_id: AVPT
+    ticker: AVPT
+    cik: "0001777921"
+    bucket: "software_spac"
+    in_scope: true
+
+  - company_id: HIMS
+    ticker: HIMS
+    cik: "0001773751"
+    bucket: "software_spac"
+    in_scope: false
+
+  - company_id: SOFI
+    ticker: SOFI
+    cik: "0001818874"
+    bucket: "software_spac"
+    in_scope: false
+
+  - company_id: STEM
+    ticker: STEM
+    cik: "0001758766"
+    bucket: "software_spac"
+    in_scope: true
+
+  - company_id: QS
+    ticker: QS
+    cik: "0001811414"
+    bucket: "deep_tech_capex"
+    in_scope: false
+
+  - company_id: DNA
+    ticker: DNA
+    cik: "0001830214"
+    bucket: "deep_tech_capex"
+    in_scope: false
+
+  - company_id: IONQ
+    ticker: IONQ
+    cik: "0001824920"
+    bucket: "deep_tech_capex"
+    in_scope: false
+
+  - company_id: LILM
+    ticker: LILM
+    cik: "0001841156"
+    bucket: "deep_tech_capex"
+    in_scope: true
+
+  - company_id: ASTS
+    ticker: ASTS
+    cik: "0001780312"
+    bucket: "deep_tech_capex"
+    in_scope: true
+
+  - company_id: EVGO
+    ticker: EVGO
+    cik: "0001821159"
+    bucket: "infrastructure_capital_heavy"
+    in_scope: true
+
+  - company_id: LCID
+    ticker: LCID
+    cik: "0001811210"
+    bucket: "infrastructure_capital_heavy"
+    in_scope: true
+
+  - company_id: RKLB
+    ticker: RKLB
+    cik: "0001819994"
+    bucket: "infrastructure_capital_heavy"
+    in_scope: true
+
+  - company_id: APPH
+    ticker: APPH
+    cik: "0001802450"
+    bucket: "infrastructure_capital_heavy"
+    in_scope: false
+
+  - company_id: BOWL
+    ticker: BOWL
+    cik: "0001840735"
+    bucket: "consumer_experiential_spac"
+    in_scope: false
