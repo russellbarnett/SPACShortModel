@@ -1,445 +1,520 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SPACShortModel</title>
-    <style>
-      :root {
-        --bg: #ffffff;
-        --text: #0f172a;
-        --muted: #64748b;
-        --border: #e2e8f0;
-        --card: #ffffff;
-        --chip: #f1f5f9;
-        --danger: #b91c1c;
-      }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SPACShortModel</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --card:#ffffff;
+      --chip:#f1f5f9;
+      --good:#16a34a;
+      --warn:#f59e0b;
+      --bad:#dc2626;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
 
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        padding: 28px;
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-        color: var(--text);
-        background: var(--bg);
-      }
+    /* Make it narrower so it doesn't feel cut off on normal screens */
+    .container{
+      max-width: 1120px;
+      margin: 28px auto 40px;
+      padding: 0 18px;
+    }
 
-      h1 {
-        margin: 0 0 8px 0;
-        font-size: 56px;
-        letter-spacing: -0.02em;
-      }
+    h1{
+      margin:0 0 6px 0;
+      font-size: 52px;
+      letter-spacing: -0.03em;
+    }
+    .sub{
+      color:var(--muted);
+      font-size: 18px;
+      margin-bottom: 18px;
+    }
 
-      .subhead {
-        color: var(--muted);
-        margin: 0 0 22px 0;
-        font-size: 18px;
-      }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:18px;
+      align-items:start;
+    }
+    @media (max-width: 1100px){
+      .grid{ grid-template-columns: 1fr; }
+    }
 
-      .grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 18px;
-        align-items: start;
-      }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 1px 0 rgba(15,23,42,0.02);
+    }
 
-      @media (max-width: 980px) {
-        .grid { grid-template-columns: 1fr; }
-      }
+    .card h2{
+      margin:0 0 14px 0;
+      font-size: 32px;
+      letter-spacing:-0.02em;
+    }
 
-      .card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 18px;
-      }
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin: 0 0 12px 0;
+    }
+    .input, .select{
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius: 10px;
+      font-size:14px;
+      outline:none;
+      min-width: 220px;
+      background:#fff;
+    }
+    .pill{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 10px;
+      border:1px solid var(--border);
+      border-radius: 999px;
+      color:var(--muted);
+      font-size:13px;
+      background:#fff;
+    }
 
-      .card h2 {
-        margin: 0 0 12px 0;
-        font-size: 26px;
-        letter-spacing: -0.01em;
-      }
+    /* Table should scroll horizontally if needed, not cut off */
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--border);
+      border-radius: 12px;
+    }
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      min-width: 900px;
+      background:#fff;
+    }
+    thead th{
+      position: sticky;
+      top:0;
+      background:#fff;
+      z-index: 1;
+      border-bottom:1px solid var(--border);
+      color: #334155;
+      font-weight: 600;
+      text-align:left;
+      font-size: 14px;
+      padding:12px 12px;
+      white-space:nowrap;
+    }
+    tbody td{
+      border-bottom:1px solid var(--border);
+      padding:12px 12px;
+      font-size: 15px;
+      white-space:nowrap;
+      vertical-align:middle;
+    }
+    tbody tr:nth-child(even){
+      background:#fbfdff;
+    }
+    tbody tr:hover{
+      background:#f8fafc;
+      cursor:pointer;
+    }
+    tbody tr.is-out{
+      opacity: 0.55;
+    }
+    tbody tr.is-out:hover{
+      cursor: default;
+      background: inherit;
+    }
 
-      .table-wrap { overflow-x: auto; }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 900px;
-      }
+    .state-chip{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--border);
+      background:var(--chip);
+      font-weight:700;
+      letter-spacing:0.02em;
+      font-size: 12px;
+    }
 
-      th, td {
-        padding: 12px 10px;
-        border-bottom: 1px solid var(--border);
-        text-align: left;
-        font-size: 16px;
-        vertical-align: middle;
-        white-space: nowrap;
-      }
+    .cond{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 34px;
+      height: 26px;
+      border-radius: 999px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 13px;
+    }
+    .cond.ok{ color: var(--good); border-color: rgba(22,163,74,0.25); background: rgba(22,163,74,0.06); }
+    .cond.bad{ color: var(--bad); border-color: rgba(220,38,38,0.25); background: rgba(220,38,38,0.06); }
 
-      th {
-        color: #475569;
-        font-weight: 600;
-      }
+    .pressure{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;background:#cbd5e1;display:inline-block;
+    }
+    .dot.p0{ background: var(--good); }
+    .dot.p1{ background: var(--warn); }
+    .dot.p2{ background: #f97316; }
+    .dot.p3{ background: var(--bad); }
 
-      tr.data-row:hover {
-        background: #fafafa;
-        cursor: pointer;
-      }
+    .muted{ color: var(--muted); }
 
-      .chip {
-        display: inline-block;
-        padding: 4px 10px;
-        border-radius: 999px;
-        background: var(--chip);
-        border: 1px solid var(--border);
-        font-weight: 600;
-        font-size: 14px;
-        letter-spacing: 0.01em;
-      }
+    .events{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height: 560px;
+      overflow:auto;
+      padding-right: 4px;
+    }
+    .event{
+      border:1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background:#fff;
+    }
+    .event .top{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:baseline;
+      margin-bottom: 6px;
+    }
+    .event .company{
+      font-weight:800;
+      letter-spacing:0.01em;
+    }
+    .event .date{
+      color: var(--muted);
+      font-size: 12px;
+      white-space:nowrap;
+    }
+    .event .change{
+      font-size: 13px;
+      color:#334155;
+    }
 
-      .muted { color: var(--muted); }
-      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-      .error { color: var(--danger); margin-top: 10px; white-space: pre-wrap; }
+    .details{
+      margin-top: 14px;
+      padding: 14px;
+      border:1px solid var(--border);
+      border-radius: 12px;
+      background:#fff;
+    }
+    .details h3{
+      margin:0 0 8px 0;
+      font-size: 16px;
+    }
+    pre{
+      margin:0;
+      overflow:auto;
+      font-size: 12px;
+      line-height: 1.35;
+      background:#0b1220;
+      color:#e5e7eb;
+      border-radius: 10px;
+      padding: 12px;
+    }
 
-      .details {
-        margin-top: 14px;
-        border-top: 1px solid var(--border);
-        padding-top: 14px;
-      }
-
-      .details label {
-        display: block;
-        color: var(--muted);
-        margin-bottom: 8px;
-      }
-
-      select {
-        width: 100%;
-        padding: 12px 12px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: #fff;
-        font-size: 16px;
-      }
-
-      pre {
-        margin: 12px 0 0 0;
-        padding: 12px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: #fafafa;
-        overflow: auto;
-        max-height: 360px;
-        font-size: 13px;
-        line-height: 1.45;
-      }
-
-      .footer {
-        margin-top: 18px;
-        padding-top: 14px;
-        border-top: 1px solid var(--border);
-        color: var(--muted);
-      }
-
-      .defs {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px 18px;
-        margin-top: 10px;
-      }
-
-      @media (max-width: 700px) {
-        .defs { grid-template-columns: 1fr; }
-        table { min-width: 960px; }
-      }
-
-      .def-item b {
-        color: var(--text);
-      }
-
-      .small {
-        font-size: 14px;
-      }
-    </style>
-  </head>
-
-  <body>
+    footer{
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+    .defs{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .def{
+      border:1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 10px;
+      background:#fff;
+      color:#334155;
+      font-size: 13px;
+    }
+    .small-note{
+      margin-top:10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
     <h1>SPACShortModel</h1>
-    <p class="subhead" id="subhead">Loading…</p>
+    <div class="sub" id="subline">Loading…</div>
 
     <div class="grid">
-      <section class="card">
+      <div class="card">
         <h2>Latest state</h2>
+
+        <div class="toolbar">
+          <input id="search" class="input" placeholder="Search ticker or bucket…" />
+          <select id="scope" class="select">
+            <option value="all">Show: All</option>
+            <option value="in">Show: In-scope only</option>
+            <option value="out">Show: Out-of-scope only</option>
+          </select>
+          <span class="pill" id="gen">Updated: —</span>
+        </div>
 
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Ticker</th>
-                <th>Bucket</th>
-                <th>State</th>
-                <th>As of</th>
-                <th>Demand/Margin</th>
-                <th>Cost/Capex</th>
-                <th>Persistence</th>
-                <th>Strategic initiatives</th>
-                <th>In scope</th>
+                <th style="width:110px;">Ticker</th>
+                <th style="width:260px;">Bucket</th>
+                <th style="width:140px;">State</th>
+                <th style="width:120px;">As of</th>
+                <th style="width:150px;">Pressure</th>
+                <th style="width:160px;">Demand/Margin</th>
+                <th style="width:140px;">Cost/Capex</th>
+                <th style="width:140px;">Persistence</th>
+                <th style="width:190px;">Strategic initiatives</th>
+                <th style="width:90px;">In scope</th>
               </tr>
             </thead>
-            <tbody id="latestBody"></tbody>
+            <tbody id="rows"></tbody>
           </table>
         </div>
 
-        <div class="details">
-          <label for="tickerSelect">Click a row or pick a ticker to view <span class="mono">details_json</span>.</label>
-          <select id="tickerSelect">
-            <option value="">Select a ticker…</option>
-          </select>
-          <pre id="detailsPre" class="mono muted">No ticker selected.</pre>
+        <div class="details" id="details" style="display:none;">
+          <h3 id="detailsTitle">Details</h3>
+          <pre id="detailsJson"></pre>
         </div>
 
-        <div class="footer">
-          <div class="small"><b>Condition definitions</b></div>
-          <div class="defs small">
-            <div class="def-item"><b>C1:</b> Demand/Margin</div>
-            <div class="def-item"><b>C2:</b> Cost/Capex</div>
-            <div class="def-item"><b>C3:</b> Persistence</div>
-            <div class="def-item"><b>C4:</b> “Strategic initiatives”</div>
+        <footer>
+          <div class="defs">
+            <span class="def"><strong>C1</strong>: Demand/Margin</span>
+            <span class="def"><strong>C2</strong>: Cost/Capex</span>
+            <span class="def"><strong>C3</strong>: Persistence</span>
+            <span class="def"><strong>C4</strong>: “Strategic initiatives”</span>
           </div>
-        </div>
+          <div class="small-note">
+            Tip: “Pressure” is the count of triggered conditions (C1–C4). This is an early-warning view, not a valuation model.
+          </div>
+        </footer>
+      </div>
 
-        <div id="err" class="error"></div>
-      </section>
-
-      <aside class="card">
+      <div class="card">
         <h2>Recent events</h2>
-        <div class="table-wrap">
-          <table style="min-width: 520px">
-            <thead>
-              <tr>
-                <th>Company</th>
-                <th>Date</th>
-                <th>Change</th>
-              </tr>
-            </thead>
-            <tbody id="eventsBody">
-              <tr>
-                <td colspan="3" class="muted">Only state changes are logged as events.</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="events" id="events"></div>
+        <div class="muted" style="margin-top:10px;">
+          Only state changes are logged as events.
         </div>
-      </aside>
+      </div>
     </div>
+  </div>
 
-    <script>
-      const $ = (id) => document.getElementById(id);
+  <script>
+    const $ = (id) => document.getElementById(id);
 
-      function safeParseJSON(s) {
-        try { return JSON.parse(s); } catch { return null; }
-      }
+    function safeInt(v){
+      const n = Number(v);
+      return Number.isFinite(n) ? n : 0;
+    }
 
-      function asInt(v) {
-        if (v === true) return 1;
-        if (v === false) return 0;
-        const n = Number(v);
-        return Number.isFinite(n) ? n : 0;
-      }
+    function condChip(v){
+      const on = safeInt(v) === 1;
+      const cls = on ? "cond bad" : "cond ok";
+      return `<span class="${cls}">${on ? "TRIP" : "OK"}</span>`;
+    }
 
-      function setError(msg) {
-        $("err").textContent = msg || "";
-      }
+    function pressureChip(c1,c2,c3,c4){
+      const p = safeInt(c1)+safeInt(c2)+safeInt(c3)+safeInt(c4);
+      let dot = "p0";
+      let label = "Stable";
+      if (p === 0) { dot="p0"; label="Stable"; }
+      else if (p === 1) { dot="p1"; label="Early"; }
+      else if (p === 2) { dot="p2"; label="Compounding"; }
+      else { dot="p3"; label="High"; }
 
-      function normalizePayload(raw) {
-        // Expected from export_dashboard.py:
-        // { companies: [...], latest_state: [...], events: [...] }
-        const companies = Array.isArray(raw?.companies) ? raw.companies : [];
-        const latest = Array.isArray(raw?.latest_state) ? raw.latest_state : [];
-        const events = Array.isArray(raw?.events) ? raw.events : [];
-        return { companies, latest, events };
-      }
+      return `<span class="pressure"><span class="dot ${dot}"></span><span>${p} (${label})</span></span>`;
+    }
 
-      function buildCompanyMap(companies) {
-        const m = new Map();
-        for (const c of companies) {
-          if (!c || !c.company_id) continue;
-          m.set(String(c.company_id), c);
-        }
-        return m;
-      }
+    function stateChip(state){
+      const s = (state || "—").toString();
+      return `<span class="state-chip">${s}</span>`;
+    }
 
-      function renderLatest({ companies, latest }) {
-        const companyMap = buildCompanyMap(companies);
+    function normalizeCompanyRow(companyById, st){
+      const c = companyById.get(st.company_id) || {};
+      return {
+        company_id: st.company_id,
+        ticker: c.ticker || st.company_id || "—",
+        bucket: c.bucket || "—",
+        in_scope: safeInt(c.in_scope) === 1 || c.in_scope === true ? 1 : 0,
+        as_of: st.as_of || "—",
+        state: st.state || "—",
+        condition_1: safeInt(st.condition_1),
+        condition_2: safeInt(st.condition_2),
+        condition_3: safeInt(st.condition_3),
+        condition_4: safeInt(st.condition_4),
+        details_json: st.details_json || null,
+      };
+    }
 
-        // Enrich latest rows with company metadata (ticker/bucket/in_scope)
-        const rows = latest.map((ms) => {
-          const cid = String(ms.company_id ?? "");
-          const c = companyMap.get(cid) || {};
-          return {
-            company_id: cid,
-            ticker: c.ticker ?? cid,
-            bucket: c.bucket ?? "—",
-            in_scope: asInt(c.in_scope),
-            as_of: ms.as_of ?? "",
-            state: ms.state ?? "—",
-            c1: asInt(ms.condition_1),
-            c2: asInt(ms.condition_2),
-            c3: asInt(ms.condition_3),
-            c4: asInt(ms.condition_4),
-            details_json: ms.details_json ?? null
-          };
-        });
-
-        // Sort by ticker
-        rows.sort((a, b) => String(a.ticker).localeCompare(String(b.ticker)));
-
-        // Subhead
-        $("subhead").textContent = `Loaded ${rows.length} companies.`;
-
-        // Table
-        const body = $("latestBody");
-        body.innerHTML = "";
-        for (const r of rows) {
-          const tr = document.createElement("tr");
-          tr.className = "data-row";
-          tr.dataset.cid = r.company_id;
-
-          tr.innerHTML = `
-            <td>${escapeHtml(String(r.ticker))}</td>
-            <td>${escapeHtml(String(r.bucket))}</td>
-            <td><span class="chip">${escapeHtml(String(r.state))}</span></td>
-            <td>${escapeHtml(String(r.as_of))}</td>
-            <td>${r.c1}</td>
-            <td>${r.c2}</td>
-            <td>${r.c3}</td>
-            <td>${r.c4}</td>
+    function renderTable(items){
+      const tbody = $("rows");
+      tbody.innerHTML = items.map(r => {
+        const out = r.in_scope === 0;
+        const trClass = out ? "is-out" : "";
+        return `
+          <tr class="${trClass}" data-company="${r.company_id}">
+            <td><strong>${r.ticker}</strong></td>
+            <td>${r.bucket}</td>
+            <td>${stateChip(r.state)}</td>
+            <td>${r.as_of}</td>
+            <td>${pressureChip(r.condition_1, r.condition_2, r.condition_3, r.condition_4)}</td>
+            <td>${condChip(r.condition_1)}</td>
+            <td>${condChip(r.condition_2)}</td>
+            <td>${condChip(r.condition_3)}</td>
+            <td>${condChip(r.condition_4)}</td>
             <td>${r.in_scope}</td>
-          `;
+          </tr>
+        `;
+      }).join("");
 
-          tr.addEventListener("click", () => selectCompany(rows, r.company_id));
-          body.appendChild(tr);
-        }
+      // Click row to show details_json (only for in-scope rows)
+      [...tbody.querySelectorAll("tr")].forEach(tr => {
+        tr.addEventListener("click", () => {
+          const companyId = tr.getAttribute("data-company");
+          const row = items.find(x => x.company_id === companyId);
+          if (!row) return;
+          if (row.in_scope === 0) return;
 
-        // Dropdown
-        const sel = $("tickerSelect");
-        sel.innerHTML = `<option value="">Select a ticker…</option>`;
-        for (const r of rows) {
-          const opt = document.createElement("option");
-          opt.value = r.company_id;
-          opt.textContent = String(r.ticker);
-          sel.appendChild(opt);
-        }
-
-        sel.onchange = () => {
-          const cid = sel.value;
-          if (!cid) {
-            $("detailsPre").textContent = "No ticker selected.";
-            return;
+          $("details").style.display = "block";
+          $("detailsTitle").textContent = `${row.ticker} details_json`;
+          try{
+            const parsed = typeof row.details_json === "string" ? JSON.parse(row.details_json) : row.details_json;
+            $("detailsJson").textContent = JSON.stringify(parsed, null, 2);
+          }catch(e){
+            $("detailsJson").textContent = (row.details_json || "No details_json.");
           }
-          selectCompany(rows, cid);
-        };
+          $("details").scrollIntoView({behavior:"smooth", block:"nearest"});
+        });
+      });
+    }
 
-        // If there’s exactly one row, auto-select it (nice for initial debugging)
-        if (rows.length === 1) selectCompany(rows, rows[0].company_id);
+    function renderEvents(events, companyById){
+      const el = $("events");
+      const list = Array.isArray(events) ? events : [];
+
+      if (list.length === 0){
+        el.innerHTML = `
+          <div class="event">
+            <div class="change muted">No state-change events yet.</div>
+          </div>
+        `;
+        return;
       }
 
-      function selectCompany(rows, companyId) {
-        const r = rows.find(x => String(x.company_id) === String(companyId));
-        if (!r) return;
+      el.innerHTML = list.slice(0, 60).map(e => {
+        const c = companyById.get(e.company_id) || {};
+        const name = c.ticker || e.company_id || "—";
+        const date = e.as_of || "—";
+        const prev = e.prev_state || "—";
+        const next = e.new_state || "—";
+        return `
+          <div class="event">
+            <div class="top">
+              <div class="company">${name}</div>
+              <div class="date">${date}</div>
+            </div>
+            <div class="change">${prev} → ${next}</div>
+          </div>
+        `;
+      }).join("");
+    }
 
-        $("tickerSelect").value = String(companyId);
+    function applyFilters(allRows){
+      const q = $("search").value.trim().toLowerCase();
+      const scope = $("scope").value;
 
-        // details_json might already be a JSON string or null.
-        // If it’s a string, pretty print it. If not, show something sane.
-        if (!r.details_json) {
-          $("detailsPre").textContent = "No details_json available for this ticker yet.";
-          return;
-        }
+      return allRows.filter(r => {
+        const matchesText =
+          !q ||
+          (r.ticker || "").toLowerCase().includes(q) ||
+          (r.bucket || "").toLowerCase().includes(q);
 
-        const parsed = (typeof r.details_json === "string") ? safeParseJSON(r.details_json) : r.details_json;
-        if (!parsed) {
-          $("detailsPre").textContent = String(r.details_json);
-          return;
-        }
-        $("detailsPre").textContent = JSON.stringify(parsed, null, 2);
-      }
+        const matchesScope =
+          scope === "all" ||
+          (scope === "in" && r.in_scope === 1) ||
+          (scope === "out" && r.in_scope === 0);
 
-      function renderEvents({ companies, events }) {
-        const companyMap = buildCompanyMap(companies);
-        const tbody = $("eventsBody");
-        tbody.innerHTML = "";
+        return matchesText && matchesScope;
+      });
+    }
 
-        if (!events.length) {
-          tbody.innerHTML = `
-            <tr>
-              <td colspan="3" class="muted">No state-change events yet.</td>
-            </tr>
-            <tr>
-              <td colspan="3" class="muted">Only state changes are logged as events.</td>
-            </tr>
-          `;
-          return;
-        }
+    async function loadDashboard(){
+      // IMPORTANT: this assumes index.html and dashboard.json live in the same folder (docs/)
+      const res = await fetch("./dashboard.json", { cache: "no-store" });
+      if (!res.ok) throw new Error(`Failed to load dashboard.json (${res.status})`);
+      const data = await res.json();
 
-        // Show up to 50 most recent
-        const slice = events.slice(0, 50);
+      const companies = Array.isArray(data.companies) ? data.companies : [];
+      const latest = Array.isArray(data.latest_state) ? data.latest_state : [];
+      const events = Array.isArray(data.events) ? data.events : [];
 
-        for (const e of slice) {
-          const cid = String(e.company_id ?? "");
-          const c = companyMap.get(cid) || {};
-          const ticker = c.ticker ?? cid;
+      const companyById = new Map();
+      companies.forEach(c => companyById.set(c.company_id, c));
 
-          const prev = e.prev_state ?? "—";
-          const next = e.new_state ?? "—";
-          const asOf = e.as_of ?? "—";
+      const rows = latest.map(st => normalizeCompanyRow(companyById, st));
 
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${escapeHtml(String(ticker))}</td>
-            <td>${escapeHtml(String(asOf))}</td>
-            <td>${escapeHtml(String(prev))} → ${escapeHtml(String(next))}</td>
-          `;
-          tbody.appendChild(tr);
-        }
-      }
+      // Sort: in-scope first, then ticker
+      rows.sort((a,b) => {
+        if (a.in_scope !== b.in_scope) return b.in_scope - a.in_scope;
+        return (a.ticker || "").localeCompare(b.ticker || "");
+      });
 
-      function escapeHtml(str) {
-        return str
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-      }
+      $("subline").textContent = `Loaded ${rows.length} companies.`;
+      $("gen").textContent = `Updated: ${new Date().toLocaleString()}`;
 
-      async function loadDashboard() {
-        setError("");
+      const draw = () => {
+        const filtered = applyFilters(rows);
+        renderTable(filtered);
+      };
 
-        // dashboard.json lives next to this index.html (in /docs on GitHub Pages)
-        const url = `dashboard.json?t=${Date.now()}`;
+      $("search").addEventListener("input", draw);
+      $("scope").addEventListener("change", draw);
 
-        let raw;
-        try {
-          const res = await fetch(url, { cache: "no-store" });
-          if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${url}`);
-          raw = await res.json();
-        } catch (e) {
-          $("subhead").textContent = "Failed to load dashboard.json.";
-          setError(String(e));
-          return;
-        }
+      draw();
+      renderEvents(events, companyById);
+    }
 
-        const data = normalizePayload(raw);
-
-        try {
-          renderLatest(data);
-          renderEvents(data);
-        } catch (e) {
-          setError(`Render error: ${String(e)}\n\n(If you just changed the JSON schema, refresh after you re-export + commit docs/dashboard.json.)`);
-        }
-      }
-
-      loadDashboard();
-    </script>
-  </body>
+    loadDashboard().catch(err => {
+      $("subline").textContent = "Dashboard failed to load.";
+      $("rows").innerHTML = `<tr><td colspan="10" class="muted">Error: ${err.message}</td></tr>`;
+      $("events").innerHTML = `<div class="event"><div class="change muted">Error: ${err.message}</div></div>`;
+    });
+  </script>
+</body>
 </html>
