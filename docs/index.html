@@ -1,701 +1,634 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SPACShortModel</title>
-  <style>
-    :root{
-      --bg:#ffffff;
-      --text:#0f172a;
-      --muted:#64748b;
-      --border:#e2e8f0;
-      --panel:#ffffff;
-      --chip:#f1f5f9;
-      --ok-bg:#f0fdf4;
-      --ok-bd:#bbf7d0;
-      --ok-tx:#166534;
-      --bad-bg:#fff1f2;
-      --bad-bd:#fecdd3;
-      --bad-tx:#9f1239;
-      --warn-bg:#fffbeb;
-      --warn-bd:#fde68a;
-      --warn-tx:#92400e;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      font-family:var(--sans);
-    }
-    .wrap{
-      max-width:1180px;
-      margin:0 auto;
-      padding:28px 18px 36px;
-    }
-    h1{
-      font-size:56px;
-      line-height:1.05;
-      margin:0 0 8px;
-      letter-spacing:-0.02em;
-    }
-    .sub{
-      color:var(--muted);
-      margin:0 0 18px;
-      font-size:18px;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: 1.75fr 1fr;
-      gap:16px;
-      align-items:start;
-    }
-    @media (max-width: 980px){
-      .grid{ grid-template-columns: 1fr; }
-    }
-    .card{
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:14px;
-      box-shadow:0 1px 0 rgba(15,23,42,0.03);
-      overflow:hidden;
-    }
-    .card h2{
-      margin:0;
-      padding:18px 18px 10px;
-      font-size:34px;
-      letter-spacing:-0.01em;
-    }
-    .controls{
-      display:flex;
-      gap:10px;
-      padding:0 18px 14px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    .pill{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      border:1px solid var(--border);
-      border-radius:12px;
-      padding:10px 12px;
-      background:#fff;
-    }
-    input[type="search"]{
-      border:0;
-      outline:none;
-      width:240px;
-      font-size:16px;
-    }
-    select{
-      border:0;
-      outline:none;
-      font-size:16px;
-      background:#fff;
-    }
-    .meta{
-      color:var(--muted);
-      font-size:14px;
-      padding:10px 12px;
-      border:1px solid var(--border);
-      border-radius:12px;
-      background:#fff;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SPACShortModel</title>
+    <style>
+      :root{
+        --bg:#f6f8fb;
+        --card:#ffffff;
+        --text:#0f172a;
+        --muted:#64748b;
+        --line:#e2e8f0;
+        --shadow: 0 12px 30px rgba(2,6,23,.06);
+        --radius:16px;
 
-    .tableWrap{
-      overflow:auto;
-      border-top:1px solid var(--border);
-    }
-    table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0;
-      min-width:980px;
-    }
-    th, td{
-      padding:12px 14px;
-      border-bottom:1px solid var(--border);
-      vertical-align:middle;
-      text-align:left;
-      white-space:nowrap;
-    }
-    th{
-      font-size:13px;
-      color:var(--muted);
-      font-weight:600;
-      background:#fff;
-      position:sticky;
-      top:0;
-      z-index:2;
-    }
-    tr:hover td{
-      background:#fafafa;
-    }
+        --ok-bg:#ecfdf3;
+        --ok-bd:#b7e3c0;
+        --ok-tx:#166534;
 
-    .ticker{
-      font-weight:800;
-      letter-spacing:0.02em;
-    }
-    .bucket{
-      color:var(--text);
-      font-family:var(--mono);
-      font-size:13px;
-    }
-    .stateChip{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border:1px solid var(--border);
-      padding:6px 10px;
-      border-radius:999px;
-      background:var(--chip);
-      font-weight:700;
-      font-size:13px;
-    }
+        --bad-bg:#fff1f2;
+        --bad-bd:#fecdd3;
+        --bad-tx:#9f1239;
 
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:999px;
-      padding:5px 10px;
-      font-weight:800;
-      font-size:12px;
-      border:1px solid var(--border);
-      background:var(--chip);
-    }
-    .ok{ background:var(--ok-bg); border-color:var(--ok-bd); color:var(--ok-tx); }
-    .bad{ background:var(--bad-bg); border-color:var(--bad-bd); color:var(--bad-tx); }
-    .warn{ background:var(--warn-bg); border-color:var(--warn-bd); color:var(--warn-tx); }
+        --warn-bg:#fff7ed;
+        --warn-bd:#fed7aa;
+        --warn-tx:#9a3412;
 
-    .pressure{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .dot{
-      width:10px; height:10px; border-radius:50%;
-      background:#94a3b8;
-      display:inline-block;
-      flex:0 0 auto;
-    }
-    .dot.ok{ background:#22c55e; border:0; }
-    .dot.warn{ background:#f59e0b; border:0; }
-    .dot.bad{ background:#ef4444; border:0; }
+        --pill-bg:#f1f5f9;
+        --pill-bd:#dbe4f0;
+        --pill-tx:#0f172a;
 
-    .sparkWrap{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .spark{
-      width:96px;
-      height:28px;
-      border:1px solid var(--border);
-      border-radius:8px;
-      background:#fff;
-    }
-    .sparkMeta{
-      color:var(--muted);
-      font-size:12px;
-    }
-    .link{
-      color:#2563eb;
-      text-decoration:none;
-      font-weight:700;
-      font-size:12px;
-    }
-    .link:hover{ text-decoration:underline; }
+        --p0:#16a34a;
+        --p1:#f59e0b;
+        --p2:#f97316;
+        --p3:#ef4444;
+        --p4:#b91c1c;
+      }
 
-    .rightPad{
-      padding:0 18px 16px;
-      color:var(--muted);
-      font-size:14px;
-    }
-    .eventsTable{
-      width:100%;
-      border-top:1px solid var(--border);
-      border-collapse:separate;
-      border-spacing:0;
-    }
-    .eventsTable th, .eventsTable td{
-      padding:12px 14px;
-      border-bottom:1px solid var(--border);
-      white-space:nowrap;
-    }
-    .eventsTable th{
-      position:sticky;
-      top:0;
-      z-index:2;
-      background:#fff;
-      color:var(--muted);
-      font-size:13px;
-    }
+      *{box-sizing:border-box}
+      body{
+        margin:0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+        background: var(--bg);
+        color: var(--text);
+      }
 
-    .details{
-      padding:14px 18px 18px;
-      border-top:1px solid var(--border);
-      background:#fbfbfb;
-    }
-    .details h3{
-      margin:0 0 10px;
-      font-size:16px;
-    }
-    .details pre{
-      margin:0;
-      padding:12px;
-      background:#0b1220;
-      color:#e5e7eb;
-      border-radius:12px;
-      overflow:auto;
-      font-size:12px;
-      line-height:1.45;
-      font-family:var(--mono);
-    }
+      .wrap{
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 28px 18px 40px;
+      }
 
-    footer{
-      margin-top:18px;
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:14px 16px;
-      color:var(--muted);
-      background:#fff;
-      font-size:14px;
-    }
-    .defs{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px 16px;
-      align-items:center;
-    }
-    .defs b{
-      color:var(--text);
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <h1>SPACShortModel</h1>
-    <p class="sub" id="subline">Loading…</p>
+      header{
+        margin-bottom: 18px;
+      }
 
-    <div class="grid">
-      <div class="card">
-        <h2>Latest state</h2>
+      h1{
+        font-size: 56px;
+        line-height: 1.02;
+        letter-spacing: -0.02em;
+        margin: 0 0 6px;
+      }
 
-        <div class="controls">
-          <div class="pill">
-            <input id="q" type="search" placeholder="Search ticker or bucket…" />
+      .sub{
+        color: var(--muted);
+        font-size: 18px;
+        margin: 0;
+      }
+
+      .grid{
+        display:grid;
+        grid-template-columns: 1.45fr 1fr;
+        gap: 16px;
+        align-items: start;
+      }
+
+      @media (max-width: 980px){
+        .grid{grid-template-columns: 1fr;}
+        h1{font-size: 44px;}
+      }
+
+      .card{
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow:hidden;
+      }
+
+      .card-head{
+        padding: 18px 18px 10px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .card-title{
+        font-size: 36px;
+        letter-spacing: -0.02em;
+        margin: 0 0 10px;
+      }
+
+      .controls{
+        display:flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .control{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fff;
+        min-height: 42px;
+      }
+
+      .control input, .control select{
+        border:none;
+        outline:none;
+        font-size: 15px;
+        min-width: 180px;
+        background: transparent;
+      }
+
+      .control select{
+        min-width: 160px;
+      }
+
+      .chip{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: .02em;
+        border: 1px solid var(--pill-bd);
+        background: var(--pill-bg);
+        color: var(--pill-tx);
+        white-space: nowrap;
+      }
+
+      .chip.ok{ background: var(--ok-bg); border-color: var(--ok-bd); color: var(--ok-tx); }
+      .chip.bad{ background: var(--bad-bg); border-color: var(--bad-bd); color: var(--bad-tx); }
+      .chip.warn{ background: var(--warn-bg); border-color: var(--warn-bd); color: var(--warn-tx); }
+
+      .dot{
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        display:inline-block;
+      }
+
+      .meta{
+        color: var(--muted);
+        font-size: 13px;
+        margin-left: auto;
+      }
+
+      .table-wrap{
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      table{
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 980px;
+      }
+
+      th, td{
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: middle;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      th{
+        font-size: 14px;
+        color: #334155;
+        background: #fbfdff;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+      }
+
+      tbody tr:hover{ background: #fbfdff; }
+
+      .ticker{
+        font-weight: 900;
+        letter-spacing: .02em;
+      }
+
+      .muted{ color: var(--muted); }
+
+      .spark{
+        width: 120px;
+        height: 24px;
+        display:block;
+      }
+
+      .spark path{
+        fill: none;
+        stroke: #2563eb;
+        stroke-width: 2;
+        opacity: .85;
+      }
+
+      .spark .baseline{
+        stroke: #cbd5e1;
+        stroke-width: 1;
+        opacity: .8;
+      }
+
+      .priceCell{
+        display:flex;
+        gap:10px;
+        align-items:center;
+      }
+
+      .pct{
+        font-weight: 800;
+        font-size: 13px;
+      }
+
+      .pct.up{ color: #166534; }
+      .pct.down{ color: #9f1239; }
+      .pct.flat{ color: var(--muted); }
+
+      .small{
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .note{
+        padding: 14px 18px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .footer{
+        margin-top: 16px;
+        padding: 14px 18px;
+        border-top: 1px solid var(--line);
+        background: #fbfdff;
+      }
+
+      .defs{
+        display:flex;
+        gap:12px;
+        flex-wrap: wrap;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .defs li{
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 14px;
+        padding: 10px 12px;
+        font-size: 14px;
+        color: #0f172a;
+      }
+
+      .defs b{
+        display:inline-block;
+        min-width: 26px;
+      }
+
+      /* Keep the right card readable and not cut off */
+      .events table{ min-width: 520px; }
+      .events .table-wrap{ overflow-x:auto; }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>SPACShortModel</h1>
+        <p class="sub" id="subtitle">Loading…</p>
+      </header>
+
+      <div class="grid">
+        <section class="card">
+          <div class="card-head">
+            <div style="display:flex; gap:12px; align-items:baseline; flex-wrap:wrap;">
+              <h2 class="card-title" style="margin:0;">Latest state</h2>
+            </div>
+
+            <div class="controls" style="margin-top:12px;">
+              <div class="control">
+                <span class="small">Search</span>
+                <input id="q" placeholder="ticker or bucket…" />
+              </div>
+
+              <div class="control">
+                <span class="small">Show</span>
+                <select id="scope">
+                  <option value="all">All</option>
+                  <option value="in">In scope only</option>
+                  <option value="out">Out of scope only</option>
+                </select>
+              </div>
+
+              <div class="control">
+                <span class="small">State</span>
+                <select id="stateFilter">
+                  <option value="all">All</option>
+                </select>
+              </div>
+
+              <div class="control" style="min-width: 260px;">
+                <span class="small" id="updated">Updated: —</span>
+              </div>
+            </div>
           </div>
 
-          <div class="pill">
-            <label for="scope" style="color:var(--muted);font-size:14px;">Show:</label>
-            <select id="scope">
-              <option value="all">All</option>
-              <option value="in">In scope</option>
-              <option value="out">Out of scope</option>
-            </select>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ticker</th>
+                  <th>Bucket</th>
+                  <th>State</th>
+                  <th>As of</th>
+                  <th>Pressure</th>
+                  <th>Demand/Margin</th>
+                  <th>Cost/Capex</th>
+                  <th>Persistence</th>
+                  <th>Strategic initiatives</th>
+                  <th>Price (1m)</th>
+                  <th>In scope</th>
+                </tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
           </div>
 
-          <div class="pill">
-            <label for="state" style="color:var(--muted);font-size:14px;">State:</label>
-            <select id="state">
-              <option value="all">All</option>
-              <option value="MONITOR">MONITOR</option>
-              <option value="WATCH">WATCH</option>
-              <option value="TRANSITION">TRANSITION</option>
-              <option value="OUT_OF_SCOPE">OUT_OF_SCOPE</option>
-            </select>
+          <div class="footer">
+            <ul class="defs">
+              <li><b>C1:</b> Demand/Margin</li>
+              <li><b>C2:</b> Cost/Capex</li>
+              <li><b>C3:</b> Persistence</li>
+              <li><b>C4:</b> “Strategic initiatives”</li>
+            </ul>
+            <div class="small" style="margin-top:10px;">
+              Pressure is the count of triggered conditions (C1–C4). “OK” means not triggered; “FLAG” means triggered.
+              Price sparkline renders only when your exporter includes 1-month closes for that ticker.
+            </div>
+          </div>
+        </section>
+
+        <aside class="card events">
+          <div class="card-head">
+            <h2 class="card-title" style="margin:0;">Recent events</h2>
+            <div class="small" style="margin-top:6px;">Only state changes are logged as events.</div>
           </div>
 
-          <div class="meta" id="updated">Updated: …</div>
-        </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Company</th>
+                  <th>Date</th>
+                  <th>Change</th>
+                </tr>
+              </thead>
+              <tbody id="events"></tbody>
+            </table>
+          </div>
 
-        <div class="tableWrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Ticker</th>
-                <th>Bucket</th>
-                <th>State</th>
-                <th>As of</th>
-                <th>Pressure</th>
-                <th>Demand/Margin</th>
-                <th>Cost/Capex</th>
-                <th>Persistence</th>
-                <th>Strategic initiatives</th>
-                <th>In scope</th>
-                <th>Price (1m)</th>
-              </tr>
-            </thead>
-            <tbody id="rows"></tbody>
-          </table>
-        </div>
-
-        <div class="details" id="details" style="display:none;">
-          <h3 id="detailsTitle">Details</h3>
-          <pre id="detailsPre"></pre>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>Recent events</h2>
-        <div class="rightPad">
-          Only state changes are logged as events.
-        </div>
-        <div class="tableWrap">
-          <table class="eventsTable">
-            <thead>
-              <tr>
-                <th>Company</th>
-                <th>Date</th>
-                <th>Change</th>
-              </tr>
-            </thead>
-            <tbody id="events"></tbody>
-          </table>
-        </div>
+          <div class="note" id="eventsNote"></div>
+        </aside>
       </div>
     </div>
 
-    <footer>
-      <div class="defs">
-        <span><b>C1</b>: Demand/Margin</span>
-        <span><b>C2</b>: Cost/Capex</span>
-        <span><b>C3</b>: Persistence</span>
-        <span><b>C4</b>: “Strategic initiatives”</span>
-        <span style="margin-left:auto;">Tip: click a row to view details_json</span>
-      </div>
-    </footer>
-  </div>
-
-  <script>
-    const DATA_URL = "./dashboard.json";
-
-    function safeJsonParse(s){
-      try { return JSON.parse(s); } catch(e){ return null; }
-    }
-
-    function toInt(v){
-      const n = Number(v);
-      return Number.isFinite(n) ? n : 0;
-    }
-
-    function normalizeTicker(t){
-      return String(t || "").trim().toUpperCase();
-    }
-
-    function tvLink(ticker){
-      const t = normalizeTicker(ticker);
-      return "https://www.tradingview.com/symbols/" + encodeURIComponent(t) + "/";
-    }
-
-    function stooqCsvUrl(ticker){
-      const t = normalizeTicker(ticker);
-      // Stooq uses lowercase symbols; US tickers generally like aapl.us
-      // Many will work as t.us. If it fails, we gracefully degrade.
-      return "https://stooq.com/q/d/l/?s=" + encodeURIComponent(t.toLowerCase() + ".us") + "&i=d";
-    }
-
-    function classifyPressure(p){
-      if (p >= 2) return "bad";
-      if (p === 1) return "warn";
-      return "ok";
-    }
-
-    function pressureLabel(p){
-      if (p >= 2) return p + " (High)";
-      if (p === 1) return p + " (Watch)";
-      return p + " (Stable)";
-    }
-
-    function conditionBadge(v){
-      const on = toInt(v) === 1;
-      if (on) return '<span class="badge bad">HIT</span>';
-      return '<span class="badge ok">OK</span>';
-    }
-
-    function scopeBadge(v){
-      const ins = toInt(v) === 1;
-      return ins ? "1" : "0";
-    }
-
-    function stateChip(state){
-      const s = String(state || "MONITOR");
-      return '<span class="stateChip">' + s + '</span>';
-    }
-
-    function drawSparkline(canvas, series){
-      const ctx = canvas.getContext("2d");
-      const w = canvas.width, h = canvas.height;
-      ctx.clearRect(0,0,w,h);
-
-      if (!series || series.length < 2){
-        ctx.fillStyle = "#64748b";
-        ctx.font = "12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace";
-        ctx.fillText("n/a", 8, 18);
-        return;
+    <script>
+      function safeInt(v){
+        const n = Number(v);
+        return Number.isFinite(n) ? n : 0;
       }
 
-      const min = Math.min(...series);
-      const max = Math.max(...series);
-      const range = (max - min) || 1;
-
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = "#0f172a";
-      ctx.beginPath();
-
-      series.forEach((v, i) => {
-        const x = (i / (series.length - 1)) * (w - 10) + 5;
-        const y = h - 5 - ((v - min) / range) * (h - 10);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-
-      ctx.stroke();
-    }
-
-    async function fetch1mPrices(ticker){
-      const url = stooqCsvUrl(ticker);
-      const res = await fetch(url, { cache: "no-store" });
-      if (!res.ok) throw new Error("price fetch failed");
-      const txt = await res.text();
-
-      // CSV: Date,Open,High,Low,Close,Volume
-      const lines = txt.trim().split("\n");
-      if (lines.length < 10) throw new Error("not enough price data");
-
-      const closes = [];
-      for (let i = 1; i < lines.length; i++){
-        const parts = lines[i].split(",");
-        if (parts.length < 5) continue;
-        const close = Number(parts[4]);
-        if (Number.isFinite(close)) closes.push(close);
-      }
-      // last ~22 trading days
-      return closes.slice(-22);
-    }
-
-    function buildRow(companyById, ms){
-      const company = companyById[ms.company_id] || {};
-      const ticker = company.ticker || ms.company_id || "—";
-      const bucket = company.bucket || "—";
-      const inscope = toInt(company.in_scope);
-      const asOf = ms.as_of || "—";
-      const state = ms.state || "MONITOR";
-
-      const c1 = toInt(ms.condition_1);
-      const c2 = toInt(ms.condition_2);
-      const c3 = toInt(ms.condition_3);
-      const c4 = toInt(ms.condition_4);
-
-      // Pressure score: simple sum for now (0..4)
-      // Later you can replace this with pre-threshold scoring from details_json.
-      const pressure = c1 + c2 + c3 + c4;
-      const cls = classifyPressure(pressure);
-
-      const details = ms.details_json || "";
-      const detailsId = "d_" + normalizeTicker(ticker) + "_" + Math.random().toString(16).slice(2);
-
-      const sparkId = "s_" + normalizeTicker(ticker) + "_" + Math.random().toString(16).slice(2);
-
-      return `
-        <tr data-details="${encodeURIComponent(details)}" data-title="${encodeURIComponent(ticker + " details_json")}">
-          <td class="ticker">${ticker}</td>
-          <td class="bucket">${bucket}</td>
-          <td>${stateChip(state)}</td>
-          <td>${asOf}</td>
-          <td>
-            <div class="pressure">
-              <span class="dot ${cls}"></span>
-              <span>${pressureLabel(pressure)}</span>
-            </div>
-          </td>
-          <td>${conditionBadge(c1)}</td>
-          <td>${conditionBadge(c2)}</td>
-          <td>${conditionBadge(c3)}</td>
-          <td>${conditionBadge(c4)}</td>
-          <td>${scopeBadge(inscope)}</td>
-          <td>
-            <div class="sparkWrap">
-              <canvas class="spark" id="${sparkId}" width="96" height="28"></canvas>
-              <div class="sparkMeta">
-                <a class="link" href="${tvLink(ticker)}" target="_blank" rel="noopener">Chart</a>
-              </div>
-            </div>
-          </td>
-        </tr>
-      `;
-    }
-
-    function buildEventRow(companyById, ev){
-      const c = companyById[ev.company_id] || {};
-      const ticker = c.ticker || ev.company_id || "—";
-      const change = (ev.prev_state || "—") + " -> " + (ev.new_state || "—");
-      return `
-        <tr>
-          <td class="ticker">${ticker}</td>
-          <td>${ev.as_of || "—"}</td>
-          <td>${change}</td>
-        </tr>
-      `;
-    }
-
-    function applyFilters(allRows, q, scope, state){
-      const qq = (q || "").trim().toLowerCase();
-      return allRows.filter(r => {
-        const t = String(r._ticker).toLowerCase();
-        const b = String(r._bucket).toLowerCase();
-        const s = String(r._state);
-        const ins = r._in_scope;
-
-        if (qq && !(t.includes(qq) || b.includes(qq))) return false;
-
-        if (scope === "in" && ins !== 1) return false;
-        if (scope === "out" && ins !== 0) return false;
-
-        if (state !== "all" && s !== state) return false;
-
-        return true;
-      });
-    }
-
-    function attachRowClick(){
-      const tbody = document.getElementById("rows");
-      const detailsBox = document.getElementById("details");
-      const detailsTitle = document.getElementById("detailsTitle");
-      const detailsPre = document.getElementById("detailsPre");
-
-      tbody.addEventListener("click", (e) => {
-        const tr = e.target.closest("tr");
-        if (!tr) return;
-
-        const raw = decodeURIComponent(tr.getAttribute("data-details") || "");
-        const title = decodeURIComponent(tr.getAttribute("data-title") || "Details");
-
-        detailsTitle.textContent = title;
-
-        const parsed = safeJsonParse(raw);
-        if (parsed) detailsPre.textContent = JSON.stringify(parsed, null, 2);
-        else detailsPre.textContent = raw || "(empty)";
-
-        detailsBox.style.display = "block";
-        detailsBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      });
-    }
-
-    async function hydrateSparklines(latest, companyById){
-      // Fetch price data per row. If CORS blocks it, we just show "n/a" and keep the chart link.
-      for (const ms of latest){
-        const company = companyById[ms.company_id] || {};
-        const ticker = company.ticker || ms.company_id;
-        const t = normalizeTicker(ticker);
-
-        const canvases = Array.from(document.querySelectorAll("canvas.spark"));
-        // find the canvas that is in the row containing this ticker (simple match)
-        // We keep it practical: scan rows.
-        const row = Array.from(document.querySelectorAll("#rows tr")).find(r => {
-          const td = r.querySelector("td.ticker");
-          return td && normalizeTicker(td.textContent) === t;
-        });
-        if (!row) continue;
-
-        const canvas = row.querySelector("canvas.spark");
-        if (!canvas) continue;
-
-        try {
-          const series = await fetch1mPrices(t);
-          drawSparkline(canvas, series);
-        } catch (e) {
-          drawSparkline(canvas, null);
+      function ynChip(flag){
+        const on = !!flag;
+        if(on){
+          return `<span class="chip bad">FLAG</span>`;
         }
-      }
-    }
-
-    async function loadDashboard(){
-      const res = await fetch(DATA_URL, { cache:"no-store" });
-      if (!res.ok) throw new Error("Failed to load dashboard.json");
-      const data = await res.json();
-
-      const companies = Array.isArray(data.companies) ? data.companies : [];
-      const latest = Array.isArray(data.latest_state) ? data.latest_state : [];
-      const events = Array.isArray(data.events) ? data.events : [];
-
-      const companyById = {};
-      for (const c of companies){
-        if (!c || !c.company_id) continue;
-        companyById[c.company_id] = c;
+        return `<span class="chip ok">OK</span>`;
       }
 
-      // precompute row metadata for filtering
-      const enriched = latest.map(ms => {
-        const c = companyById[ms.company_id] || {};
-        const ticker = c.ticker || ms.company_id || "—";
-        const bucket = c.bucket || "—";
-        return {
-          ...ms,
-          _ticker: ticker,
-          _bucket: bucket,
-          _state: ms.state || "MONITOR",
-          _in_scope: toInt(c.in_scope)
+      function pressureDot(score){
+        const s = safeInt(score);
+        let c = "var(--p0)";
+        if(s === 1) c = "var(--p1)";
+        if(s === 2) c = "var(--p2)";
+        if(s === 3) c = "var(--p3)";
+        if(s >= 4) c = "var(--p4)";
+        return `<span class="dot" style="background:${c}"></span>`;
+      }
+
+      function pressureLabel(score){
+        const s = safeInt(score);
+        if(s === 0) return "Stable";
+        if(s === 1) return "Watch";
+        if(s === 2) return "Elevated";
+        if(s === 3) return "High";
+        return "Critical";
+      }
+
+      function svgSparkline(values){
+        if(!Array.isArray(values) || values.length < 2) return "";
+        const w = 120, h = 24, pad = 2;
+
+        const clean = values.map(v => Number(v)).filter(v => Number.isFinite(v));
+        if(clean.length < 2) return "";
+
+        let min = Math.min(...clean);
+        let max = Math.max(...clean);
+        if(min === max){ min -= 1; max += 1; }
+
+        const xStep = (w - pad*2) / (clean.length - 1);
+        const y = (v) => {
+          const t = (v - min) / (max - min);
+          return (h - pad) - t * (h - pad*2);
         };
-      });
 
-      const subline = document.getElementById("subline");
-      subline.textContent = "Loaded " + companies.length + " companies.";
-
-      const updated = document.getElementById("updated");
-      const stamp = data.generated_at ? String(data.generated_at) : "";
-      // We do not assume its format; just show something stable.
-      updated.textContent = "Updated: " + (data.generated_at_human || data.generated_at || "unknown");
-
-      const rowsEl = document.getElementById("rows");
-      const eventsEl = document.getElementById("events");
-
-      function render(){
-        const q = document.getElementById("q").value;
-        const scope = document.getElementById("scope").value;
-        const st = document.getElementById("state").value;
-
-        const filtered = applyFilters(enriched, q, scope, st);
-
-        rowsEl.innerHTML = filtered.map(ms => buildRow(companyById, ms)).join("");
-
-        if (events.length === 0){
-          eventsEl.innerHTML = `
-            <tr><td colspan="3" style="color:var(--muted);padding:14px;">
-              No state-change events yet.
-            </td></tr>
-          `;
-        } else {
-          eventsEl.innerHTML = events.slice(0, 50).map(ev => buildEventRow(companyById, ev)).join("");
+        let d = "";
+        for(let i=0;i<clean.length;i++){
+          const x = pad + i * xStep;
+          const yy = y(clean[i]);
+          d += (i===0 ? "M" : " L") + x.toFixed(2) + " " + yy.toFixed(2);
         }
 
-        attachRowClick();
-        hydrateSparklines(filtered, companyById);
+        const baseY = y(clean[0]).toFixed(2);
+
+        return `
+          <svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
+            <path class="baseline" d="M${pad} ${baseY} L${w-pad} ${baseY}"></path>
+            <path d="${d}"></path>
+          </svg>
+        `;
       }
 
-      document.getElementById("q").addEventListener("input", render);
-      document.getElementById("scope").addEventListener("change", render);
-      document.getElementById("state").addEventListener("change", render);
+      function pctClass(p){
+        const n = Number(p);
+        if(!Number.isFinite(n)) return "flat";
+        if(n > 0.25) return "up";
+        if(n < -0.25) return "down";
+        return "flat";
+      }
 
-      render();
-    }
+      function fmtPct(p){
+        const n = Number(p);
+        if(!Number.isFinite(n)) return "n/a";
+        const sign = n > 0 ? "+" : "";
+        return `${sign}${n.toFixed(1)}%`;
+      }
 
-    loadDashboard().catch(err => {
-      const subline = document.getElementById("subline");
-      subline.textContent = "Failed to load dashboard.json";
-      console.error(err);
-      const rowsEl = document.getElementById("rows");
-      rowsEl.innerHTML = `
-        <tr><td colspan="11" style="color:#9f1239;padding:14px;">
-          Error: ${String(err)}
-        </td></tr>
-      `;
-    });
-  </script>
-</body>
+      // Expected optional shape in dashboard.json:
+      // latest_state[i].price_1m = { closes:[...], pct_change: <number> }
+      function priceCell(row){
+        const p = row.price_1m;
+        if(!p || !Array.isArray(p.closes) || p.closes.length < 2){
+          return `<div class="priceCell"><span class="small">n/a</span></div>`;
+        }
+        const spark = svgSparkline(p.closes);
+        const pct = fmtPct(p.pct_change);
+        const cls = pctClass(p.pct_change);
+        return `
+          <div class="priceCell">
+            ${spark}
+            <span class="pct ${cls}">${pct}</span>
+          </div>
+        `;
+      }
+
+      function buildStateOptions(rows){
+        const states = new Set(rows.map(r => String(r.state || "").trim()).filter(Boolean));
+        const sel = document.getElementById("stateFilter");
+        const current = sel.value || "all";
+        const opts = ["all", ...Array.from(states).sort()];
+        sel.innerHTML = opts.map(s => `<option value="${s}">${s === "all" ? "All" : s}</option>`).join("");
+        sel.value = opts.includes(current) ? current : "all";
+      }
+
+      function normalizeData(data){
+        const companiesById = new Map();
+        for(const c of (data.companies || [])){
+          companiesById.set(String(c.company_id), c);
+        }
+
+        const latest = (data.latest_state || []).map(ms => {
+          const company = companiesById.get(String(ms.company_id)) || {};
+          const inScope = !!company.in_scope;
+          const c1 = !!ms.condition_1;
+          const c2 = !!ms.condition_2;
+          const c3 = !!ms.condition_3;
+          const c4 = !!ms.condition_4;
+          const pressure = [c1,c2,c3,c4].reduce((a,b)=>a+(b?1:0),0);
+
+          return {
+            company_id: ms.company_id,
+            ticker: company.ticker || ms.ticker || ms.company_id,
+            bucket: company.bucket || ms.bucket || "—",
+            in_scope: inScope ? 1 : 0,
+            as_of: ms.as_of || "",
+            state: ms.state || (inScope ? "MONITOR" : "OUT_OF_SCOPE"),
+            c1, c2, c3, c4,
+            pressure,
+            price_1m: ms.price_1m || null,
+          };
+        });
+
+        // Events can be in data.events (your exporter uses "events")
+        const events = (data.events || []).map(e => ({
+          company_id: e.company_id,
+          as_of: e.as_of,
+          prev_state: e.prev_state,
+          new_state: e.new_state
+        }));
+
+        return { latest, events };
+      }
+
+      function renderLatest(rows){
+        const tbody = document.getElementById("rows");
+        tbody.innerHTML = rows.map(r => `
+          <tr>
+            <td class="ticker">${r.ticker}</td>
+            <td>${r.bucket || "—"}</td>
+            <td><span class="chip">${r.state}</span></td>
+            <td>${r.as_of || ""}</td>
+            <td>
+              <span class="chip">
+                ${pressureDot(r.pressure)}
+                ${r.pressure} (${pressureLabel(r.pressure)})
+              </span>
+            </td>
+            <td>${ynChip(r.c1)}</td>
+            <td>${ynChip(r.c2)}</td>
+            <td>${ynChip(r.c3)}</td>
+            <td>${ynChip(r.c4)}</td>
+            <td>${priceCell(r)}</td>
+            <td>${r.in_scope}</td>
+          </tr>
+        `).join("");
+      }
+
+      function renderEvents(events, companiesById){
+        const tbody = document.getElementById("events");
+        const note = document.getElementById("eventsNote");
+
+        if(!events.length){
+          tbody.innerHTML = `
+            <tr><td colspan="3" class="muted">No state-change events yet.</td></tr>
+          `;
+          note.textContent = "";
+          return;
+        }
+
+        tbody.innerHTML = events.slice(0, 30).map(e => {
+          const ticker = companiesById.get(String(e.company_id))?.ticker || e.company_id;
+          return `
+            <tr>
+              <td class="ticker">${ticker}</td>
+              <td>${e.as_of || ""}</td>
+              <td><span class="chip">${e.prev_state} → ${e.new_state}</span></td>
+            </tr>
+          `;
+        }).join("");
+
+        note.textContent = "";
+      }
+
+      function applyFilters(allRows){
+        const q = (document.getElementById("q").value || "").trim().toLowerCase();
+        const scope = document.getElementById("scope").value;
+        const state = document.getElementById("stateFilter").value;
+
+        return allRows.filter(r => {
+          if(scope === "in" && r.in_scope !== 1) return false;
+          if(scope === "out" && r.in_scope !== 0) return false;
+          if(state !== "all" && String(r.state) !== state) return false;
+
+          if(!q) return true;
+          const hay = `${r.ticker} ${r.bucket} ${r.state}`.toLowerCase();
+          return hay.includes(q);
+        });
+      }
+
+      async function load(){
+        const res = await fetch("./dashboard.json", { cache: "no-store" });
+        if(!res.ok) throw new Error(`Failed to load dashboard.json (${res.status})`);
+        const data = await res.json();
+
+        const companies = data.companies || [];
+        const companiesById = new Map(companies.map(c => [String(c.company_id), c]));
+
+        const { latest, events } = normalizeData(data);
+
+        document.getElementById("subtitle").textContent = `Loaded ${latest.length} companies.`;
+        // You currently write generated_at as a path; we still display it, but prefer a timestamp if you later change it.
+        const gen = data.generated_at || "—";
+        document.getElementById("updated").textContent = `Updated: ${gen}`;
+
+        buildStateOptions(latest);
+
+        function rerender(){
+          const filtered = applyFilters(latest);
+          renderLatest(filtered);
+          renderEvents(events, companiesById);
+        }
+
+        document.getElementById("q").addEventListener("input", rerender);
+        document.getElementById("scope").addEventListener("change", rerender);
+        document.getElementById("stateFilter").addEventListener("change", rerender);
+
+        rerender();
+      }
+
+      load().catch(err => {
+        document.getElementById("subtitle").textContent = "Dashboard failed to load.";
+        const tbody = document.getElementById("rows");
+        tbody.innerHTML = `<tr><td colspan="11" style="color:#b91c1c; font-weight:800;">${err.message}</td></tr>`;
+      });
+    </script>
+  </body>
 </html>
