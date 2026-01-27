@@ -6,188 +6,204 @@
   <title>SPACShortModel</title>
   <style>
     :root{
-      --bg0:#070913;
-      --bg1:#0b1026;
+      --bg0:#070a12;
+      --bg1:#0b1020;
       --card:rgba(255,255,255,.06);
       --card2:rgba(255,255,255,.04);
-      --line:rgba(255,255,255,.08);
+      --stroke:rgba(255,255,255,.10);
+      --muted:rgba(255,255,255,.55);
       --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.60);
-      --muted2:rgba(255,255,255,.45);
-      --good:#44d18d;
-      --bad:#ff5a7a;
-      --warn:#f7b64c;
-      --pill:rgba(130,140,255,.16);
-      --pillBorder:rgba(130,140,255,.35);
-      --shadow: 0 18px 45px rgba(0,0,0,.55);
-      --radius:18px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --good:#2ecc71;
+      --bad:#ff4d4d;
+      --warn:#f6c177;
+      --chip:rgba(120,120,255,.18);
+      --chipStroke:rgba(120,120,255,.40);
+      --accent:#8b5cf6;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family:var(--sans);
       color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       background:
-        radial-gradient(900px 600px at 12% 10%, rgba(110,105,255,.16), transparent 60%),
-        radial-gradient(700px 500px at 80% 35%, rgba(80,255,170,.10), transparent 65%),
-        radial-gradient(900px 600px at 40% 90%, rgba(255,85,160,.08), transparent 65%),
+        radial-gradient(1200px 700px at 15% 10%, rgba(139,92,246,.20), transparent 55%),
+        radial-gradient(900px 600px at 85% 20%, rgba(59,130,246,.14), transparent 60%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, transparent 1px, transparent 120px),
         linear-gradient(180deg, var(--bg0), var(--bg1));
       min-height:100vh;
+      padding:32px 18px 60px;
     }
-    .wrap{max-width:1180px;margin:0 auto;padding:28px 18px 70px}
+    .wrap{max-width:1120px;margin:0 auto}
     .top{
-      display:flex;align-items:flex-start;gap:16px;margin-bottom:18px
+      display:flex;align-items:flex-start;gap:14px;margin-bottom:18px
     }
     .logo{
-      width:40px;height:40px;border-radius:12px;
-      background:linear-gradient(180deg, rgba(140,150,255,.9), rgba(110,105,255,.55));
-      box-shadow:0 10px 25px rgba(110,105,255,.22);
-      display:grid;place-items:center;flex:0 0 auto
+      width:42px;height:42px;border-radius:12px;
+      background:linear-gradient(135deg, rgba(139,92,246,.95), rgba(59,130,246,.65));
+      display:grid;place-items:center;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
+      flex:0 0 auto;
     }
-    .logo svg{opacity:.9}
-    h1{margin:0;font-size:52px;letter-spacing:-.02em}
-    .sub{margin-top:6px;color:var(--muted);font-size:15px}
-    .err{margin-top:6px;color:var(--bad);font-size:14px}
+    .logo svg{opacity:.95}
+    h1{margin:0;font-size:48px;letter-spacing:-.02em;line-height:1.05}
+    .sub{margin-top:6px;color:var(--muted);font-size:14px}
+    .err{color:var(--bad);font-size:14px;margin-top:6px}
+
     .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-      border-radius:var(--radius);
-      overflow:hidden;
-      margin-top:16px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+      border:1px solid var(--stroke);
+      border-radius:18px;
+      padding:16px 16px 14px;
+      box-shadow:0 30px 70px rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      margin-top:14px;
     }
-    .card .hd{
-      padding:18px 18px 10px;
-      display:flex;align-items:flex-end;justify-content:space-between;gap:12px
+    .card h2{
+      margin:0 0 8px;
+      font-size:18px;
+      letter-spacing:-.01em;
     }
-    .card h2{margin:0;font-size:22px}
-    .card .hint{color:var(--muted2);font-size:12px;margin-top:6px}
-    .pillrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .card .hint{margin:0 0 12px;color:var(--muted);font-size:12px}
+
+    .row{
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+      margin:8px 0 10px;
+    }
+    .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
     .pill{
-      border-radius:999px;
-      padding:7px 10px;
-      border:1px solid var(--line);
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:12px;
       background:rgba(255,255,255,.04);
+      border:1px solid var(--stroke);
       color:var(--muted);
       font-size:12px;
-      font-family:var(--mono);
     }
-    .pill.live{border-color:rgba(247,182,76,.35);background:rgba(247,182,76,.08)}
-    .pill.ok{border-color:rgba(68,209,141,.35);background:rgba(68,209,141,.08)}
-    .pill.bad{border-color:rgba(255,90,122,.35);background:rgba(255,90,122,.08)}
-    .grid{display:grid;grid-template-columns:1fr;gap:14px;padding:0 18px 18px}
-    .controls{
-      padding:0 18px 14px;
-      display:grid;
-      grid-template-columns: 1.2fr 180px 180px 240px;
-      gap:10px;
-      align-items:center;
+    .pill .dot{width:8px;height:8px;border-radius:999px;background:var(--warn);display:inline-block}
+    .meta{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end;
+      color:var(--muted);font-size:12px;
     }
-    .input, select{
-      width:100%;
+    input[type="search"], select{
+      height:38px;
+      padding:0 12px;
       border-radius:12px;
-      padding:12px 12px;
-      background:rgba(0,0,0,.18);
-      border:1px solid var(--line);
+      border:1px solid var(--stroke);
+      background:rgba(0,0,0,.25);
       color:var(--text);
       outline:none;
-      font-size:14px;
+      min-width:210px;
     }
-    select{cursor:pointer}
-    .tblwrap{overflow:auto;border-top:1px solid var(--line)}
-    table{width:100%;border-collapse:collapse;min-width:980px}
-    th, td{padding:12px 12px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
-    th{
-      font-size:12px;color:var(--muted2);
-      font-weight:600;
+    select{min-width:170px}
+    .tableWrap{
+      overflow:auto;border-radius:14px;border:1px solid var(--stroke);
+      background:rgba(0,0,0,.16);
+    }
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      font-size:12px;
+      min-width:980px;
+    }
+    thead th{
+      text-align:left;
+      padding:12px 12px;
+      color:rgba(255,255,255,.45);
+      background:rgba(255,255,255,.03);
+      border-bottom:1px solid var(--stroke);
+      position:sticky;top:0;z-index:2;
       letter-spacing:.08em;
+      font-size:11px;
       text-transform:uppercase;
     }
-    td{font-size:14px;color:rgba(255,255,255,.86)}
-    .tag{
-      display:inline-flex;align-items:center;gap:8px;
-      font-family:var(--mono);
-      font-size:12px;
-      padding:6px 10px;border-radius:10px;
-      border:1px solid var(--pillBorder);
-      background:var(--pill);
-      color:rgba(190,200,255,.92);
+    tbody td{
+      padding:10px 12px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      vertical-align:middle;
       white-space:nowrap;
     }
-    .state{
-      display:inline-flex;align-items:center;gap:8px;
-      font-family:var(--mono);font-size:12px;
-      padding:6px 10px;border-radius:10px;border:1px solid rgba(150,160,255,.30);
-      background:rgba(110,105,255,.14);
-      color:rgba(215,220,255,.95);
-    }
-    .badge{
+    tbody tr:hover td{background:rgba(255,255,255,.02)}
+    .chip{
       display:inline-flex;align-items:center;justify-content:center;
-      font-family:var(--mono);font-size:11px;
-      padding:5px 9px;border-radius:9px;border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.16);
-      min-width:46px;
-      white-space:nowrap;
+      padding:4px 9px;border-radius:10px;
+      border:1px solid var(--chipStroke);
+      background:var(--chip);
+      font-weight:600;
+      letter-spacing:.02em;
     }
-    .ok{border-color:rgba(68,209,141,.25);background:rgba(68,209,141,.10);color:rgba(120,255,190,.95)}
-    .flag{border-color:rgba(255,90,122,.25);background:rgba(255,90,122,.12);color:rgba(255,160,178,.95)}
-    .muted{color:var(--muted)}
-    .right{display:flex;justify-content:flex-end}
-    .pctUp{color:rgba(120,255,190,.95);font-family:var(--mono)}
-    .pctDn{color:rgba(255,160,178,.95);font-family:var(--mono)}
-    .foot{
-      padding:12px 18px 18px;
-      color:var(--muted2);
-      font-size:12px;
+    .state{background:rgba(99,102,241,.18);border-color:rgba(99,102,241,.45)}
+    .scopeIn{color:var(--good);font-weight:700}
+    .scopeOut{color:rgba(255,255,255,.35);font-weight:700}
+    .badgeOk{
+      background:rgba(46,204,113,.14);
+      border:1px solid rgba(46,204,113,.33);
+      color:rgba(200,255,225,.92);
+      padding:4px 9px;border-radius:9px;font-weight:700;font-size:11px;
+    }
+    .badgeFlag{
+      background:rgba(255,77,77,.14);
+      border:1px solid rgba(255,77,77,.35);
+      color:rgba(255,190,190,.95);
+      padding:4px 9px;border-radius:9px;font-weight:800;font-size:11px;
+    }
+    .pressureStable{
+      background:rgba(46,204,113,.12);
+      border:1px solid rgba(46,204,113,.28);
+      color:rgba(200,255,225,.88);
+      padding:4px 9px;border-radius:9px;font-weight:800;font-size:11px;
+    }
+    .pressureWatch{
+      background:rgba(246,193,119,.14);
+      border:1px solid rgba(246,193,119,.34);
+      color:rgba(255,230,200,.94);
+      padding:4px 9px;border-radius:9px;font-weight:900;font-size:11px;
+    }
+    .pressureElev{
+      background:rgba(255,77,77,.14);
+      border:1px solid rgba(255,77,77,.35);
+      color:rgba(255,190,190,.95);
+      padding:4px 9px;border-radius:9px;font-weight:900;font-size:11px;
+    }
+    .spark{
+      width:86px;height:20px;
+      display:block;
     }
     .legend{
-      padding:0 18px 18px;
-      display:flex;gap:10px;flex-wrap:wrap;
+      display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;color:var(--muted);font-size:12px
     }
-    .legend .chip{
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.03);
-      padding:10px 12px;
-      font-size:12px;
-      color:rgba(255,255,255,.74);
-      font-family:var(--mono);
-    }
-    .dot{
-      width:8px;height:8px;border-radius:99px;background:var(--warn);
-      display:inline-block;margin-right:8px;vertical-align:middle
+    .legend .chip{border-radius:12px}
+    .foot{
+      margin-top:10px;
+      color:rgba(255,255,255,.42);
+      font-size:11px;
     }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="top">
       <div class="logo" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
           <path d="M4 19V5" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          <path d="M8 19V11" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          <path d="M12 19V7" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          <path d="M16 19V13" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          <path d="M20 19V9" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M7 19V10" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M11 19V7" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M15 19V12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M19 19V9" stroke="white" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </div>
-      <div style="flex:1">
+      <div>
         <h1>SPACShortModel</h1>
-        <div class="sub" id="subline">Loading…</div>
-        <div class="err" id="errline" style="display:none"></div>
+        <div class="sub" id="subtitle">Loading…</div>
+        <div class="err" id="globalError" style="display:none"></div>
       </div>
     </div>
 
     <div class="card">
-      <div class="hd">
-        <div>
-          <h2>Recent Events</h2>
-          <div class="hint">State transitions are logged as discrete events</div>
-        </div>
-      </div>
-      <div class="tblwrap">
+      <h2>Recent Events</h2>
+      <p class="hint">State transitions are logged as discrete events</p>
+      <div class="tableWrap">
         <table>
           <thead>
             <tr>
@@ -198,49 +214,47 @@
             </tr>
           </thead>
           <tbody id="eventsBody">
-            <tr><td class="muted" colspan="4">Loading…</td></tr>
+            <tr><td colspan="4" style="color:rgba(255,255,255,.45);padding:14px 12px">Loading…</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
     <div class="card">
-      <div class="hd">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <h2 style="margin-right:4px">Current State</h2>
-          <span class="pill live" id="liveStatus"><span class="dot"></span>Live quotes</span>
+      <div class="row">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <h2 style="margin:0">Current State</h2>
+          <span class="pill" title="Live quotes fetched in your browser">
+            <span class="dot"></span> Live quotes
+          </span>
         </div>
-        <div class="pillrow">
+        <div class="meta">
           <span class="pill" id="genStamp">Generated: --</span>
           <span class="pill" id="dbStamp">DB Updated: --</span>
         </div>
       </div>
 
-      <div class="controls">
-        <input class="input" id="search" placeholder="Ticker, company, bucket…" />
-
-        <select id="scopeSel">
-          <option value="all">All</option>
-          <option value="in">In scope</option>
-          <option value="out">Out of scope</option>
-        </select>
-
-        <select id="stateSel">
-          <option value="all">All states</option>
-          <option value="MONITOR">MONITOR</option>
-          <option value="NO_DATA">NO_DATA</option>
-          <option value="OUT_OF_SCOPE">OUT_OF_SCOPE</option>
-        </select>
-
-        <select id="sortSel">
-          <option value="pressure_desc">Pressure (high to low)</option>
-          <option value="pressure_asc">Pressure (low to high)</option>
-          <option value="ticker_asc">Ticker (A to Z)</option>
-          <option value="ticker_desc">Ticker (Z to A)</option>
-        </select>
+      <div class="row">
+        <div class="filters">
+          <input id="q" type="search" placeholder="Ticker, company, bucket…" />
+          <select id="scopeSel">
+            <option value="all">All</option>
+            <option value="in">In scope</option>
+            <option value="out">Out of scope</option>
+          </select>
+          <select id="stateSel">
+            <option value="all">All states</option>
+          </select>
+          <select id="sortSel">
+            <option value="pressure_desc">Pressure (high to low)</option>
+            <option value="pressure_asc">Pressure (low to high)</option>
+            <option value="ticker">Ticker (A–Z)</option>
+            <option value="company">Company (A–Z)</option>
+          </select>
+        </div>
       </div>
 
-      <div class="tblwrap">
+      <div class="tableWrap">
         <table>
           <thead>
             <tr>
@@ -253,317 +267,433 @@
               <th>C2</th>
               <th>C3</th>
               <th>C4</th>
+              <th>30D</th>
               <th>Live Price</th>
               <th>Live %</th>
               <th>Scope</th>
             </tr>
           </thead>
-          <tbody id="rowsBody">
-            <tr><td class="muted" colspan="12">Loading…</td></tr>
+          <tbody id="stateBody">
+            <tr><td colspan="13" style="color:rgba(255,255,255,.45);padding:14px 12px">Loading…</td></tr>
           </tbody>
         </table>
       </div>
 
-      <div class="legend">
-        <div class="chip"><b>C1</b> Demand or margin pressure (revenue decel OR profitability deterioration)</div>
-        <div class="chip"><b>C2</b> Capex spike vs baseline</div>
-        <div class="chip"><b>C3</b> Burn persists + discretionary spend continues + no slope improvement</div>
-        <div class="chip"><b>C4</b> Strategic initiative language + no slope improvement</div>
+      <div class="legend" aria-label="Condition legend">
+        <span class="chip">C1&nbsp;&nbsp;Demand or margin pressure (revenue decel OR profitability deterioration)</span>
+        <span class="chip">C2&nbsp;&nbsp;Capex spike vs baseline</span>
+        <span class="chip">C3&nbsp;&nbsp;Burn persists + discretionary spend continues + no slope improvement</span>
+        <span class="chip">C4&nbsp;&nbsp;Strategic initiative language + no slope improvement</span>
       </div>
 
       <div class="foot">
-        Live quotes are fetched in your browser from Yahoo Finance (via a CORS proxy) and refresh automatically.
-        Fundamentals and conditions are generated nightly.
+        Live quotes and 30D charts are fetched in your browser from Yahoo Finance (via a CORS proxy) and refresh automatically. Fundamentals and conditions are generated nightly.
       </div>
     </div>
   </div>
 
-  <script>
-    const DASHBOARD_URL = "./dashboard.json";
+<script>
+/**
+ * If your live-quote version already uses a CORS proxy, match it here.
+ * corsproxy.io works for many people, but it can be flaky.
+ * If you already have a known-good proxy in your current file, use that instead.
+ */
+const CORS_PROXY = "https://corsproxy.io/?";
 
-    // Yahoo quote endpoint (unofficial) + CORS proxy wrapper
-    const YAHOO_QUOTE = (symbolsCsv) =>
-      "https://api.allorigins.win/raw?url=" +
-      encodeURIComponent("https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + symbolsCsv);
+/**
+ * Yahoo endpoints we use:
+ * - Quote:  v7/finance/quote?symbols=...
+ * - Chart:  v8/finance/chart/TICKER?range=1mo&interval=1d
+ */
+function proxied(url){
+  return CORS_PROXY + encodeURIComponent(url);
+}
 
-    const LIVE_REFRESH_MS = 30000;
+function fmtPct(x){
+  if (x === null || x === undefined || Number.isNaN(x)) return "—";
+  const v = Number(x);
+  const s = (v >= 0 ? "+" : "") + v.toFixed(1) + "%";
+  return s;
+}
+function fmtPrice(x){
+  if (x === null || x === undefined || Number.isNaN(x)) return "—";
+  return Number(x).toFixed(2);
+}
+function safeText(x){
+  return (x === null || x === undefined) ? "" : String(x);
+}
 
-    let DASH = null;
-    let COMP_BY_ID = new Map();
-    let LIVE = new Map(); // ticker -> { price, changePercent, time }
+function pressureBadge(n){
+  if (n >= 2) return `<span class="pressureElev">${n} elevated</span>`;
+  if (n === 1) return `<span class="pressureWatch">${n} watch</span>`;
+  return `<span class="pressureStable">0 stable</span>`;
+}
 
-    function esc(s){
-      return (s ?? "").toString()
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
+function cBadge(flag){
+  return flag ? `<span class="badgeFlag">FLAG</span>` : `<span class="badgeOk">OK</span>`;
+}
 
-    function setErr(msg){
-      const el = document.getElementById("errline");
-      if(!msg){ el.style.display="none"; el.textContent=""; return; }
-      el.style.display="block";
-      el.textContent = msg;
-    }
+/**
+ * Sparkline renderer (canvas)
+ */
+function renderSpark(canvas, data){
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
 
-    function fmtPct(x){
-      if(x === null || x === undefined || Number.isNaN(x)) return "--";
-      const v = Number(x);
-      const s = (v >= 0 ? "+" : "") + v.toFixed(2) + "%";
-      return s;
-    }
+  if (!data || data.length < 2) {
+    // draw a faint baseline so the column doesn't look broken
+    ctx.globalAlpha = 0.25;
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, Math.floor(h/2));
+    ctx.lineTo(w, Math.floor(h/2));
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    return;
+  }
 
-    function pressureLabel(c1,c2,c3,c4){
-      const score = (c1?1:0)+(c2?1:0)+(c3?1:0)+(c4?1:0);
-      if(score >= 2) return {txt: score + " ELEVATED", cls:"flag"};
-      if(score === 1) return {txt: score + " WATCH", cls:""};
-      return {txt: score + " STABLE", cls:"ok"};
-    }
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const span = (max - min) || 1;
 
-    function asBool(v){
-      return v === 1 || v === true || v === "1";
-    }
+  const pad = 1;
+  const xStep = (w - pad*2) / (data.length - 1);
 
-    function sortRows(rows, mode){
-      const cp = rows.slice();
-      if(mode === "ticker_asc") cp.sort((a,b)=>a.ticker.localeCompare(b.ticker));
-      else if(mode === "ticker_desc") cp.sort((a,b)=>b.ticker.localeCompare(a.ticker));
-      else if(mode === "pressure_asc") cp.sort((a,b)=>a.pressureScore - b.pressureScore);
-      else cp.sort((a,b)=>b.pressureScore - a.pressureScore);
-      return cp;
-    }
+  // Determine direction (green if up, red if down)
+  const up = data[data.length - 1] >= data[0];
+  ctx.strokeStyle = up ? "#2ecc71" : "#ff4d4d";
+  ctx.lineWidth = 1.6;
 
-    function buildRow(r){
-      const c = COMP_BY_ID.get(r.company_id) || {};
-      const name = c.name || c.company_id || "";
-      const bucket = c.bucket || "";
-      const inScope = !!c.in_scope;
+  ctx.beginPath();
+  data.forEach((v, i) => {
+    const x = pad + i * xStep;
+    const y = pad + (h - pad*2) * (1 - ((v - min) / span));
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+}
 
-      const c1 = asBool(r.condition_1);
-      const c2 = asBool(r.condition_2);
-      const c3 = asBool(r.condition_3);
-      const c4 = asBool(r.condition_4);
+/**
+ * Fetch 30D close series for one ticker (1mo, 1d)
+ */
+const chartCache = new Map(); // ticker -> { t:ms, data:number[] }
+async function fetchChart30D(ticker){
+  const now = Date.now();
+  const cached = chartCache.get(ticker);
+  if (cached && (now - cached.t) < 5 * 60 * 1000) return cached.data; // 5 min cache
 
-      const pressureScore = (c1?1:0)+(c2?1:0)+(c3?1:0)+(c4?1:0);
-      const p = pressureLabel(c1,c2,c3,c4);
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?range=1mo&interval=1d`;
+  const r = await fetch(proxied(url));
+  if (!r.ok) throw new Error(`chart ${ticker} ${r.status}`);
+  const j = await r.json();
 
-      const live = LIVE.get(r.company_id) || LIVE.get(c.ticker) || null;
-      const livePrice = live ? live.price : null;
-      const livePct = live ? live.changePercent : null;
+  const result = j && j.chart && j.chart.result && j.chart.result[0];
+  const closes = result && result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close;
 
-      const pctCls = (livePct === null || livePct === undefined) ? "muted" : (livePct >= 0 ? "pctUp" : "pctDn");
+  const cleaned = Array.isArray(closes) ? closes.filter(x => typeof x === "number" && Number.isFinite(x)) : [];
+  chartCache.set(ticker, { t: now, data: cleaned });
+  return cleaned;
+}
 
-      return {
-        company: name,
-        ticker: c.ticker || r.company_id || "",
-        bucket,
-        state: r.state || "",
-        pressureScore,
-        pressureText: p.txt,
-        pressureCls: p.cls,
-        c1, c2, c3, c4,
-        livePrice,
-        livePct,
-        scopeText: inScope ? "IN" : "OUT"
-      };
-    }
+/**
+ * Fetch live quotes for many symbols at once (Yahoo quote endpoint)
+ */
+async function fetchQuotes(symbols){
+  if (!symbols.length) return {};
+  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbols.join(","))}`;
+  const r = await fetch(proxied(url));
+  if (!r.ok) throw new Error(`quote ${r.status}`);
+  const j = await r.json();
+  const out = {};
+  const rows = (j && j.quoteResponse && j.quoteResponse.result) || [];
+  for (const row of rows){
+    const sym = row.symbol;
+    out[sym] = {
+      price: row.regularMarketPrice,
+      pct: row.regularMarketChangePercent
+    };
+  }
+  return out;
+}
 
-    function render(){
-      if(!DASH){
-        return;
+let DASH = null;
+let COMP_BY_ID = {};
+let COMPANY_ROWS = []; // enriched latest_state rows
+
+function buildCompanyMap(dash){
+  const map = {};
+  for (const c of (dash.companies || [])){
+    map[c.company_id] = c;
+  }
+  return map;
+}
+
+/**
+ * Some older dashboards may have duplicates in latest_state.
+ * We de-dupe by company_id keeping the newest "as_of" when possible.
+ */
+function dedupeLatestState(rows){
+  const best = new Map();
+  for (const r of rows || []){
+    const id = r.company_id;
+    if (!id) continue;
+    const prev = best.get(id);
+    if (!prev) { best.set(id, r); continue; }
+    const a = safeText(prev.as_of);
+    const b = safeText(r.as_of);
+    if (b > a) best.set(id, r);
+  }
+  return Array.from(best.values());
+}
+
+/**
+ * Pressure scoring: count conditions that are true.
+ */
+function pressureFromRow(r){
+  const c1 = !!r.condition_1;
+  const c2 = !!r.condition_2;
+  const c3 = !!r.condition_3;
+  const c4 = !!r.condition_4;
+  return (c1?1:0)+(c2?1:0)+(c3?1:0)+(c4?1:0);
+}
+
+function stateBadge(s){
+  const txt = safeText(s || "").toUpperCase();
+  return `<span class="chip state">${txt || "—"}</span>`;
+}
+
+function scopeBadge(inScope){
+  return inScope ? `<span class="scopeIn">IN</span>` : `<span class="scopeOut">OUT</span>`;
+}
+
+function fillStateOptions(){
+  const sel = document.getElementById("stateSel");
+  const seen = new Set();
+  for (const r of COMPANY_ROWS){
+    const s = safeText(r.state).toUpperCase();
+    if (s) seen.add(s);
+  }
+  const all = Array.from(seen).sort();
+  sel.innerHTML = `<option value="all">All states</option>` + all.map(s => `<option value="${s}">${s}</option>`).join("");
+}
+
+function applyFilters(){
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const scope = document.getElementById("scopeSel").value;
+  const st = document.getElementById("stateSel").value;
+  const sort = document.getElementById("sortSel").value;
+
+  let rows = COMPANY_ROWS.slice();
+
+  if (q){
+    rows = rows.filter(r => {
+      const c = r.company || {};
+      return (
+        safeText(c.name).toLowerCase().includes(q) ||
+        safeText(c.ticker).toLowerCase().includes(q) ||
+        safeText(c.bucket).toLowerCase().includes(q)
+      );
+    });
+  }
+
+  if (scope !== "all"){
+    rows = rows.filter(r => scope === "in" ? !!r.company.in_scope : !r.company.in_scope);
+  }
+
+  if (st !== "all"){
+    rows = rows.filter(r => safeText(r.state).toUpperCase() === st);
+  }
+
+  if (sort === "pressure_desc"){
+    rows.sort((a,b) => (b.pressure - a.pressure) || safeText(a.company.ticker).localeCompare(safeText(b.company.ticker)));
+  } else if (sort === "pressure_asc"){
+    rows.sort((a,b) => (a.pressure - b.pressure) || safeText(a.company.ticker).localeCompare(safeText(b.company.ticker)));
+  } else if (sort === "ticker"){
+    rows.sort((a,b) => safeText(a.company.ticker).localeCompare(safeText(b.company.ticker)));
+  } else if (sort === "company"){
+    rows.sort((a,b) => safeText(a.company.name).localeCompare(safeText(b.company.name)));
+  }
+
+  renderStateTable(rows);
+}
+
+function renderEvents(){
+  const body = document.getElementById("eventsBody");
+  const events = (DASH && DASH.events) || [];
+  if (!events.length){
+    body.innerHTML = `<tr><td colspan="4" style="color:rgba(255,255,255,.45);padding:14px 12px">No state transitions recorded</td></tr>`;
+    return;
+  }
+  const rows = events.slice(0, 25).map(e => {
+    const c = COMP_BY_ID[e.company_id] || {};
+    const ticker = safeText(c.ticker || e.ticker || "");
+    const name = safeText(c.name || "");
+    const asOf = safeText(e.as_of || "").slice(0,10) || "—";
+    const trans = `${safeText(e.prev_state || "").toUpperCase()} → ${safeText(e.new_state || "").toUpperCase()}`.trim();
+    return `
+      <tr>
+        <td><span class="chip">${ticker || "—"}</span></td>
+        <td>${name || "—"}</td>
+        <td>${asOf}</td>
+        <td style="font-weight:700">${trans || "—"}</td>
+      </tr>
+    `;
+  }).join("");
+  body.innerHTML = rows;
+}
+
+function renderStateTable(rows){
+  const body = document.getElementById("stateBody");
+  if (!rows.length){
+    body.innerHTML = `<tr><td colspan="13" style="color:rgba(255,255,255,.45);padding:14px 12px">No results</td></tr>`;
+    return;
+  }
+
+  body.innerHTML = rows.map(r => {
+    const c = r.company;
+    const ticker = safeText(c.ticker);
+    const name = safeText(c.name);
+    const bucket = safeText(c.bucket);
+    const state = safeText(r.state).toUpperCase();
+
+    // placeholders for live quote + chart
+    const priceId = `p_${ticker}`;
+    const pctId = `pc_${ticker}`;
+    const cvId = `cv_${ticker}`;
+
+    return `
+      <tr>
+        <td>${name || "—"}</td>
+        <td><span class="chip">${ticker || "—"}</span></td>
+        <td style="color:rgba(255,255,255,.55)">${bucket || "—"}</td>
+        <td>${stateBadge(state)}</td>
+        <td>${pressureBadge(r.pressure)}</td>
+        <td>${cBadge(!!r.condition_1)}</td>
+        <td>${cBadge(!!r.condition_2)}</td>
+        <td>${cBadge(!!r.condition_3)}</td>
+        <td>${cBadge(!!r.condition_4)}</td>
+        <td><canvas class="spark" id="${cvId}" width="86" height="20" title="30-day close (Yahoo)"></canvas></td>
+        <td id="${priceId}" style="font-weight:800">—</td>
+        <td id="${pctId}" style="font-weight:800">—</td>
+        <td>${scopeBadge(!!c.in_scope)}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+async function refreshLive(){
+  // Only pull for in-scope monitor-ish rows? If you want ALL, keep this.
+  const symbols = COMPANY_ROWS.map(r => r.company.ticker).filter(Boolean);
+
+  // 1) quotes in a batch
+  try{
+    const q = await fetchQuotes(symbols);
+    for (const sym of symbols){
+      const priceEl = document.getElementById(`p_${sym}`);
+      const pctEl = document.getElementById(`pc_${sym}`);
+      if (!priceEl || !pctEl) continue;
+
+      const row = q[sym];
+      if (!row){
+        priceEl.textContent = "—";
+        pctEl.textContent = "—";
+        pctEl.style.color = "";
+        continue;
       }
 
-      // Header
-      const companies = (DASH.companies || []);
-      const inScopeCount = companies.filter(x=>x.in_scope).length;
-      document.getElementById("subline").textContent =
-        `Tracking ${companies.length} companies (in scope: ${inScopeCount})`;
-
-      document.getElementById("genStamp").textContent = "Generated: " + (DASH.generated_at || "--");
-      // If you later add a DB timestamp into JSON, set it here. For now we show "--".
-      document.getElementById("dbStamp").textContent = "DB Updated: " + (DASH.db_updated_at || "--");
-
-      // Events
-      const ev = (DASH.events || []).slice(0, 12);
-      const evBody = document.getElementById("eventsBody");
-      if(ev.length === 0){
-        evBody.innerHTML = `<tr><td class="muted" colspan="4">No state transitions recorded</td></tr>`;
-      } else {
-        evBody.innerHTML = ev.map(e=>{
-          const c = COMP_BY_ID.get(e.company_id) || {};
-          const nm = c.name || e.company_id || "";
-          const dt = e.as_of || "";
-          const tr = `${e.prev_state || ""} → ${e.new_state || ""}`;
-          return `<tr>
-            <td><span class="tag">${esc(c.ticker || e.company_id || "")}</span></td>
-            <td class="muted">${esc(nm)}</td>
-            <td class="muted" style="font-family:var(--mono)">${esc(dt)}</td>
-            <td style="font-family:var(--mono)">${esc(tr)}</td>
-          </tr>`;
-        }).join("");
-      }
-
-      // Rows
-      const raw = (DASH.latest_state || []);
-      let rows = raw.map(buildRow);
-
-      // Filters
-      const q = document.getElementById("search").value.trim().toLowerCase();
-      const scope = document.getElementById("scopeSel").value;
-      const state = document.getElementById("stateSel").value;
-      const sort = document.getElementById("sortSel").value;
-
-      if(q){
-        rows = rows.filter(r =>
-          (r.ticker||"").toLowerCase().includes(q) ||
-          (r.company||"").toLowerCase().includes(q) ||
-          (r.bucket||"").toLowerCase().includes(q)
-        );
-      }
-
-      if(scope !== "all"){
-        rows = rows.filter(r => (scope === "in" ? r.scopeText === "IN" : r.scopeText === "OUT"));
-      }
-
-      if(state !== "all"){
-        rows = rows.filter(r => r.state === state);
-      }
-
-      rows = sortRows(rows, sort);
-
-      const body = document.getElementById("rowsBody");
-      if(rows.length === 0){
-        body.innerHTML = `<tr><td class="muted" colspan="12">No matches</td></tr>`;
-        return;
-      }
-
-      body.innerHTML = rows.map(r=>{
-        const c1 = r.c1 ? "flag" : "ok";
-        const c2 = r.c2 ? "flag" : "ok";
-        const c3 = r.c3 ? "flag" : "ok";
-        const c4 = r.c4 ? "flag" : "ok";
-
-        const lp = (r.livePrice === null || r.livePrice === undefined) ? "--" : Number(r.livePrice).toFixed(2);
-
-        return `<tr>
-          <td class="muted">${esc(r.company)}</td>
-          <td><span class="tag">${esc(r.ticker)}</span></td>
-          <td class="muted">${esc(r.bucket)}</td>
-          <td><span class="state">${esc(r.state)}</span></td>
-          <td><span class="badge ${esc(r.pressureCls)}">${esc(r.pressureText)}</span></td>
-          <td><span class="badge ${c1}">${r.c1 ? "FLAG" : "OK"}</span></td>
-          <td><span class="badge ${c2}">${r.c2 ? "FLAG" : "OK"}</span></td>
-          <td><span class="badge ${c3}">${r.c3 ? "FLAG" : "OK"}</span></td>
-          <td><span class="badge ${c4}">${r.c4 ? "FLAG" : "OK"}</span></td>
-          <td style="font-family:var(--mono)">${esc(lp)}</td>
-          <td class="${r.livePct === null || r.livePct === undefined ? "muted" : (r.livePct >= 0 ? "pctUp" : "pctDn")}" style="font-family:var(--mono)">
-            ${esc(fmtPct(r.livePct))}
-          </td>
-          <td class="${r.scopeText==="IN" ? "pctUp" : "muted"}" style="font-family:var(--mono)">${esc(r.scopeText)}</td>
-        </tr>`;
-      }).join("");
+      priceEl.textContent = fmtPrice(row.price);
+      const pctText = fmtPct(row.pct);
+      pctEl.textContent = pctText;
+      const pctNum = Number(row.pct);
+      pctEl.style.color = Number.isFinite(pctNum) ? (pctNum >= 0 ? "var(--good)" : "var(--bad)") : "";
     }
+  }catch(e){
+    // Do not kill the UI for quote failures
+    console.warn("Quote refresh failed", e);
+  }
 
-    async function loadDashboard(){
-      setErr("");
-      try{
-        const res = await fetch(DASHBOARD_URL, { cache: "no-store" });
-        if(!res.ok) throw new Error("dashboard.json HTTP " + res.status);
-        DASH = await res.json();
-
-        // Build company map
-        COMP_BY_ID = new Map();
-        for(const c of (DASH.companies || [])){
-          COMP_BY_ID.set(c.company_id, c);
-          if(c.ticker) COMP_BY_ID.set(c.ticker, c);
-        }
-
-        render();
-      } catch(e){
-        setErr("Connection failed (dashboard.json). " + e.message);
-        document.getElementById("eventsBody").innerHTML =
-          `<tr><td class="muted" colspan="4">Failed to fetch</td></tr>`;
-        document.getElementById("rowsBody").innerHTML =
-          `<tr><td class="muted" colspan="12">Failed to fetch</td></tr>`;
-      }
+  // 2) 30D charts per symbol (throttled a bit)
+  // This is intentionally slower, to avoid hammering a proxy.
+  for (const sym of symbols){
+    const cv = document.getElementById(`cv_${sym}`);
+    if (!cv) continue;
+    try{
+      const series = await fetchChart30D(sym);
+      renderSpark(cv, series);
+    }catch(e){
+      // keep it graceful
+      renderSpark(cv, null);
     }
+    await new Promise(res => setTimeout(res, 120)); // gentle pacing
+  }
+}
 
-    function setLiveStatus(mode, msg){
-      const el = document.getElementById("liveStatus");
-      el.classList.remove("ok","bad");
-      if(mode === "ok"){ el.classList.add("ok"); }
-      if(mode === "bad"){ el.classList.add("bad"); }
-      el.innerHTML = `<span class="dot"></span>${esc(msg)}`;
-    }
+async function loadDashboard(){
+  const r = await fetch("./dashboard.json", { cache: "no-store" });
+  if (!r.ok) throw new Error(`dashboard.json ${r.status}`);
+  const dash = await r.json();
+  return dash;
+}
 
-    async function refreshLiveQuotes(){
-      if(!DASH) return;
+function hydrate(){
+  COMP_BY_ID = buildCompanyMap(DASH);
 
-      // Only pull live quotes for MONITOR rows (change if you want)
-      const stateRows = (DASH.latest_state || []);
-      const symbols = [];
+  const latest = dedupeLatestState(DASH.latest_state || []);
+  COMPANY_ROWS = latest.map(r => {
+    const c = COMP_BY_ID[r.company_id] || {};
+    const enriched = {
+      ...r,
+      company: c,
+      pressure: pressureFromRow(r),
+    };
+    return enriched;
+  });
 
-      for(const r of stateRows){
-        if((r.state || "") !== "MONITOR") continue;
-        const c = COMP_BY_ID.get(r.company_id) || {};
-        if(c.ticker) symbols.push(c.ticker);
-      }
+  const tracked = (DASH.companies || []).length;
+  const inScope = (DASH.companies || []).filter(c => !!c.in_scope).length;
+  document.getElementById("subtitle").textContent = `Tracking ${tracked} companies (in scope: ${inScope})`;
 
-      if(symbols.length === 0){
-        setLiveStatus("bad","Live quotes (no MONITOR tickers)");
-        return;
-      }
+  document.getElementById("genStamp").textContent = `Generated: ${safeText(DASH.generated_at || "--")}`;
+  // If you later add a DB timestamp to dashboard.json, set it here:
+  document.getElementById("dbStamp").textContent = `DB Updated: ${safeText(DASH.db_updated_at || "--")}`;
 
-      const csv = symbols.join(",");
-      const url = YAHOO_QUOTE(csv);
+  fillStateOptions();
+  renderEvents();
+  applyFilters();
+}
 
-      try{
-        const res = await fetch(url, { cache: "no-store" });
-        if(!res.ok) throw new Error("quote HTTP " + res.status);
-        const data = await res.json();
+function wire(){
+  ["q","scopeSel","stateSel","sortSel"].forEach(id => {
+    document.getElementById(id).addEventListener("input", applyFilters);
+    document.getElementById(id).addEventListener("change", applyFilters);
+  });
+}
 
-        const results = (((data||{}).quoteResponse||{}).result || []);
-        const now = new Date().toISOString();
+(async function boot(){
+  try{
+    wire();
+    DASH = await loadDashboard();
+    hydrate();
 
-        for(const q of results){
-          const sym = q.symbol;
-          if(!sym) continue;
+    // initial live pull
+    refreshLive();
 
-          const price = (q.regularMarketPrice ?? null);
-          const pct = (q.regularMarketChangePercent ?? null);
-
-          LIVE.set(sym, {
-            price: price === null ? null : Number(price),
-            changePercent: pct === null ? null : Number(pct),
-            time: now
-          });
-        }
-
-        setLiveStatus("ok","Live quotes (Yahoo)");
-        render();
-      } catch(e){
-        // Key point: do NOT kill the dashboard if live quotes fail.
-        setLiveStatus("bad","Live quotes unavailable");
-        // keep rendering static dashboard
-        render();
-      }
-    }
-
-    function wire(){
-      ["search","scopeSel","stateSel","sortSel"].forEach(id=>{
-        document.getElementById(id).addEventListener("input", render);
-        document.getElementById(id).addEventListener("change", render);
-      });
-    }
-
-    (async function boot(){
-      wire();
-      await loadDashboard();
-      await refreshLiveQuotes();
-      setInterval(refreshLiveQuotes, LIVE_REFRESH_MS);
-    })();
-  </script>
+    // refresh quotes periodically; charts less frequently because they're heavier
+    setInterval(() => {
+      refreshLive();
+    }, 60 * 1000);
+  }catch(e){
+    console.error(e);
+    document.getElementById("globalError").style.display = "block";
+    document.getElementById("globalError").textContent = "Connection failed";
+    document.getElementById("eventsBody").innerHTML = `<tr><td colspan="4" style="color:var(--bad);padding:14px 12px;font-weight:800">Failed to fetch</td></tr>`;
+    document.getElementById("stateBody").innerHTML = `<tr><td colspan="13" style="color:var(--bad);padding:14px 12px;font-weight:800">Failed to fetch</td></tr>`;
+  }
+})();
+</script>
 </body>
 </html>
