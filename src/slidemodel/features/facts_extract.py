@@ -1,85 +1,177 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
+
+QuarterPoint = Tuple[str, float]  # (period_end_date, value)
 
 
-@dataclass
-class SeriesPoint:
-    end: str
-    val: float
-    form: str
+def safe_float(v: Any) -> Optional[float]:
+    try:
+        x = float(v)
+    except Exception:
+        return None
+    if x != x:  # NaN
+        return None
+    return x
 
 
-def _iter_unit_points(tag_obj: Dict[str, Any]) -> Iterable[SeriesPoint]:
+def safe_div(a: float, b: float) -> Optional[float]:
+    try:
+        if b == 0:
+            return None
+        return a / b
+    except Exception:
+        return None
+
+
+def pct_change(prev: float, curr: float) -> Optional[float]:
+    denom = abs(prev)
+    if denom == 0:
+        return None
+    return ((curr - prev) / denom) * 100.0
+
+
+def _normalize_us_gaap(obj: Any) -> Dict[str, Any]:
     """
-    SEC companyfacts structure:
-      facts['us-gaap'][TAG]['units'][UNIT] = [{end, val, form, fy, fp, ...}, ...]
-    We prefer USD for income statement lines.
+    Accept any of these shapes and return the us-gaap dict:
+      1) full SEC companyfacts JSON:  {"facts": {"us-gaap": {...}}}
+      2) facts dict:                  {"us-gaap": {...}}
+      3) us-gaap dict already:        {...tag->tag_obj...}
     """
-    units = (tag_obj or {}).get("units", {}) or {}
+    if not isinstance(obj, dict):
+        return {}
 
-    # Prefer USD; if not present, fall back to any unit.
-    preferred_units = []
-    if "USD" in units:
-        preferred_units.append("USD")
-    preferred_units.extend([u for u in units.keys() if u != "USD"])
+    # Full payload shape
+    if "facts" in obj and isinstance(obj.get("facts"), dict):
+        facts = obj.get("facts", {})
+        if isinstance(facts.get("us-gaap"), dict):
+            return facts["us-gaap"]
 
-    for unit in preferred_units:
-        for p in units.get(unit, []) or []:
-            end = p.get("end")
-            val = p.get("val")
-            form = p.get("form")
-            if not end or val is None or form is None:
-                continue
-            try:
-                fval = float(val)
-            except Exception:
-                continue
-            yield SeriesPoint(end=str(end), val=fval, form=str(form))
+    # Facts-only shape
+    if isinstance(obj.get("us-gaap"), dict):
+        return obj["us-gaap"]
+
+    # Already us-gaap shape (heuristic: contains tag dicts with "units")
+    # We just return it as-is.
+    return obj
 
 
-def _quarterly_series_from_tag(tag_obj: Dict[str, Any]) -> List[SeriesPoint]:
-    """
-    Return latest quarterly-like datapoints, de-duped by 'end', sorted ascending by end.
-    Keep 10-Q and 10-K. (10-K includes annual, but still useful if quarterly isn't there.)
-    """
-    pts = list(_iter_unit_points(tag_obj))
+def _is_quarterish(item: Dict[str, Any]) -> bool:
+    form = str(item.get("form") or "")
+    fp = str(item.get("fp") or "")
 
-    # Keep only primary filings
-    pts = [p for p in pts if p.form in ("10-Q", "10-K")]
+    # Allow amended forms too
+    ok_form = (
+        form.startswith("10-Q")
+        or form.startswith("10-K")
+        or form.startswith("20-F")
+    )
 
-    # De-dupe by end date: keep the last occurrence
-    by_end: Dict[str, SeriesPoint] = {}
-    for p in pts:
-        by_end[p.end] = p
+    # Prefer quarterly points if fp is Q*
+    # But keep FY/10-K points too (some series use FY for Q4-ish)
+    ok_fp = fp.startswith("Q") or fp == "FY" or fp == ""
 
-    out = list(by_end.values())
-    out.sort(key=lambda x: x.end)
-    return out
+    return ok_form and ok_fp
 
 
-def pick_tag_series(facts: Dict[str, Any], tags: List[str]) -> Tuple[str, List[SeriesPoint]]:
-    """
-    Try tags in order and return (chosen_tag, quarterly_series_points).
-    Raise KeyError if none found.
-    """
-    usgaap = (facts or {}).get("facts", {}).get("us-gaap", {}) or {}
+def _extract_points_from_tag_obj(tag_obj: Dict[str, Any]) -> List[QuarterPoint]:
+    units = tag_obj.get("units", {})
+    if not isinstance(units, dict) or not units:
+        return []
 
-    for t in tags:
-        obj = usgaap.get(t)
-        if not obj:
+    preferred_units = ["USD", "USD/shares", "shares", "pure"]
+    unit_key = None
+
+    for k in preferred_units:
+        if k in units and isinstance(units[k], list) and units[k]:
+            unit_key = k
+            break
+
+    if unit_key is None:
+        for k, arr in units.items():
+            if isinstance(arr, list) and arr:
+                unit_key = k
+                break
+
+    if unit_key is None:
+        return []
+
+    raw = units.get(unit_key, [])
+    if not isinstance(raw, list):
+        return []
+
+    by_end: Dict[str, Dict[str, Any]] = {}
+    for item in raw:
+        if not isinstance(item, dict):
             continue
-        series = _quarterly_series_from_tag(obj)
-        if len(series) >= 2:
-            return t, series
 
-    raise KeyError(f"No series found for tags: {tags}")
+        if not _is_quarterish(item):
+            continue
+
+        end = item.get("end")
+        val = safe_float(item.get("val"))
+        if not end or val is None:
+            continue
+
+        existing = by_end.get(end)
+        if existing is None:
+            by_end[end] = item
+            continue
+
+        filed_new = str(item.get("filed") or "")
+        filed_old = str(existing.get("filed") or "")
+        if filed_new and (not filed_old or filed_new > filed_old):
+            by_end[end] = item
+
+    points: List[QuarterPoint] = []
+    for end, item in by_end.items():
+        val = safe_float(item.get("val"))
+        if val is None:
+            continue
+        points.append((end, float(val)))
+
+    points.sort(key=lambda x: x[0])
+    return points
 
 
-def series_values(series: List[SeriesPoint]) -> List[float]:
-    return [p.val for p in series]
+def quarterly_points(facts_or_tag_obj: Dict[str, Any], tag: Optional[str] = None) -> List[QuarterPoint]:
+    """
+    Two calling styles:
+      quarterly_points(any_facts_shape, "Revenues")
+      quarterly_points(tag_obj)
+
+    This function is intentionally defensive because different parts of the pipeline
+    may pass different slices of the SEC JSON.
+    """
+    if tag is None:
+        if not isinstance(facts_or_tag_obj, dict):
+            return []
+        return _extract_points_from_tag_obj(facts_or_tag_obj)
+
+    us_gaap = _normalize_us_gaap(facts_or_tag_obj)
+    tag_obj = us_gaap.get(tag)
+    if not isinstance(tag_obj, dict):
+        return []
+    return _extract_points_from_tag_obj(tag_obj)
 
 
-def series_ends(series: List[SeriesPoint]) -> List[str]:
-    return [p.end for p in series]
+def latest_n_quarters(series: Sequence[QuarterPoint], n: int) -> List[QuarterPoint]:
+    if not series or n <= 0:
+        return []
+    return list(series[-n:])
+
+
+def pick_tag_series(facts: Dict[str, Any], tags: Sequence[str]) -> Tuple[str, List[QuarterPoint]]:
+    for t in tags:
+        s = quarterly_points(facts, t)
+        if len(s) >= 2:
+            return t, s
+    raise KeyError(f"No series found for tags: {list(tags)}")
+
+
+def last_end_date(*series_list: Sequence[QuarterPoint]) -> str:
+    last = ""
+    for s in series_list:
+        if s:
+            last = max(last, s[-1][0])
+    return last
