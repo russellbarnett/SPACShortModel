@@ -1,824 +1,569 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SPACShortModel</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-      :root{
-        --bg: #0a0b0f;
-        --bg-elevated: #12141a;
-        --bg-surface: #191c24;
-        --bg-hover: #1e222d;
-        --card: linear-gradient(135deg, rgba(25, 28, 36, 0.9) 0%, rgba(18, 20, 26, 0.95) 100%);
-        --card-border: rgba(255, 255, 255, 0.06);
-        --card-glow: rgba(99, 102, 241, 0.08);
-
-        --text: #f1f5f9;
-        --text-secondary: #94a3b8;
-        --text-muted: #64748b;
-        --text-dim: #475569;
-
-        --line: rgba(255, 255, 255, 0.06);
-        --line-strong: rgba(255, 255, 255, 0.1);
-
-        --accent: #6366f1;
-        --accent-glow: rgba(99, 102, 241, 0.3);
-        --accent-soft: rgba(99, 102, 241, 0.15);
-
-        --success: #10b981;
-        --success-bg: rgba(16, 185, 129, 0.12);
-        --success-border: rgba(16, 185, 129, 0.25);
-
-        --danger: #f43f5e;
-        --danger-bg: rgba(244, 63, 94, 0.12);
-        --danger-border: rgba(244, 63, 94, 0.25);
-
-        --warning: #f59e0b;
-        --warning-bg: rgba(245, 158, 11, 0.12);
-        --warning-border: rgba(245, 158, 11, 0.25);
-
-        --neutral-bg: rgba(100, 116, 139, 0.12);
-        --neutral-border: rgba(100, 116, 139, 0.25);
-
-        --p0: #10b981;
-        --p1: #f59e0b;
-        --p2: #f97316;
-        --p3: #f43f5e;
-        --p4: #dc2626;
-
-        --radius: 12px;
-        --radius-lg: 16px;
-        --radius-sm: 8px;
-
-        --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
-        --shadow: 0 4px 24px rgba(0,0,0,0.4);
-        --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
-        --shadow-glow: 0 0 40px var(--card-glow);
-
-        --font-display: 'Outfit', -apple-system, sans-serif;
-        --font-mono: 'JetBrains Mono', monospace;
-
-        --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      *{box-sizing:border-box}
-
-      html{ scroll-behavior: smooth; }
-      html, body{ height:auto; overflow-y:auto; }
-
-      body{
-        margin:0;
-        font-family: var(--font-display);
-        background: var(--bg);
-        color: var(--text);
-        line-height: 1.5;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-
-      body::before {
-        content: '';
-        position: fixed;
-        inset: 0;
-        background-image:
-          linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
-        background-size: 60px 60px;
-        pointer-events: none;
-        z-index: 0;
-      }
-
-      body::after {
-        content: '';
-        position: fixed;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(ellipse at 30% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-                    radial-gradient(ellipse at 70% 80%, rgba(244, 63, 94, 0.05) 0%, transparent 50%);
-        pointer-events: none;
-        z-index: 0;
-      }
-
-      .wrap{
-        position: relative;
-        z-index: 1;
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 40px 24px 60px;
-      }
-
-      header{ margin-bottom: 32px; }
-
-      .logo-mark {
-        display: inline-flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 8px;
-      }
-
-      .logo-icon {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, var(--accent) 0%, #818cf8 100%);
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 20px var(--accent-glow);
-      }
-
-      .logo-icon svg { width: 22px; height: 22px; fill: white; }
-
-      h1{
-        font-size: 48px;
-        font-weight: 800;
-        line-height: 1.1;
-        letter-spacing: -0.03em;
-        margin: 0;
-        background: linear-gradient(135deg, var(--text) 0%, var(--text-secondary) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-
-      .sub{
-        color: var(--text-muted);
-        font-size: 15px;
-        font-weight: 400;
-        margin: 8px 0 0;
-        letter-spacing: 0.01em;
-      }
-
-      @media (max-width: 980px){
-        h1{font-size: 36px;}
-      }
-
-      .stack{
-        display:flex;
-        flex-direction: column;
-        gap: 24px;
-        align-items: stretch;
-      }
-
-      .card{
-        background: var(--card);
-        border: 1px solid var(--card-border);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow), var(--shadow-glow);
-        backdrop-filter: blur(20px);
-        overflow: visible;
-      }
-
-      .card-head{
-        padding: 24px 24px 20px;
-        border-bottom: 1px solid var(--line);
-        position: relative;
-      }
-
-      .card-title{
-        font-size: 20px;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        margin: 0 0 6px;
-        color: var(--text);
-      }
-
-      .small{
-        font-size: 12px;
-        color: var(--text-muted);
-        letter-spacing: 0.02em;
-      }
-
-      .controls{
-        display:flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        align-items: center;
-      }
-
-      .control{
-        display:flex;
-        align-items:center;
-        gap: 10px;
-        padding: 10px 14px;
-        border: 1px solid var(--line-strong);
-        border-radius: var(--radius-sm);
-        background: var(--bg-surface);
-        min-height: 44px;
-        transition: all var(--transition);
-      }
-
-      .control:focus-within {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px var(--accent-soft);
-      }
-
-      .control .small {
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--text-dim);
-        font-weight: 600;
-      }
-
-      .control input, .control select{
-        border:none;
-        outline:none;
-        font-size: 14px;
-        font-family: var(--font-display);
-        min-width: 160px;
-        background: transparent;
-        color: var(--text);
-      }
-
-      .control select option {
-        background: var(--bg-surface);
-        color: var(--text);
-      }
-
-      .meta-row{
-        display:flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 12px;
-        align-items: center;
-      }
-
-      .meta-pill{
-        color: var(--text-muted);
-        font-size: 12px;
-        font-family: var(--font-mono);
-        padding: 6px 10px;
-        background: var(--bg-surface);
-        border-radius: var(--radius-sm);
-        border: 1px solid var(--line);
-      }
-
-      .meta-pill b{
-        color: var(--text-secondary);
-        font-weight: 700;
-      }
-
-      .table-wrap{
-        overflow-x: auto;
-        overflow-y: visible;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      table{
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 0;
-        table-layout: auto;
-      }
-
-      th, td{
-        padding: 14px 16px;
-        border-bottom: 1px solid var(--line);
-        vertical-align: middle;
-        text-align: left;
-        white-space: nowrap;
-      }
-
-      th{
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--text-dim);
-        background: var(--bg-elevated);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-      }
-
-      tbody tr:hover{ background: var(--bg-hover); }
-
-      .ticker{
-        font-family: var(--font-mono);
-        font-weight: 700;
-        font-size: 13px;
-        letter-spacing: .04em;
-        color: var(--text);
-      }
-
-      .name{
-        font-weight: 600;
-        color: var(--text);
-        max-width: 360px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .muted{ color: var(--text-muted); }
-
-      .chip{
-        display:inline-flex;
-        align-items:center;
-        gap: 6px;
-        padding: 5px 10px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 11px;
-        letter-spacing: .03em;
-        text-transform: uppercase;
-        border: 1px solid var(--neutral-border);
-        background: var(--neutral-bg);
-        color: var(--text-secondary);
-        white-space: nowrap;
-      }
-
-      .chip.ok{ background: var(--success-bg); border-color: var(--success-border); color: var(--success); }
-      .chip.bad{ background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger); }
-      .chip.warn{ background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning); }
-
-      .dot{
-        width: 8px;
-        height: 8px;
-        border-radius: 999px;
-        display:inline-block;
-        box-shadow: 0 0 8px currentColor;
-      }
-
-      .spark{
-        width: 100px;
-        height: 28px;
-        display:block;
-      }
-
-      .spark path{
-        fill: none;
-        stroke-width: 1.5;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-
-      .spark .baseline{
-        stroke: var(--line-strong);
-        stroke-width: 1;
-        stroke-dasharray: 2 2;
-      }
-
-      .spark .line { stroke: var(--accent); filter: drop-shadow(0 0 4px var(--accent-glow)); }
-      .spark .line.up { stroke: var(--success); filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.4)); }
-      .spark .line.down { stroke: var(--danger); filter: drop-shadow(0 0 4px rgba(244, 63, 94, 0.4)); }
-
-      .priceCell{
-        display:flex;
-        gap: 12px;
-        align-items:center;
-      }
-
-      .pct{
-        font-family: var(--font-mono);
-        font-weight: 600;
-        font-size: 12px;
-        padding: 4px 8px;
-        border-radius: 4px;
-      }
-
-      .pct.up{ color: var(--success); background: var(--success-bg); }
-      .pct.down{ color: var(--danger); background: var(--danger-bg); }
-      .pct.flat{ color: var(--text-muted); background: var(--neutral-bg); }
-
-      .footer{
-        padding: 20px 24px;
-        border-top: 1px solid var(--line);
-        background: var(--bg-elevated);
-        border-bottom-left-radius: var(--radius-lg);
-        border-bottom-right-radius: var(--radius-lg);
-      }
-
-      .defs{
-        display:flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-
-      .defs li{
-        border: 1px solid var(--line-strong);
-        background: var(--bg-surface);
-        border-radius: var(--radius-sm);
-        padding: 8px 12px;
-        font-size: 12px;
-        color: var(--text-secondary);
-        font-family: var(--font-mono);
-      }
-
-      .defs b{
-        display:inline-block;
-        min-width: 28px;
-        color: var(--accent);
-        font-weight: 700;
-      }
-
-      .scope-in {
-        color: var(--success);
-        font-weight: 700;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-
-      .scope-out {
-        color: var(--text-dim);
-        font-weight: 600;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-
-      .state-chip {
-        background: var(--accent-soft);
-        border-color: rgba(99, 102, 241, 0.3);
-        color: var(--accent);
-      }
-
-      .event-arrow { color: var(--text-dim); margin: 0 4px; }
-
-      .tight th, .tight td{ padding: 12px 14px; }
-
-      @media (max-width: 980px){
-        .col-bucket{ display:none; }
-        .spark{ width: 80px; }
-        .col-name{ display:none; }
-      }
-      @media (max-width: 720px){
-        .col-asof{ display:none; }
-        .col-price{ display:none; }
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="wrap">
-      <header>
-        <div class="logo-mark">
-          <div class="logo-icon">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 13h2v8H3v-8zm4-5h2v13H7V8zm4-5h2v18h-2V3zm4 8h2v10h-2V11zm4-3h2v13h-2V8z"/>
-            </svg>
-          </div>
-        </div>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SPACShortModel</title>
+  <style>
+    :root{
+      --bg0:#070913;
+      --bg1:#0b1026;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.04);
+      --line:rgba(255,255,255,.08);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.60);
+      --muted2:rgba(255,255,255,.45);
+      --good:#44d18d;
+      --bad:#ff5a7a;
+      --warn:#f7b64c;
+      --pill:rgba(130,140,255,.16);
+      --pillBorder:rgba(130,140,255,.35);
+      --shadow: 0 18px 45px rgba(0,0,0,.55);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 12% 10%, rgba(110,105,255,.16), transparent 60%),
+        radial-gradient(700px 500px at 80% 35%, rgba(80,255,170,.10), transparent 65%),
+        radial-gradient(900px 600px at 40% 90%, rgba(255,85,160,.08), transparent 65%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      min-height:100vh;
+    }
+    .wrap{max-width:1180px;margin:0 auto;padding:28px 18px 70px}
+    .top{
+      display:flex;align-items:flex-start;gap:16px;margin-bottom:18px
+    }
+    .logo{
+      width:40px;height:40px;border-radius:12px;
+      background:linear-gradient(180deg, rgba(140,150,255,.9), rgba(110,105,255,.55));
+      box-shadow:0 10px 25px rgba(110,105,255,.22);
+      display:grid;place-items:center;flex:0 0 auto
+    }
+    .logo svg{opacity:.9}
+    h1{margin:0;font-size:52px;letter-spacing:-.02em}
+    .sub{margin-top:6px;color:var(--muted);font-size:15px}
+    .err{margin-top:6px;color:var(--bad);font-size:14px}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+      overflow:hidden;
+      margin-top:16px;
+    }
+    .card .hd{
+      padding:18px 18px 10px;
+      display:flex;align-items:flex-end;justify-content:space-between;gap:12px
+    }
+    .card h2{margin:0;font-size:22px}
+    .card .hint{color:var(--muted2);font-size:12px;margin-top:6px}
+    .pillrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .pill{
+      border-radius:999px;
+      padding:7px 10px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      font-size:12px;
+      font-family:var(--mono);
+    }
+    .pill.live{border-color:rgba(247,182,76,.35);background:rgba(247,182,76,.08)}
+    .pill.ok{border-color:rgba(68,209,141,.35);background:rgba(68,209,141,.08)}
+    .pill.bad{border-color:rgba(255,90,122,.35);background:rgba(255,90,122,.08)}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;padding:0 18px 18px}
+    .controls{
+      padding:0 18px 14px;
+      display:grid;
+      grid-template-columns: 1.2fr 180px 180px 240px;
+      gap:10px;
+      align-items:center;
+    }
+    .input, select{
+      width:100%;
+      border-radius:12px;
+      padding:12px 12px;
+      background:rgba(0,0,0,.18);
+      border:1px solid var(--line);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+    }
+    select{cursor:pointer}
+    .tblwrap{overflow:auto;border-top:1px solid var(--line)}
+    table{width:100%;border-collapse:collapse;min-width:980px}
+    th, td{padding:12px 12px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+    th{
+      font-size:12px;color:var(--muted2);
+      font-weight:600;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    td{font-size:14px;color:rgba(255,255,255,.86)}
+    .tag{
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:var(--mono);
+      font-size:12px;
+      padding:6px 10px;border-radius:10px;
+      border:1px solid var(--pillBorder);
+      background:var(--pill);
+      color:rgba(190,200,255,.92);
+      white-space:nowrap;
+    }
+    .state{
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:var(--mono);font-size:12px;
+      padding:6px 10px;border-radius:10px;border:1px solid rgba(150,160,255,.30);
+      background:rgba(110,105,255,.14);
+      color:rgba(215,220,255,.95);
+    }
+    .badge{
+      display:inline-flex;align-items:center;justify-content:center;
+      font-family:var(--mono);font-size:11px;
+      padding:5px 9px;border-radius:9px;border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.16);
+      min-width:46px;
+      white-space:nowrap;
+    }
+    .ok{border-color:rgba(68,209,141,.25);background:rgba(68,209,141,.10);color:rgba(120,255,190,.95)}
+    .flag{border-color:rgba(255,90,122,.25);background:rgba(255,90,122,.12);color:rgba(255,160,178,.95)}
+    .muted{color:var(--muted)}
+    .right{display:flex;justify-content:flex-end}
+    .pctUp{color:rgba(120,255,190,.95);font-family:var(--mono)}
+    .pctDn{color:rgba(255,160,178,.95);font-family:var(--mono)}
+    .foot{
+      padding:12px 18px 18px;
+      color:var(--muted2);
+      font-size:12px;
+    }
+    .legend{
+      padding:0 18px 18px;
+      display:flex;gap:10px;flex-wrap:wrap;
+    }
+    .legend .chip{
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      padding:10px 12px;
+      font-size:12px;
+      color:rgba(255,255,255,.74);
+      font-family:var(--mono);
+    }
+    .dot{
+      width:8px;height:8px;border-radius:99px;background:var(--warn);
+      display:inline-block;margin-right:8px;vertical-align:middle
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="logo" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M4 19V5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M8 19V11" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 19V7" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M16 19V13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M20 19V9" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div style="flex:1">
         <h1>SPACShortModel</h1>
-        <p class="sub" id="subtitle">Loading...</p>
-        <div class="meta-row">
-          <div class="meta-pill"><b>Last generated</b>: <span id="generated">--</span></div>
-          <div class="meta-pill"><b>Companies</b>: <span id="companyCount">--</span></div>
-        </div>
-      </header>
-
-      <div class="stack">
-        <section class="card">
-          <div class="card-head">
-            <h2 class="card-title">Recent Events</h2>
-            <div class="small">State transitions are logged as discrete events</div>
-          </div>
-
-          <div class="table-wrap">
-            <table class="tight">
-              <thead>
-                <tr>
-                  <th style="width: 120px;">Ticker</th>
-                  <th class="col-name">Company</th>
-                  <th style="width: 140px;">Date</th>
-                  <th>Transition</th>
-                </tr>
-              </thead>
-              <tbody id="events"></tbody>
-            </table>
-          </div>
-
-          <div class="footer">
-            <div class="small" style="color: var(--text-dim);">
-              Tip: if you see a company missing a name, it means SEC didn’t return one during export.
-            </div>
-          </div>
-        </section>
-
-        <section class="card">
-          <div class="card-head">
-            <div style="display:flex; gap:16px; align-items:baseline; flex-wrap:wrap;">
-              <h2 class="card-title" style="margin:0;">Current State</h2>
-            </div>
-
-            <div class="controls" style="margin-top:16px;">
-              <div class="control">
-                <span class="small">Search</span>
-                <input id="q" placeholder="Name, ticker, bucket..." />
-              </div>
-
-              <div class="control">
-                <span class="small">Scope</span>
-                <select id="scope">
-                  <option value="all">All</option>
-                  <option value="in">In Scope</option>
-                  <option value="out">Out of Scope</option>
-                </select>
-              </div>
-
-              <div class="control">
-                <span class="small">State</span>
-                <select id="stateFilter">
-                  <option value="all">All</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="table-wrap">
-            <table class="tight">
-              <thead>
-                <tr>
-                  <th style="width: 90px;">Ticker</th>
-                  <th class="col-name">Company</th>
-                  <th class="col-bucket" style="width: 220px;">Bucket</th>
-                  <th style="width: 130px;">State</th>
-                  <th class="col-asof" style="width: 100px;">As Of</th>
-                  <th style="width: 140px;">Pressure</th>
-                  <th style="width: 100px;">C1</th>
-                  <th style="width: 100px;">C2</th>
-                  <th style="width: 100px;">C3</th>
-                  <th style="width: 100px;">C4</th>
-                  <th class="col-price" style="width: 180px;">Price (1M)</th>
-                  <th style="width: 80px;">Scope</th>
-                </tr>
-              </thead>
-              <tbody id="rows"></tbody>
-            </table>
-          </div>
-
-          <div class="footer">
-            <ul class="defs">
-              <li><b>C1</b> Revenue or margin pressure (uses OpLoss fallback if Gross Profit missing)</li>
-              <li><b>C2</b> Capex spike vs baseline (if capex data exists)</li>
-              <li><b>C3</b> Persistence (repeat/ongoing stress signal)</li>
-              <li><b>C4</b> Strategic / financing stress signal</li>
-            </ul>
-            <div class="small" style="margin-top:12px; color: var(--text-dim);">
-              Pressure score is count of triggered conditions (C1–C4). Some companies will show fewer signals if SEC tags are missing.
-            </div>
-          </div>
-        </section>
+        <div class="sub" id="subline">Loading…</div>
+        <div class="err" id="errline" style="display:none"></div>
       </div>
     </div>
 
-    <script>
-      function safeInt(v){
-        const n = Number(v);
-        return Number.isFinite(n) ? n : 0;
+    <div class="card">
+      <div class="hd">
+        <div>
+          <h2>Recent Events</h2>
+          <div class="hint">State transitions are logged as discrete events</div>
+        </div>
+      </div>
+      <div class="tblwrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Company</th>
+              <th>Date</th>
+              <th>Transition</th>
+            </tr>
+          </thead>
+          <tbody id="eventsBody">
+            <tr><td class="muted" colspan="4">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="hd">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <h2 style="margin-right:4px">Current State</h2>
+          <span class="pill live" id="liveStatus"><span class="dot"></span>Live quotes</span>
+        </div>
+        <div class="pillrow">
+          <span class="pill" id="genStamp">Generated: --</span>
+          <span class="pill" id="dbStamp">DB Updated: --</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input class="input" id="search" placeholder="Ticker, company, bucket…" />
+
+        <select id="scopeSel">
+          <option value="all">All</option>
+          <option value="in">In scope</option>
+          <option value="out">Out of scope</option>
+        </select>
+
+        <select id="stateSel">
+          <option value="all">All states</option>
+          <option value="MONITOR">MONITOR</option>
+          <option value="NO_DATA">NO_DATA</option>
+          <option value="OUT_OF_SCOPE">OUT_OF_SCOPE</option>
+        </select>
+
+        <select id="sortSel">
+          <option value="pressure_desc">Pressure (high to low)</option>
+          <option value="pressure_asc">Pressure (low to high)</option>
+          <option value="ticker_asc">Ticker (A to Z)</option>
+          <option value="ticker_desc">Ticker (Z to A)</option>
+        </select>
+      </div>
+
+      <div class="tblwrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Ticker</th>
+              <th>Bucket</th>
+              <th>State</th>
+              <th>Pressure</th>
+              <th>C1</th>
+              <th>C2</th>
+              <th>C3</th>
+              <th>C4</th>
+              <th>Live Price</th>
+              <th>Live %</th>
+              <th>Scope</th>
+            </tr>
+          </thead>
+          <tbody id="rowsBody">
+            <tr><td class="muted" colspan="12">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="legend">
+        <div class="chip"><b>C1</b> Demand or margin pressure (revenue decel OR profitability deterioration)</div>
+        <div class="chip"><b>C2</b> Capex spike vs baseline</div>
+        <div class="chip"><b>C3</b> Burn persists + discretionary spend continues + no slope improvement</div>
+        <div class="chip"><b>C4</b> Strategic initiative language + no slope improvement</div>
+      </div>
+
+      <div class="foot">
+        Live quotes are fetched in your browser from Yahoo Finance (via a CORS proxy) and refresh automatically.
+        Fundamentals and conditions are generated nightly.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DASHBOARD_URL = "./dashboard.json";
+
+    // Yahoo quote endpoint (unofficial) + CORS proxy wrapper
+    const YAHOO_QUOTE = (symbolsCsv) =>
+      "https://api.allorigins.win/raw?url=" +
+      encodeURIComponent("https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + symbolsCsv);
+
+    const LIVE_REFRESH_MS = 30000;
+
+    let DASH = null;
+    let COMP_BY_ID = new Map();
+    let LIVE = new Map(); // ticker -> { price, changePercent, time }
+
+    function esc(s){
+      return (s ?? "").toString()
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function setErr(msg){
+      const el = document.getElementById("errline");
+      if(!msg){ el.style.display="none"; el.textContent=""; return; }
+      el.style.display="block";
+      el.textContent = msg;
+    }
+
+    function fmtPct(x){
+      if(x === null || x === undefined || Number.isNaN(x)) return "--";
+      const v = Number(x);
+      const s = (v >= 0 ? "+" : "") + v.toFixed(2) + "%";
+      return s;
+    }
+
+    function pressureLabel(c1,c2,c3,c4){
+      const score = (c1?1:0)+(c2?1:0)+(c3?1:0)+(c4?1:0);
+      if(score >= 2) return {txt: score + " ELEVATED", cls:"flag"};
+      if(score === 1) return {txt: score + " WATCH", cls:""};
+      return {txt: score + " STABLE", cls:"ok"};
+    }
+
+    function asBool(v){
+      return v === 1 || v === true || v === "1";
+    }
+
+    function sortRows(rows, mode){
+      const cp = rows.slice();
+      if(mode === "ticker_asc") cp.sort((a,b)=>a.ticker.localeCompare(b.ticker));
+      else if(mode === "ticker_desc") cp.sort((a,b)=>b.ticker.localeCompare(a.ticker));
+      else if(mode === "pressure_asc") cp.sort((a,b)=>a.pressureScore - b.pressureScore);
+      else cp.sort((a,b)=>b.pressureScore - a.pressureScore);
+      return cp;
+    }
+
+    function buildRow(r){
+      const c = COMP_BY_ID.get(r.company_id) || {};
+      const name = c.name || c.company_id || "";
+      const bucket = c.bucket || "";
+      const inScope = !!c.in_scope;
+
+      const c1 = asBool(r.condition_1);
+      const c2 = asBool(r.condition_2);
+      const c3 = asBool(r.condition_3);
+      const c4 = asBool(r.condition_4);
+
+      const pressureScore = (c1?1:0)+(c2?1:0)+(c3?1:0)+(c4?1:0);
+      const p = pressureLabel(c1,c2,c3,c4);
+
+      const live = LIVE.get(r.company_id) || LIVE.get(c.ticker) || null;
+      const livePrice = live ? live.price : null;
+      const livePct = live ? live.changePercent : null;
+
+      const pctCls = (livePct === null || livePct === undefined) ? "muted" : (livePct >= 0 ? "pctUp" : "pctDn");
+
+      return {
+        company: name,
+        ticker: c.ticker || r.company_id || "",
+        bucket,
+        state: r.state || "",
+        pressureScore,
+        pressureText: p.txt,
+        pressureCls: p.cls,
+        c1, c2, c3, c4,
+        livePrice,
+        livePct,
+        scopeText: inScope ? "IN" : "OUT"
+      };
+    }
+
+    function render(){
+      if(!DASH){
+        return;
       }
 
-      function ynChip(flag){
-        const on = !!flag;
-        if(on) return `<span class="chip bad">FLAG</span>`;
-        return `<span class="chip ok">OK</span>`;
+      // Header
+      const companies = (DASH.companies || []);
+      const inScopeCount = companies.filter(x=>x.in_scope).length;
+      document.getElementById("subline").textContent =
+        `Tracking ${companies.length} companies (in scope: ${inScopeCount})`;
+
+      document.getElementById("genStamp").textContent = "Generated: " + (DASH.generated_at || "--");
+      // If you later add a DB timestamp into JSON, set it here. For now we show "--".
+      document.getElementById("dbStamp").textContent = "DB Updated: " + (DASH.db_updated_at || "--");
+
+      // Events
+      const ev = (DASH.events || []).slice(0, 12);
+      const evBody = document.getElementById("eventsBody");
+      if(ev.length === 0){
+        evBody.innerHTML = `<tr><td class="muted" colspan="4">No state transitions recorded</td></tr>`;
+      } else {
+        evBody.innerHTML = ev.map(e=>{
+          const c = COMP_BY_ID.get(e.company_id) || {};
+          const nm = c.name || e.company_id || "";
+          const dt = e.as_of || "";
+          const tr = `${e.prev_state || ""} → ${e.new_state || ""}`;
+          return `<tr>
+            <td><span class="tag">${esc(c.ticker || e.company_id || "")}</span></td>
+            <td class="muted">${esc(nm)}</td>
+            <td class="muted" style="font-family:var(--mono)">${esc(dt)}</td>
+            <td style="font-family:var(--mono)">${esc(tr)}</td>
+          </tr>`;
+        }).join("");
       }
 
-      function pressureDot(score){
-        const s = safeInt(score);
-        let c = "var(--p0)";
-        if(s === 1) c = "var(--p1)";
-        if(s === 2) c = "var(--p2)";
-        if(s === 3) c = "var(--p3)";
-        if(s >= 4) c = "var(--p4)";
-        return `<span class="dot" style="background:${c}; color:${c}"></span>`;
+      // Rows
+      const raw = (DASH.latest_state || []);
+      let rows = raw.map(buildRow);
+
+      // Filters
+      const q = document.getElementById("search").value.trim().toLowerCase();
+      const scope = document.getElementById("scopeSel").value;
+      const state = document.getElementById("stateSel").value;
+      const sort = document.getElementById("sortSel").value;
+
+      if(q){
+        rows = rows.filter(r =>
+          (r.ticker||"").toLowerCase().includes(q) ||
+          (r.company||"").toLowerCase().includes(q) ||
+          (r.bucket||"").toLowerCase().includes(q)
+        );
       }
 
-      function pressureLabel(score){
-        const s = safeInt(score);
-        if(s === 0) return "Stable";
-        if(s === 1) return "Watch";
-        if(s === 2) return "Elevated";
-        if(s === 3) return "High";
-        return "Critical";
+      if(scope !== "all"){
+        rows = rows.filter(r => (scope === "in" ? r.scopeText === "IN" : r.scopeText === "OUT"));
       }
 
-      function svgSparkline(values, pctChange){
-        if(!Array.isArray(values) || values.length < 2) return "";
-        const w = 100, h = 28, pad = 4;
+      if(state !== "all"){
+        rows = rows.filter(r => r.state === state);
+      }
 
-        const clean = values.map(v => Number(v)).filter(v => Number.isFinite(v));
-        if(clean.length < 2) return "";
+      rows = sortRows(rows, sort);
 
-        let min = Math.min(...clean);
-        let max = Math.max(...clean);
-        if(min === max){ min -= 1; max += 1; }
+      const body = document.getElementById("rowsBody");
+      if(rows.length === 0){
+        body.innerHTML = `<tr><td class="muted" colspan="12">No matches</td></tr>`;
+        return;
+      }
 
-        const xStep = (w - pad*2) / (clean.length - 1);
-        const y = (v) => {
-          const t = (v - min) / (max - min);
-          return (h - pad) - t * (h - pad*2);
-        };
+      body.innerHTML = rows.map(r=>{
+        const c1 = r.c1 ? "flag" : "ok";
+        const c2 = r.c2 ? "flag" : "ok";
+        const c3 = r.c3 ? "flag" : "ok";
+        const c4 = r.c4 ? "flag" : "ok";
 
-        let d = "";
-        for(let i=0;i<clean.length;i++){
-          const x = pad + i * xStep;
-          const yy = y(clean[i]);
-          d += (i===0 ? "M" : " L") + x.toFixed(2) + " " + yy.toFixed(2);
+        const lp = (r.livePrice === null || r.livePrice === undefined) ? "--" : Number(r.livePrice).toFixed(2);
+
+        return `<tr>
+          <td class="muted">${esc(r.company)}</td>
+          <td><span class="tag">${esc(r.ticker)}</span></td>
+          <td class="muted">${esc(r.bucket)}</td>
+          <td><span class="state">${esc(r.state)}</span></td>
+          <td><span class="badge ${esc(r.pressureCls)}">${esc(r.pressureText)}</span></td>
+          <td><span class="badge ${c1}">${r.c1 ? "FLAG" : "OK"}</span></td>
+          <td><span class="badge ${c2}">${r.c2 ? "FLAG" : "OK"}</span></td>
+          <td><span class="badge ${c3}">${r.c3 ? "FLAG" : "OK"}</span></td>
+          <td><span class="badge ${c4}">${r.c4 ? "FLAG" : "OK"}</span></td>
+          <td style="font-family:var(--mono)">${esc(lp)}</td>
+          <td class="${r.livePct === null || r.livePct === undefined ? "muted" : (r.livePct >= 0 ? "pctUp" : "pctDn")}" style="font-family:var(--mono)">
+            ${esc(fmtPct(r.livePct))}
+          </td>
+          <td class="${r.scopeText==="IN" ? "pctUp" : "muted"}" style="font-family:var(--mono)">${esc(r.scopeText)}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    async function loadDashboard(){
+      setErr("");
+      try{
+        const res = await fetch(DASHBOARD_URL, { cache: "no-store" });
+        if(!res.ok) throw new Error("dashboard.json HTTP " + res.status);
+        DASH = await res.json();
+
+        // Build company map
+        COMP_BY_ID = new Map();
+        for(const c of (DASH.companies || [])){
+          COMP_BY_ID.set(c.company_id, c);
+          if(c.ticker) COMP_BY_ID.set(c.ticker, c);
         }
 
-        const baseY = y(clean[0]).toFixed(2);
-        const pct = Number(pctChange);
-        let lineClass = "line";
-        if(Number.isFinite(pct)) {
-          if(pct > 0.25) lineClass = "line up";
-          else if(pct < -0.25) lineClass = "line down";
-        }
+        render();
+      } catch(e){
+        setErr("Connection failed (dashboard.json). " + e.message);
+        document.getElementById("eventsBody").innerHTML =
+          `<tr><td class="muted" colspan="4">Failed to fetch</td></tr>`;
+        document.getElementById("rowsBody").innerHTML =
+          `<tr><td class="muted" colspan="12">Failed to fetch</td></tr>`;
+      }
+    }
 
-        return `
-          <svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
-            <path class="baseline" d="M${pad} ${baseY} L${w-pad} ${baseY}"></path>
-            <path class="${lineClass}" d="${d}"></path>
-          </svg>
-        `;
+    function setLiveStatus(mode, msg){
+      const el = document.getElementById("liveStatus");
+      el.classList.remove("ok","bad");
+      if(mode === "ok"){ el.classList.add("ok"); }
+      if(mode === "bad"){ el.classList.add("bad"); }
+      el.innerHTML = `<span class="dot"></span>${esc(msg)}`;
+    }
+
+    async function refreshLiveQuotes(){
+      if(!DASH) return;
+
+      // Only pull live quotes for MONITOR rows (change if you want)
+      const stateRows = (DASH.latest_state || []);
+      const symbols = [];
+
+      for(const r of stateRows){
+        if((r.state || "") !== "MONITOR") continue;
+        const c = COMP_BY_ID.get(r.company_id) || {};
+        if(c.ticker) symbols.push(c.ticker);
       }
 
-      function pctClass(p){
-        const n = Number(p);
-        if(!Number.isFinite(n)) return "flat";
-        if(n > 0.25) return "up";
-        if(n < -0.25) return "down";
-        return "flat";
+      if(symbols.length === 0){
+        setLiveStatus("bad","Live quotes (no MONITOR tickers)");
+        return;
       }
 
-      function fmtPct(p){
-        const n = Number(p);
-        if(!Number.isFinite(n)) return "n/a";
-        const sign = n > 0 ? "+" : "";
-        return `${sign}${n.toFixed(1)}%`;
-      }
+      const csv = symbols.join(",");
+      const url = YAHOO_QUOTE(csv);
 
-      function priceCell(row){
-        const p = row.price_1m;
-        if(!p || !Array.isArray(p.closes) || p.closes.length < 2){
-          return `<div class="priceCell"><span class="small muted">--</span></div>`;
-        }
-        const spark = svgSparkline(p.closes, p.pct_change);
-        const pct = fmtPct(p.pct_change);
-        const cls = pctClass(p.pct_change);
-        return `
-          <div class="priceCell">
-            ${spark}
-            <span class="pct ${cls}">${pct}</span>
-          </div>
-        `;
-      }
-
-      function buildStateOptions(rows){
-        const states = new Set(rows.map(r => String(r.state || "").trim()).filter(Boolean));
-        const sel = document.getElementById("stateFilter");
-        const current = sel.value || "all";
-        const opts = ["all", ...Array.from(states).sort()];
-        sel.innerHTML = opts.map(s => `<option value="${s}">${s === "all" ? "All" : s}</option>`).join("");
-        sel.value = opts.includes(current) ? current : "all";
-      }
-
-      function normalizeData(data){
-        const companiesById = new Map();
-        for(const c of (data.companies || [])){
-          companiesById.set(String(c.company_id), c);
-        }
-
-        const latest = (data.latest_state || []).map(ms => {
-          const company = companiesById.get(String(ms.company_id)) || {};
-          const inScope = !!company.in_scope;
-          const c1 = !!ms.condition_1;
-          const c2 = !!ms.condition_2;
-          const c3 = !!ms.condition_3;
-          const c4 = !!ms.condition_4;
-          const pressure = [c1,c2,c3,c4].reduce((a,b)=>a+(b?1:0),0);
-
-          return {
-            company_id: ms.company_id,
-            ticker: company.ticker || ms.ticker || ms.company_id,
-            name: company.name || "",
-            bucket: company.bucket || ms.bucket || "--",
-            in_scope: inScope ? 1 : 0,
-            as_of: ms.as_of || "",
-            state: ms.state || (inScope ? "MONITOR" : "OUT_OF_SCOPE"),
-            c1, c2, c3, c4,
-            pressure,
-            price_1m: ms.price_1m || null,
-          };
-        });
-
-        const events = (data.events || []).map(e => {
-          const company = companiesById.get(String(e.company_id)) || {};
-          return {
-            company_id: e.company_id,
-            ticker: company.ticker || e.company_id,
-            name: company.name || "",
-            as_of: e.as_of,
-            prev_state: e.prev_state,
-            new_state: e.new_state,
-          };
-        });
-
-        return { latest, events };
-      }
-
-      function renderLatest(rows){
-        const tbody = document.getElementById("rows");
-        tbody.innerHTML = rows.map(r => `
-          <tr>
-            <td class="ticker">${r.ticker}</td>
-            <td class="col-name name" title="${(r.name || "").replace(/"/g,'&quot;')}">${r.name || "--"}</td>
-            <td class="col-bucket muted">${r.bucket || "--"}</td>
-            <td><span class="chip state-chip">${r.state}</span></td>
-            <td class="col-asof muted">${r.as_of || ""}</td>
-            <td>
-              <span class="chip">
-                ${pressureDot(r.pressure)}
-                ${r.pressure} ${pressureLabel(r.pressure)}
-              </span>
-            </td>
-            <td>${ynChip(r.c1)}</td>
-            <td>${ynChip(r.c2)}</td>
-            <td>${ynChip(r.c3)}</td>
-            <td>${ynChip(r.c4)}</td>
-            <td class="col-price">${priceCell(r)}</td>
-            <td><span class="${r.in_scope ? 'scope-in' : 'scope-out'}">${r.in_scope ? "IN" : "OUT"}</span></td>
-          </tr>
-        `).join("");
-      }
-
-      function renderEvents(events){
-        const tbody = document.getElementById("events");
-        if(!events.length){
-          tbody.innerHTML = `<tr><td colspan="4" class="muted">No state transitions recorded</td></tr>`;
-          return;
-        }
-
-        tbody.innerHTML = events.slice(0, 25).map(e => `
-          <tr>
-            <td class="ticker">${e.ticker}</td>
-            <td class="col-name name" title="${(e.name || "").replace(/"/g,'&quot;')}">${e.name || "--"}</td>
-            <td class="muted">${e.as_of || ""}</td>
-            <td><span class="chip">${e.prev_state}<span class="event-arrow">→</span>${e.new_state}</span></td>
-          </tr>
-        `).join("");
-      }
-
-      function applyFilters(allRows){
-        const q = (document.getElementById("q").value || "").trim().toLowerCase();
-        const scope = document.getElementById("scope").value;
-        const state = document.getElementById("stateFilter").value;
-
-        return allRows.filter(r => {
-          if(scope === "in" && r.in_scope !== 1) return false;
-          if(scope === "out" && r.in_scope !== 0) return false;
-          if(state !== "all" && String(r.state) !== state) return false;
-
-          if(!q) return true;
-          const hay = `${r.name} ${r.ticker} ${r.bucket} ${r.state}`.toLowerCase();
-          return hay.includes(q);
-        });
-      }
-
-      async function load(){
-        const res = await fetch("./dashboard.json", { cache: "no-store" });
-        if(!res.ok) throw new Error(`Failed to load dashboard.json (${res.status})`);
+      try{
+        const res = await fetch(url, { cache: "no-store" });
+        if(!res.ok) throw new Error("quote HTTP " + res.status);
         const data = await res.json();
 
-        document.getElementById("generated").textContent = data.generated_at || "--";
-        const companies = Array.isArray(data.companies) ? data.companies : [];
-        document.getElementById("companyCount").textContent = String(companies.length || 0);
+        const results = (((data||{}).quoteResponse||{}).result || []);
+        const now = new Date().toISOString();
 
-        const { latest, events } = normalizeData(data);
+        for(const q of results){
+          const sym = q.symbol;
+          if(!sym) continue;
 
-        document.getElementById("subtitle").textContent = `Tracking ${latest.length} companies`;
-        buildStateOptions(latest);
+          const price = (q.regularMarketPrice ?? null);
+          const pct = (q.regularMarketChangePercent ?? null);
 
-        function rerender(){
-          const filtered = applyFilters(latest);
-          renderLatest(filtered);
-          renderEvents(events);
+          LIVE.set(sym, {
+            price: price === null ? null : Number(price),
+            changePercent: pct === null ? null : Number(pct),
+            time: now
+          });
         }
 
-        document.getElementById("q").addEventListener("input", rerender);
-        document.getElementById("scope").addEventListener("change", rerender);
-        document.getElementById("stateFilter").addEventListener("change", rerender);
-
-        rerender();
+        setLiveStatus("ok","Live quotes (Yahoo)");
+        render();
+      } catch(e){
+        // Key point: do NOT kill the dashboard if live quotes fail.
+        setLiveStatus("bad","Live quotes unavailable");
+        // keep rendering static dashboard
+        render();
       }
+    }
 
-      load().catch(err => {
-        document.getElementById("subtitle").textContent = "Connection failed";
-        document.getElementById("rows").innerHTML =
-          `<tr><td colspan="12" style="color:var(--danger); font-weight:600;">${err.message}</td></tr>`;
-        document.getElementById("events").innerHTML =
-          `<tr><td colspan="4" style="color:var(--danger); font-weight:600;">${err.message}</td></tr>`;
+    function wire(){
+      ["search","scopeSel","stateSel","sortSel"].forEach(id=>{
+        document.getElementById(id).addEventListener("input", render);
+        document.getElementById(id).addEventListener("change", render);
       });
-    </script>
-  </body>
+    }
+
+    (async function boot(){
+      wire();
+      await loadDashboard();
+      await refreshLiveQuotes();
+      setInterval(refreshLiveQuotes, LIVE_REFRESH_MS);
+    })();
+  </script>
+</body>
 </html>
