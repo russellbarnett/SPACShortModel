@@ -67,7 +67,7 @@
 
       *{box-sizing:border-box}
 
-      html{ scroll-behavior:smooth; }
+      html{ scroll-behavior: smooth; }
       html, body{ height:auto; overflow-y:auto; }
 
       body{
@@ -80,89 +80,71 @@
         -moz-osx-font-smoothing: grayscale;
       }
 
-      body::before{
-        content:'';
-        position:fixed;
-        inset:0;
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
         background-image:
           linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
           linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
         background-size: 60px 60px;
-        pointer-events:none;
-        z-index:0;
+        pointer-events: none;
+        z-index: 0;
       }
 
-      body::after{
-        content:'';
-        position:fixed;
-        top:-50%;
-        left:-50%;
-        width:200%;
-        height:200%;
-        background:
-          radial-gradient(ellipse at 30% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-          radial-gradient(ellipse at 70% 80%, rgba(244, 63, 94, 0.05) 0%, transparent 50%);
-        pointer-events:none;
-        z-index:0;
+      body::after {
+        content: '';
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(ellipse at 30% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                    radial-gradient(ellipse at 70% 80%, rgba(244, 63, 94, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 0;
       }
 
       .wrap{
-        position:relative;
-        z-index:1;
+        position: relative;
+        z-index: 1;
         max-width: 1280px;
         margin: 0 auto;
         padding: 40px 24px 60px;
       }
 
-      header{
-        margin-bottom: 32px;
-        animation: fadeIn 0.6s ease-out;
-      }
+      header{ margin-bottom: 32px; }
 
-      @keyframes fadeIn{
-        from{ opacity:0; transform: translateY(-10px); }
-        to{ opacity:1; transform: translateY(0); }
-      }
-
-      @keyframes slideUp{
-        from{ opacity:0; transform: translateY(20px); }
-        to{ opacity:1; transform: translateY(0); }
-      }
-
-      .logo-mark{
-        display:inline-flex;
-        align-items:center;
-        gap:12px;
+      .logo-mark {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
         margin-bottom: 8px;
       }
 
-      .logo-icon{
-        width:40px;
-        height:40px;
+      .logo-icon {
+        width: 40px;
+        height: 40px;
         background: linear-gradient(135deg, var(--accent) 0%, #818cf8 100%);
         border-radius: 10px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         box-shadow: 0 4px 20px var(--accent-glow);
       }
 
-      .logo-icon svg{
-        width:22px;
-        height:22px;
-        fill:white;
-      }
+      .logo-icon svg { width: 22px; height: 22px; fill: white; }
 
       h1{
         font-size: 48px;
         font-weight: 800;
         line-height: 1.1;
         letter-spacing: -0.03em;
-        margin:0;
+        margin: 0;
         background: linear-gradient(135deg, var(--text) 0%, var(--text-secondary) 100%);
-        -webkit-background-clip:text;
-        -webkit-text-fill-color:transparent;
-        background-clip:text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
 
       .sub{
@@ -174,7 +156,7 @@
       }
 
       @media (max-width: 980px){
-        h1{ font-size:36px; }
+        h1{font-size: 36px;}
       }
 
       .stack{
@@ -191,27 +173,12 @@
         box-shadow: var(--shadow), var(--shadow-glow);
         backdrop-filter: blur(20px);
         overflow: visible;
-        animation: slideUp 0.5s ease-out backwards;
       }
-
-      .card:nth-child(1){ animation-delay: 0.1s; }
-      .card:nth-child(2){ animation-delay: 0.2s; }
 
       .card-head{
         padding: 24px 24px 20px;
         border-bottom: 1px solid var(--line);
         position: relative;
-      }
-
-      .card-head::after{
-        content:'';
-        position:absolute;
-        bottom:-1px;
-        left:24px;
-        right:24px;
-        height:1px;
-        background: linear-gradient(90deg, var(--accent) 0%, transparent 50%);
-        opacity:0.5;
       }
 
       .card-title{
@@ -247,12 +214,12 @@
         transition: all var(--transition);
       }
 
-      .control:focus-within{
+      .control:focus-within {
         border-color: var(--accent);
         box-shadow: 0 0 0 3px var(--accent-soft);
       }
 
-      .control .small{
+      .control .small {
         font-size: 11px;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -270,27 +237,32 @@
         color: var(--text);
       }
 
-      .control input::placeholder{ color: var(--text-dim); }
-
-      .control select{
-        min-width: 210px;
-        cursor: pointer;
-      }
-
-      .control select option{
+      .control select option {
         background: var(--bg-surface);
         color: var(--text);
       }
 
-      .meta{
-        margin-left:auto;
+      .meta-row{
+        display:flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+        align-items: center;
+      }
+
+      .meta-pill{
         color: var(--text-muted);
         font-size: 12px;
         font-family: var(--font-mono);
-        padding: 6px 12px;
+        padding: 6px 10px;
         background: var(--bg-surface);
         border-radius: var(--radius-sm);
         border: 1px solid var(--line);
+      }
+
+      .meta-pill b{
+        color: var(--text-secondary);
+        font-weight: 700;
       }
 
       .table-wrap{
@@ -326,7 +298,6 @@
         z-index: 10;
       }
 
-      tbody tr{ transition: background var(--transition); }
       tbody tr:hover{ background: var(--bg-hover); }
 
       .ticker{
@@ -335,6 +306,14 @@
         font-size: 13px;
         letter-spacing: .04em;
         color: var(--text);
+      }
+
+      .name{
+        font-weight: 600;
+        color: var(--text);
+        max-width: 360px;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .muted{ color: var(--text-muted); }
@@ -353,32 +332,11 @@
         background: var(--neutral-bg);
         color: var(--text-secondary);
         white-space: nowrap;
-        transition: all var(--transition);
       }
 
-      .chip.ok{
-        background: var(--success-bg);
-        border-color: var(--success-border);
-        color: var(--success);
-      }
-
-      .chip.bad{
-        background: var(--danger-bg);
-        border-color: var(--danger-border);
-        color: var(--danger);
-      }
-
-      .chip.warn{
-        background: var(--warning-bg);
-        border-color: var(--warning-border);
-        color: var(--warning);
-      }
-
-      .state-chip{
-        background: var(--accent-soft);
-        border-color: rgba(99, 102, 241, 0.3);
-        color: var(--accent);
-      }
+      .chip.ok{ background: var(--success-bg); border-color: var(--success-border); color: var(--success); }
+      .chip.bad{ background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger); }
+      .chip.warn{ background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning); }
 
       .dot{
         width: 8px;
@@ -395,10 +353,10 @@
       }
 
       .spark path{
-        fill:none;
-        stroke-width:1.5;
-        stroke-linecap:round;
-        stroke-linejoin:round;
+        fill: none;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
       }
 
       .spark .baseline{
@@ -407,20 +365,9 @@
         stroke-dasharray: 2 2;
       }
 
-      .spark .line{
-        stroke: var(--accent);
-        filter: drop-shadow(0 0 4px var(--accent-glow));
-      }
-
-      .spark .line.up{
-        stroke: var(--success);
-        filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.4));
-      }
-
-      .spark .line.down{
-        stroke: var(--danger);
-        filter: drop-shadow(0 0 4px rgba(244, 63, 94, 0.4));
-      }
+      .spark .line { stroke: var(--accent); filter: drop-shadow(0 0 4px var(--accent-glow)); }
+      .spark .line.up { stroke: var(--success); filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.4)); }
+      .spark .line.down { stroke: var(--danger); filter: drop-shadow(0 0 4px rgba(244, 63, 94, 0.4)); }
 
       .priceCell{
         display:flex;
@@ -440,12 +387,6 @@
       .pct.down{ color: var(--danger); background: var(--danger-bg); }
       .pct.flat{ color: var(--text-muted); background: var(--neutral-bg); }
 
-      .note{
-        padding: 16px 24px;
-        color: var(--text-muted);
-        font-size: 13px;
-      }
-
       .footer{
         padding: 20px 24px;
         border-top: 1px solid var(--line);
@@ -458,9 +399,9 @@
         display:flex;
         gap: 10px;
         flex-wrap: wrap;
-        margin:0;
-        padding:0;
-        list-style:none;
+        margin: 0;
+        padding: 0;
+        list-style: none;
       }
 
       .defs li{
@@ -477,45 +418,43 @@
         display:inline-block;
         min-width: 28px;
         color: var(--accent);
-        font-weight: 600;
+        font-weight: 700;
       }
+
+      .scope-in {
+        color: var(--success);
+        font-weight: 700;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .scope-out {
+        color: var(--text-dim);
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .state-chip {
+        background: var(--accent-soft);
+        border-color: rgba(99, 102, 241, 0.3);
+        color: var(--accent);
+      }
+
+      .event-arrow { color: var(--text-dim); margin: 0 4px; }
 
       .tight th, .tight td{ padding: 12px 14px; }
 
       @media (max-width: 980px){
         .col-bucket{ display:none; }
-        .spark{ width:80px; }
+        .spark{ width: 80px; }
+        .col-name{ display:none; }
       }
-
       @media (max-width: 720px){
         .col-asof{ display:none; }
         .col-price{ display:none; }
-      }
-
-      ::-webkit-scrollbar{ width: 8px; height: 8px; }
-      ::-webkit-scrollbar-track{ background: var(--bg-surface); border-radius: 4px; }
-      ::-webkit-scrollbar-thumb{ background: var(--text-dim); border-radius: 4px; }
-      ::-webkit-scrollbar-thumb:hover{ background: var(--text-muted); }
-
-      .scope-in{
-        color: var(--success);
-        font-weight: 600;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-
-      .scope-out{
-        color: var(--text-dim);
-        font-weight: 500;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-
-      .event-arrow{
-        color: var(--text-dim);
-        margin: 0 4px;
       }
     </style>
   </head>
@@ -532,6 +471,10 @@
         </div>
         <h1>SPACShortModel</h1>
         <p class="sub" id="subtitle">Loading...</p>
+        <div class="meta-row">
+          <div class="meta-pill"><b>Last generated</b>: <span id="generated">--</span></div>
+          <div class="meta-pill"><b>Companies</b>: <span id="companyCount">--</span></div>
+        </div>
       </header>
 
       <div class="stack">
@@ -546,6 +489,7 @@
               <thead>
                 <tr>
                   <th style="width: 120px;">Ticker</th>
+                  <th class="col-name">Company</th>
                   <th style="width: 140px;">Date</th>
                   <th>Transition</th>
                 </tr>
@@ -554,28 +498,31 @@
             </table>
           </div>
 
-          <div class="note" id="eventsNote"></div>
+          <div class="footer">
+            <div class="small" style="color: var(--text-dim);">
+              Tip: if you see a company missing a name, it means SEC didn’t return one during export.
+            </div>
+          </div>
         </section>
 
         <section class="card">
           <div class="card-head">
             <div style="display:flex; gap:16px; align-items:baseline; flex-wrap:wrap;">
               <h2 class="card-title" style="margin:0;">Current State</h2>
-              <div class="meta" id="updated">Updated: --</div>
             </div>
 
             <div class="controls" style="margin-top:16px;">
               <div class="control">
                 <span class="small">Search</span>
-                <input id="q" placeholder="Ticker or bucket..." />
+                <input id="q" placeholder="Name, ticker, bucket..." />
               </div>
 
               <div class="control">
                 <span class="small">Scope</span>
                 <select id="scope">
                   <option value="all">All</option>
-                  <option value="in">In scope (watch)</option>
-                  <option value="out">Out of scope (ignore)</option>
+                  <option value="in">In Scope</option>
+                  <option value="out">Out of Scope</option>
                 </select>
               </div>
 
@@ -593,14 +540,15 @@
               <thead>
                 <tr>
                   <th style="width: 90px;">Ticker</th>
+                  <th class="col-name">Company</th>
                   <th class="col-bucket" style="width: 220px;">Bucket</th>
                   <th style="width: 130px;">State</th>
                   <th class="col-asof" style="width: 100px;">As Of</th>
                   <th style="width: 140px;">Pressure</th>
-                  <th style="width: 100px;">Demand</th>
-                  <th style="width: 100px;">Cost</th>
-                  <th style="width: 100px;">Persist</th>
-                  <th style="width: 100px;">Strategy</th>
+                  <th style="width: 100px;">C1</th>
+                  <th style="width: 100px;">C2</th>
+                  <th style="width: 100px;">C3</th>
+                  <th style="width: 100px;">C4</th>
                   <th class="col-price" style="width: 180px;">Price (1M)</th>
                   <th style="width: 80px;">Scope</th>
                 </tr>
@@ -611,13 +559,13 @@
 
           <div class="footer">
             <ul class="defs">
-              <li><b>C1</b> Demand/Margin</li>
-              <li><b>C2</b> Cost/Capex</li>
-              <li><b>C3</b> Persistence</li>
-              <li><b>C4</b> Strategic Init.</li>
+              <li><b>C1</b> Revenue or margin pressure (uses OpLoss fallback if Gross Profit missing)</li>
+              <li><b>C2</b> Capex spike vs baseline (if capex data exists)</li>
+              <li><b>C3</b> Persistence (repeat/ongoing stress signal)</li>
+              <li><b>C4</b> Strategic / financing stress signal</li>
             </ul>
             <div class="small" style="margin-top:12px; color: var(--text-dim);">
-              Pressure score reflects triggered conditions (C1-C4). Sparkline renders when 1-month price data is available.
+              Pressure score is count of triggered conditions (C1–C4). Some companies will show fewer signals if SEC tags are missing.
             </div>
           </div>
         </section>
@@ -735,78 +683,56 @@
         sel.value = opts.includes(current) ? current : "all";
       }
 
-      // IMPORTANT: This builds rows from companies list, not just latest_state,
-      // so you see all 20 even if some are out of scope or have no recent evaluation.
       function normalizeData(data){
-        const companies = Array.isArray(data.companies) ? data.companies : [];
-        const latestState = Array.isArray(data.latest_state) ? data.latest_state : [];
-        const events = Array.isArray(data.events) ? data.events : [];
-
-        const latestById = new Map();
-        for(const ms of latestState){
-          if(ms && ms.company_id != null){
-            latestById.set(String(ms.company_id), ms);
-          }
-        }
-
         const companiesById = new Map();
-        for(const c of companies){
-          if(c && c.company_id != null){
-            companiesById.set(String(c.company_id), c);
-          }
+        for(const c of (data.companies || [])){
+          companiesById.set(String(c.company_id), c);
         }
 
-        const rows = companies.map(c => {
-          const id = String(c.company_id);
-          const ms = latestById.get(id) || {};
-
-          const inScope = !!c.in_scope;
-
+        const latest = (data.latest_state || []).map(ms => {
+          const company = companiesById.get(String(ms.company_id)) || {};
+          const inScope = !!company.in_scope;
           const c1 = !!ms.condition_1;
           const c2 = !!ms.condition_2;
           const c3 = !!ms.condition_3;
           const c4 = !!ms.condition_4;
           const pressure = [c1,c2,c3,c4].reduce((a,b)=>a+(b?1:0),0);
 
-          // If it's out of scope, we label it OUT_OF_SCOPE regardless of ms.state.
-          // If it's in scope but no state yet, we show NO_DATA.
-          let state = ms.state || "";
-          if(!inScope) state = "OUT_OF_SCOPE";
-          if(inScope && !state) state = "NO_DATA";
-
           return {
-            company_id: id,
-            ticker: c.ticker || id,
-            bucket: c.bucket || "--",
+            company_id: ms.company_id,
+            ticker: company.ticker || ms.ticker || ms.company_id,
+            name: company.name || "",
+            bucket: company.bucket || ms.bucket || "--",
             in_scope: inScope ? 1 : 0,
             as_of: ms.as_of || "",
-            state,
+            state: ms.state || (inScope ? "MONITOR" : "OUT_OF_SCOPE"),
             c1, c2, c3, c4,
             pressure,
             price_1m: ms.price_1m || null,
           };
         });
 
-        const normalizedEvents = events.map(e => ({
-          company_id: e.company_id,
-          as_of: e.as_of,
-          prev_state: e.prev_state,
-          new_state: e.new_state
-        }));
+        const events = (data.events || []).map(e => {
+          const company = companiesById.get(String(e.company_id)) || {};
+          return {
+            company_id: e.company_id,
+            ticker: company.ticker || e.company_id,
+            name: company.name || "",
+            as_of: e.as_of,
+            prev_state: e.prev_state,
+            new_state: e.new_state,
+          };
+        });
 
-        return { rows, normalizedEvents, companiesById };
+        return { latest, events };
       }
 
       function renderLatest(rows){
         const tbody = document.getElementById("rows");
-        if(!rows.length){
-          tbody.innerHTML = `<tr><td colspan="11" class="muted">No matches</td></tr>`;
-          return;
-        }
-
         tbody.innerHTML = rows.map(r => `
           <tr>
             <td class="ticker">${r.ticker}</td>
+            <td class="col-name name" title="${(r.name || "").replace(/"/g,'&quot;')}">${r.name || "--"}</td>
             <td class="col-bucket muted">${r.bucket || "--"}</td>
             <td><span class="chip state-chip">${r.state}</span></td>
             <td class="col-asof muted">${r.as_of || ""}</td>
@@ -826,28 +752,21 @@
         `).join("");
       }
 
-      function renderEvents(events, companiesById){
+      function renderEvents(events){
         const tbody = document.getElementById("events");
-        const note = document.getElementById("eventsNote");
-
         if(!events.length){
-          tbody.innerHTML = `<tr><td colspan="3" class="muted">No state transitions recorded</td></tr>`;
-          note.textContent = "";
+          tbody.innerHTML = `<tr><td colspan="4" class="muted">No state transitions recorded</td></tr>`;
           return;
         }
 
-        tbody.innerHTML = events.slice(0, 25).map(e => {
-          const ticker = companiesById.get(String(e.company_id))?.ticker || e.company_id;
-          return `
-            <tr>
-              <td class="ticker">${ticker}</td>
-              <td class="muted">${e.as_of || ""}</td>
-              <td><span class="chip">${e.prev_state}<span class="event-arrow">→</span>${e.new_state}</span></td>
-            </tr>
-          `;
-        }).join("");
-
-        note.textContent = "";
+        tbody.innerHTML = events.slice(0, 25).map(e => `
+          <tr>
+            <td class="ticker">${e.ticker}</td>
+            <td class="col-name name" title="${(e.name || "").replace(/"/g,'&quot;')}">${e.name || "--"}</td>
+            <td class="muted">${e.as_of || ""}</td>
+            <td><span class="chip">${e.prev_state}<span class="event-arrow">→</span>${e.new_state}</span></td>
+          </tr>
+        `).join("");
       }
 
       function applyFilters(allRows){
@@ -861,7 +780,7 @@
           if(state !== "all" && String(r.state) !== state) return false;
 
           if(!q) return true;
-          const hay = `${r.ticker} ${r.bucket} ${r.state}`.toLowerCase();
+          const hay = `${r.name} ${r.ticker} ${r.bucket} ${r.state}`.toLowerCase();
           return hay.includes(q);
         });
       }
@@ -871,18 +790,19 @@
         if(!res.ok) throw new Error(`Failed to load dashboard.json (${res.status})`);
         const data = await res.json();
 
-        const { rows, normalizedEvents, companiesById } = normalizeData(data);
+        document.getElementById("generated").textContent = data.generated_at || "--";
+        const companies = Array.isArray(data.companies) ? data.companies : [];
+        document.getElementById("companyCount").textContent = String(companies.length || 0);
 
-        const inCount = rows.filter(r => r.in_scope === 1).length;
-        document.getElementById("subtitle").textContent = `Tracking ${rows.length} companies (in scope: ${inCount})`;
-        document.getElementById("updated").textContent = `Updated: ${data.generated_at || "--"}`;
+        const { latest, events } = normalizeData(data);
 
-        buildStateOptions(rows);
+        document.getElementById("subtitle").textContent = `Tracking ${latest.length} companies`;
+        buildStateOptions(latest);
 
         function rerender(){
-          const filtered = applyFilters(rows);
+          const filtered = applyFilters(latest);
           renderLatest(filtered);
-          renderEvents(normalizedEvents, companiesById);
+          renderEvents(events);
         }
 
         document.getElementById("q").addEventListener("input", rerender);
@@ -895,9 +815,9 @@
       load().catch(err => {
         document.getElementById("subtitle").textContent = "Connection failed";
         document.getElementById("rows").innerHTML =
-          `<tr><td colspan="11" style="color:var(--danger); font-weight:600;">${err.message}</td></tr>`;
+          `<tr><td colspan="12" style="color:var(--danger); font-weight:600;">${err.message}</td></tr>`;
         document.getElementById("events").innerHTML =
-          `<tr><td colspan="3" style="color:var(--danger); font-weight:600;">${err.message}</td></tr>`;
+          `<tr><td colspan="4" style="color:var(--danger); font-weight:600;">${err.message}</td></tr>`;
       });
     </script>
   </body>

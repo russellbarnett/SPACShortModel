@@ -1,380 +1,222 @@
 from __future__ import annotations
 
-import csv
 import json
+import os
+import sqlite3
 import time
-from datetime import datetime, timedelta, timezone
-from io import StringIO
+from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import requests
-
-from slidemodel.storage.db import connect
-
-
-def _rows(conn, sql: str, params: Tuple[Any, ...] = ()) -> List[Dict[str, Any]]:
-    cur = conn.execute(sql, params)
-    cols = [d[0] for d in cur.description]
-    return [{cols[i]: row[i] for i in range(len(cols))} for row in cur.fetchall()]
+import yaml
 
 
-def _to_int01(v: Any) -> int:
-    try:
-        return 1 if int(v) == 1 else 0
-    except Exception:
-        return 0
+# ----------------------------
+# Paths
+# ----------------------------
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+DEFAULT_DB = REPO_ROOT / "data" / "slidemodel.sqlite3"
+DEFAULT_COMPANIES_YAML = REPO_ROOT / "src" / "slidemodel" / "config" / "companies.yaml"
+DEFAULT_DOCS_DIR = REPO_ROOT / "docs"
+DEFAULT_OUT_JSON = DEFAULT_DOCS_DIR / "dashboard.json"
 
 
-def _safe_float(v: Any) -> Optional[float]:
-    try:
-        x = float(v)
-        if x != x:  # NaN
-            return None
-        return x
-    except Exception:
-        return None
+# ----------------------------
+# SEC helper
+# ----------------------------
+
+def _utc_now_iso() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
-def _fetch_stooq_daily_csv(symbol: str) -> Optional[str]:
+def _sec_user_agent() -> str:
+    ua = os.environ.get("SEC_USER_AGENT", "").strip()
+    if not ua:
+        raise RuntimeError(
+            "SEC_USER_AGENT is not set. Example:\n"
+            'export SEC_USER_AGENT="Russell Barnett russellbarnett.co@gmail.com"'
+        )
+    return ua
+
+
+def fetch_entity_name_from_companyfacts(cik10: str, session: requests.Session, ua: str) -> Optional[str]:
     """
-    Stooq endpoint:
-      https://stooq.com/q/d/l/?s=tsla.us&i=d
-    Returns CSV as text, or None on failure.
+    Best-effort company name from SEC companyfacts endpoint.
+    Returns None if it cannot be fetched.
     """
-    url = f"https://stooq.com/q/d/l/?s={symbol}&i=d"
-    headers = {
-        "User-Agent": "SPACShortModel/1.0 (dashboard export; contact: you)",
-        "Accept": "text/csv,*/*;q=0.8",
-    }
+    cik10 = str(cik10).zfill(10)
+    url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik10}.json"
     try:
-        r = requests.get(url, headers=headers, timeout=20)
+        r = session.get(url, headers={"User-Agent": ua}, timeout=30)
         if r.status_code != 200:
             return None
-        txt = (r.text or "").strip()
-        if not txt or "No data" in txt:
-            return None
-        return txt
+        data = r.json()
+        name = data.get("entityName")
+        if isinstance(name, str) and name.strip():
+            return name.strip()
+        return None
     except Exception:
         return None
 
 
-def _parse_stooq_closes_last_30d(csv_text: str) -> Optional[Dict[str, Any]]:
+# ----------------------------
+# DB reading
+# ----------------------------
+
+@dataclass
+class Company:
+    company_id: str
+    ticker: str
+    cik: str
+    bucket: str
+    in_scope: bool
+    name: str = ""
+
+
+def load_companies_yaml(path: Path) -> List[Company]:
+    obj = yaml.safe_load(path.read_text())
+    rows = obj.get("companies", []) if isinstance(obj, dict) else []
+    out: List[Company] = []
+    for c in rows:
+        if not isinstance(c, dict):
+            continue
+        out.append(
+            Company(
+                company_id=str(c.get("company_id", "")).strip(),
+                ticker=str(c.get("ticker", "")).strip(),
+                cik=str(c.get("cik", "")).strip(),
+                bucket=str(c.get("bucket", "")).strip(),
+                in_scope=bool(c.get("in_scope", False)),
+                name=str(c.get("name", "")).strip(),
+            )
+        )
+    return out
+
+
+def db_connect(db_path: Path) -> sqlite3.Connection:
+    con = sqlite3.connect(str(db_path))
+    con.row_factory = sqlite3.Row
+    return con
+
+
+def load_latest_state(con: sqlite3.Connection) -> List[Dict[str, Any]]:
     """
-    Parse Stooq daily CSV, take last ~30 calendar days of closes (or last 22 trading rows fallback).
-    Returns:
-      {
-        closes: [...],
-        pct_change: ...,
-        start: ...,
-        end: ...,
-        source: "stooq"
-      }
+    We assume a table model_state with at least:
+    company_id, state, as_of, condition_1..condition_4, price_1m
+    price_1m may be NULL or JSON.
     """
-    try:
-        f = StringIO(csv_text)
-        reader = csv.DictReader(f)
-        rows: List[Tuple[str, float]] = []
-        for row in reader:
-            d = row.get("Date")
-            c = _safe_float(row.get("Close"))
-            if not d or c is None:
-                continue
-            rows.append((d, float(c)))
-
-        if len(rows) < 2:
-            return None
-
-        today = datetime.now(timezone.utc).date()
-        cutoff = today - timedelta(days=35)
-
-        filtered: List[Tuple[str, float]] = []
-        for d, c in rows:
+    cur = con.cursor()
+    # Keep it permissive: select known fields, ignore if missing by trying alternatives.
+    # If your schema changes later, this avoids hard-crashing.
+    cols = [
+        "company_id",
+        "state",
+        "as_of",
+        "condition_1",
+        "condition_2",
+        "condition_3",
+        "condition_4",
+        "price_1m",
+    ]
+    sql = f"SELECT {', '.join(cols)} FROM model_state ORDER BY company_id"
+    rows = cur.execute(sql).fetchall()
+    out: List[Dict[str, Any]] = []
+    for r in rows:
+        d = dict(r)
+        # Parse price_1m JSON if present
+        p = d.get("price_1m")
+        if isinstance(p, str) and p.strip():
             try:
-                dd = datetime.strptime(d, "%Y-%m-%d").date()
+                d["price_1m"] = json.loads(p)
             except Exception:
-                continue
-            if dd >= cutoff:
-                filtered.append((d, c))
-
-        if len(filtered) < 2:
-            filtered = rows[-22:] if len(rows) >= 22 else rows
-
-        if len(filtered) < 2:
-            return None
-
-        closes = [c for _, c in filtered]
-        start_close = closes[0]
-        end_close = closes[-1]
-        if start_close == 0:
-            return None
-
-        pct_change = (end_close - start_close) / start_close * 100.0
-
-        return {
-            "closes": closes,
-            "pct_change": round(pct_change, 2),
-            "start": filtered[0][0],
-            "end": filtered[-1][0],
-            "source": "stooq",
-        }
-    except Exception:
-        return None
+                d["price_1m"] = None
+        else:
+            d["price_1m"] = None
+        out.append(d)
+    return out
 
 
-def _price_1m_for_ticker(ticker: str) -> Optional[Dict[str, Any]]:
+def load_events(con: sqlite3.Connection, limit: int = 100) -> List[Dict[str, Any]]:
     """
-    Try common Stooq symbol patterns:
-      - {ticker}.us (most US equities)
-      - {ticker} (sometimes works)
+    We assume table state_events with:
+    company_id, as_of, prev_state, new_state
     """
-    t = (ticker or "").strip().lower()
-    if not t:
-        return None
+    cur = con.cursor()
+    sql = """
+      SELECT company_id, as_of, prev_state, new_state
+      FROM state_events
+      ORDER BY as_of DESC
+      LIMIT ?
+    """
+    rows = cur.execute(sql, (limit,)).fetchall()
+    return [dict(r) for r in rows]
 
-    for sym in (f"{t}.us", t):
-        txt = _fetch_stooq_daily_csv(sym)
-        if not txt:
+
+# ----------------------------
+# Export
+# ----------------------------
+
+def export_dashboard(
+    db_path: Path = DEFAULT_DB,
+    companies_yaml: Path = DEFAULT_COMPANIES_YAML,
+    out_json: Path = DEFAULT_OUT_JSON,
+) -> Path:
+    companies = load_companies_yaml(companies_yaml)
+
+    # Fill missing company names via SEC (best-effort)
+    ua = _sec_user_agent()
+    session = requests.Session()
+    for c in companies:
+        if c.name:
             continue
-        parsed = _parse_stooq_closes_last_30d(txt)
-        if parsed:
-            return parsed
-    return None
-
-
-def _stdev(xs: List[float]) -> Optional[float]:
-    if len(xs) < 2:
-        return None
-    m = sum(xs) / len(xs)
-    var = sum((x - m) ** 2 for x in xs) / (len(xs) - 1)
-    return var ** 0.5
-
-
-def _price_metrics(price_1m: Optional[Dict[str, Any]]) -> Dict[str, Any]:
-    """
-    Computes simple 1m metrics from closes:
-      - return_1m_pct
-      - drawdown_1m_pct (negative number, worst peak-to-trough)
-      - vol_1m_daily_pct (stdev of daily % returns)
-    """
-    if not price_1m or not isinstance(price_1m, dict):
-        return {"return_1m_pct": None, "drawdown_1m_pct": None, "vol_1m_daily_pct": None}
-
-    closes = price_1m.get("closes")
-    if not isinstance(closes, list) or len(closes) < 2:
-        return {"return_1m_pct": None, "drawdown_1m_pct": None, "vol_1m_daily_pct": None}
-
-    cs = [float(x) for x in closes if isinstance(x, (int, float))]
-    if len(cs) < 2:
-        return {"return_1m_pct": None, "drawdown_1m_pct": None, "vol_1m_daily_pct": None}
-
-    ret = price_1m.get("pct_change")
-    ret = float(ret) if isinstance(ret, (int, float)) else None
-
-    peak = cs[0]
-    worst_dd = 0.0  # negative
-    for c in cs:
-        if c > peak:
-            peak = c
-        if peak > 0:
-            dd = (c - peak) / peak * 100.0
-            if dd < worst_dd:
-                worst_dd = dd
-
-    daily = []
-    for i in range(1, len(cs)):
-        if cs[i - 1] == 0:
+        if not c.cik:
             continue
-        daily.append((cs[i] - cs[i - 1]) / cs[i - 1] * 100.0)
+        name = fetch_entity_name_from_companyfacts(c.cik, session=session, ua=ua)
+        if name:
+            c.name = name
+        # be polite to SEC. 20 companies is fine, but don't hammer.
+        time.sleep(0.12)
 
-    vol = _stdev(daily)
+    con = db_connect(db_path)
+    try:
+        latest_state = load_latest_state(con)
+        events = load_events(con, limit=100)
+    finally:
+        con.close()
 
-    return {
-        "return_1m_pct": round(ret, 2) if ret is not None else None,
-        "drawdown_1m_pct": round(worst_dd, 2),
-        "vol_1m_daily_pct": round(vol, 2) if vol is not None else None,
-    }
-
-
-def _pressure_score(row: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Pressure score (0–10) with grade label.
-    Uses:
-      - condition flags (weighted)
-      - 1m return, drawdown, daily vol (if available)
-    """
-    in_scope = _to_int01(row.get("in_scope")) == 1
-    if not in_scope:
-        return {
-            "pressure_score": None,
-            "pressure_grade": "OUT_OF_SCOPE",
-            "triggered_conditions": [],
-        }
-
-    c1 = 1 if _to_int01(row.get("condition_1")) == 1 else 0
-    c2 = 1 if _to_int01(row.get("condition_2")) == 1 else 0
-    c3 = 1 if _to_int01(row.get("condition_3")) == 1 else 0
-    c4 = 1 if _to_int01(row.get("condition_4")) == 1 else 0
-
-    triggers = []
-    if c1: triggers.append("C1")
-    if c2: triggers.append("C2")
-    if c3: triggers.append("C3")
-    if c4: triggers.append("C4")
-
-    score = 0
-    score += 3 * c1
-    score += 2 * c2
-    score += 2 * c3
-    score += 3 * c4
-
-    pm = row.get("price_metrics") or {}
-    r1 = pm.get("return_1m_pct")
-    dd = pm.get("drawdown_1m_pct")
-    vol = pm.get("vol_1m_daily_pct")
-
-    # Price overlays (simple, interpretable)
-    if isinstance(r1, (int, float)):
-        if r1 <= -30:
-            score += 3
-        elif r1 <= -15:
-            score += 2
-        elif r1 <= -7:
-            score += 1
-
-    if isinstance(dd, (int, float)):
-        if dd <= -35:
-            score += 2
-        elif dd <= -20:
-            score += 1
-
-    if isinstance(vol, (int, float)):
-        # Daily vol in % terms; 4% daily is hot.
-        if vol >= 4.0:
-            score += 1
-
-    if score < 0:
-        score = 0
-    if score > 10:
-        score = 10
-
-    if score <= 2:
-        grade = "STABLE"
-    elif score <= 5:
-        grade = "WATCH"
-    elif score <= 8:
-        grade = "ELEVATED"
-    else:
-        grade = "CRITICAL"
-
-    return {
-        "pressure_score": score,
-        "pressure_grade": grade,
-        "triggered_conditions": triggers,
-    }
-
-
-def run(data_dir: str = "data", out_dir: str = "docs") -> None:
-    conn = connect(Path(data_dir))
-
-    companies = _rows(
-        conn,
-        """
-        SELECT company_id, ticker, cik, bucket, in_scope
-        FROM companies
-        ORDER BY company_id ASC
-        """,
-    )
-
-    latest_state = _rows(
-        conn,
-        """
-        SELECT
-            ms.company_id,
-            c.ticker,
-            c.bucket,
-            c.in_scope,
-            ms.as_of,
-            ms.state,
-            ms.condition_1,
-            ms.condition_2,
-            ms.condition_3,
-            ms.condition_4,
-            ms.details_json
-        FROM model_state ms
-        JOIN (
-            SELECT company_id, MAX(as_of) AS max_as_of
-            FROM model_state
-            GROUP BY company_id
-        ) x
-          ON ms.company_id = x.company_id AND ms.as_of = x.max_as_of
-        JOIN companies c
-          ON c.company_id = ms.company_id
-        ORDER BY c.ticker ASC
-        """,
-    )
-
-    events = _rows(
-        conn,
-        """
-        SELECT id, company_id, as_of, prev_state, new_state, event_json
-        FROM state_events
-        ORDER BY id DESC
-        LIMIT 200
-        """,
-    )
-
-    # Add 1-month price data + metrics + pressure score.
-    for r in latest_state:
-        ticker = str(r.get("ticker") or "").strip()
-        r["price_1m"] = None
-        r["price_metrics"] = {"return_1m_pct": None, "drawdown_1m_pct": None, "vol_1m_daily_pct": None}
-
-        if ticker:
-            price = _price_1m_for_ticker(ticker)
-            r["price_1m"] = price
-            r["price_metrics"] = _price_metrics(price)
-
-            # Be polite to free endpoint
-            time.sleep(0.15)
-
-        # Pressure grading
-        r.update(_pressure_score(r))
-
-    def _count_where(pred):
-        return sum(1 for rr in latest_state if pred(rr))
-
-    summary = {
-        "companies_total": len(companies),
-        "latest_rows": len(latest_state),
-        "in_scope_total": sum(1 for c in companies if _to_int01(c.get("in_scope")) == 1),
-        "states": {
-            "MONITOR": _count_where(lambda rr: rr.get("state") == "MONITOR"),
-            "OUT_OF_SCOPE": _count_where(lambda rr: rr.get("state") == "OUT_OF_SCOPE"),
-            "NO_DATA": _count_where(lambda rr: rr.get("state") == "NO_DATA"),
-            "ERROR": _count_where(lambda rr: rr.get("state") == "ERROR"),
-        },
-        "prices_1m_available": _count_where(
-            lambda rr: isinstance(rr.get("price_1m"), dict) and rr["price_1m"].get("closes")
-        ),
-        "pressure_grades": {
-            "STABLE": _count_where(lambda rr: rr.get("pressure_grade") == "STABLE"),
-            "WATCH": _count_where(lambda rr: rr.get("pressure_grade") == "WATCH"),
-            "ELEVATED": _count_where(lambda rr: rr.get("pressure_grade") == "ELEVATED"),
-            "CRITICAL": _count_where(lambda rr: rr.get("pressure_grade") == "CRITICAL"),
-            "OUT_OF_SCOPE": _count_where(lambda rr: rr.get("pressure_grade") == "OUT_OF_SCOPE"),
-        },
-    }
+    # Join config into a "companies" section for the UI
+    companies_out: List[Dict[str, Any]] = []
+    for c in companies:
+        companies_out.append(
+            {
+                "company_id": c.company_id,
+                "ticker": c.ticker,
+                "cik": c.cik,
+                "bucket": c.bucket,
+                "in_scope": bool(c.in_scope),
+                "name": c.name,  # <- what the UI will display
+            }
+        )
 
     payload = {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "summary": summary,
-        "companies": companies,
+        "generated_at": _utc_now_iso(),
+        "companies": companies_out,
         "latest_state": latest_state,
         "events": events,
     }
 
-    outp = Path(out_dir)
-    outp.mkdir(parents=True, exist_ok=True)
-    (outp / "dashboard.json").write_text(json.dumps(payload, indent=2))
-    print(f"Wrote {(outp / 'dashboard.json').resolve()}")
+    out_json.parent.mkdir(parents=True, exist_ok=True)
+    out_json.write_text(json.dumps(payload, indent=2, sort_keys=False))
+    return out_json
+
+
+def main() -> None:
+    out = export_dashboard()
+    print(f"Wrote {out}")
+
+
+if __name__ == "__main__":
+    main()
