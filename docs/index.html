@@ -57,10 +57,17 @@
       -webkit-backdrop-filter: blur(10px);
       margin-top:14px;
     }
-    .card h2{margin:0 0 8px;font-size:18px;letter-spacing:-.01em}
+    .card h2{
+      margin:0 0 8px;
+      font-size:18px;
+      letter-spacing:-.01em;
+    }
     .card .hint{margin:0 0 12px;color:var(--muted);font-size:12px}
 
-    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:8px 0 10px}
+    .row{
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+      margin:8px 0 10px;
+    }
     .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
     .pill{
       display:inline-flex;align-items:center;gap:8px;
@@ -95,7 +102,7 @@
       border-collapse:separate;
       border-spacing:0;
       font-size:12px;
-      min-width:1080px;
+      min-width:980px;
     }
     thead th{
       text-align:left;
@@ -126,7 +133,6 @@
     .state{background:rgba(99,102,241,.18);border-color:rgba(99,102,241,.45)}
     .scopeIn{color:var(--good);font-weight:700}
     .scopeOut{color:rgba(255,255,255,.35);font-weight:700}
-
     .badgeOk{
       background:rgba(46,204,113,.14);
       border:1px solid rgba(46,204,113,.33);
@@ -139,7 +145,6 @@
       color:rgba(255,190,190,.95);
       padding:4px 9px;border-radius:9px;font-weight:800;font-size:11px;
     }
-
     .pressureStable{
       background:rgba(46,204,113,.12);
       border:1px solid rgba(46,204,113,.28);
@@ -161,8 +166,7 @@
 
     .sparkWrap{display:flex;align-items:center;gap:10px}
     .spark{width:86px;height:20px;display:block}
-    .sparkPct{font-weight:900;font-size:12px;min-width:54px;text-align:right}
-
+    .sparkPct{font-weight:900;font-size:12px}
     .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;color:var(--muted);font-size:12px}
     .legend .chip{border-radius:12px}
     .foot{margin-top:10px;color:rgba(255,255,255,.42);font-size:11px}
@@ -275,23 +279,42 @@
       </div>
 
       <div class="foot">
-        Live quotes and 30D charts are fetched in your browser from Yahoo Finance and refresh automatically. Fundamentals and conditions are generated nightly.
+        Live quotes and 30D charts are fetched in your browser from Yahoo Finance via public CORS proxies and refresh automatically. If a proxy gets blocked, the page auto-fails over to the next one.
       </div>
     </div>
   </div>
 
 <script>
-/* ============================================================
-   WHY THIS FIXES YOUR 401/CORS PROBLEM
-   ------------------------------------------------------------
-   GitHub Pages cannot fetch Yahoo endpoints because Yahoo blocks CORS.
-   Solution: use JSONP (script tag), which bypasses CORS restrictions.
-   ============================================================ */
+/*
+  WHY YOU SAW 401:
+  Yahoo blocks browser CORS, so you used corsproxy.io. That proxy is now returning 401 (blocked/auth/rate limited).
+  Fix: try multiple free proxies, automatically.
 
-/* ----------------------------
-   Small helpers
----------------------------- */
-function safeText(x){ return (x === null || x === undefined) ? "" : String(x); }
+  If all proxies fail, the dashboard still renders, and live columns stay "—".
+*/
+const PROXIES = [
+  // Fast, often works:
+  (url) => "https://api.allorigins.win/raw?url=" + encodeURIComponent(url),
+  // Sometimes works when allorigins is flaky:
+  (url) => "https://thingproxy.freeboard.io/fetch/" + url,
+  // Keep corsproxy last; it may return 401
+  (url) => "https://corsproxy.io/?" + encodeURIComponent(url),
+];
+
+async function fetchViaProxies(url, options){
+  let lastErr = null;
+  for (const px of PROXIES){
+    const proxied = px(url);
+    try{
+      const r = await fetch(proxied, options);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r;
+    }catch(e){
+      lastErr = e;
+    }
+  }
+  throw lastErr || new Error("All proxies failed");
+}
 
 function fmtPct(x){
   if (x === null || x === undefined || Number.isNaN(x)) return "—";
@@ -302,6 +325,9 @@ function fmtPrice(x){
   if (x === null || x === undefined || Number.isNaN(x)) return "—";
   return Number(x).toFixed(2);
 }
+function safeText(x){
+  return (x === null || x === undefined) ? "" : String(x);
+}
 
 function pressureBadge(n){
   if (n >= 2) return `<span class="pressureElev">${n} elevated</span>`;
@@ -311,85 +337,7 @@ function pressureBadge(n){
 function cBadge(flag){
   return flag ? `<span class="badgeFlag">FLAG</span>` : `<span class="badgeOk">OK</span>`;
 }
-function stateBadge(s){
-  const txt = safeText(s || "").toUpperCase();
-  return `<span class="chip state">${txt || "—"}</span>`;
-}
-function scopeBadge(inScope){
-  return inScope ? `<span class="scopeIn">IN</span>` : `<span class="scopeOut">OUT</span>`;
-}
 
-/* ----------------------------
-   JSONP loader
----------------------------- */
-function jsonp(url, timeoutMs = 12000){
-  return new Promise((resolve, reject) => {
-    const cb = "__jsonp_cb_" + Math.random().toString(36).slice(2);
-    let done = false;
-
-    const cleanup = () => {
-      if (done) return;
-      done = true;
-      try{ delete window[cb]; }catch(_){}
-      if (script && script.parentNode) script.parentNode.removeChild(script);
-      if (timer) clearTimeout(timer);
-    };
-
-    window[cb] = (data) => { cleanup(); resolve(data); };
-
-    const sep = url.includes("?") ? "&" : "?";
-    const script = document.createElement("script");
-    script.src = url + sep + "callback=" + encodeURIComponent(cb);
-    script.async = true;
-    script.onerror = () => { cleanup(); reject(new Error("JSONP load failed")); };
-
-    const timer = setTimeout(() => {
-      cleanup();
-      reject(new Error("JSONP timeout"));
-    }, timeoutMs);
-
-    document.head.appendChild(script);
-  });
-}
-
-/* ----------------------------
-   Yahoo JSONP endpoints
----------------------------- */
-async function yahooQuoteBatch(symbols){
-  if (!symbols.length) return {};
-  const url = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + encodeURIComponent(symbols.join(","));
-  const j = await jsonp(url);
-  const rows = (j && j.quoteResponse && j.quoteResponse.result) || [];
-  const out = {};
-  for (const r of rows){
-    out[r.symbol] = {
-      price: r.regularMarketPrice,
-      pct: r.regularMarketChangePercent
-    };
-  }
-  return out;
-}
-
-const chartCache = new Map(); // sym -> {t, closes}
-async function yahooChart30D(symbol){
-  const now = Date.now();
-  const cached = chartCache.get(symbol);
-  if (cached && (now - cached.t) < 5 * 60 * 1000) return cached.closes;
-
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=1mo&interval=1d`;
-  const j = await jsonp(url);
-
-  const result = j && j.chart && j.chart.result && j.chart.result[0];
-  const closes = result && result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close;
-  const cleaned = Array.isArray(closes) ? closes.filter(x => typeof x === "number" && Number.isFinite(x)) : [];
-
-  chartCache.set(symbol, { t: now, closes: cleaned });
-  return cleaned;
-}
-
-/* ----------------------------
-   Sparkline renderer
----------------------------- */
 function renderSpark(canvas, data){
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
@@ -414,8 +362,8 @@ function renderSpark(canvas, data){
 
   const pad = 1;
   const xStep = (w - pad*2) / (data.length - 1);
-
   const up = data[data.length - 1] >= data[0];
+
   ctx.strokeStyle = up ? "#2ecc71" : "#ff4d4d";
   ctx.lineWidth = 1.6;
 
@@ -429,14 +377,41 @@ function renderSpark(canvas, data){
   ctx.stroke();
 }
 
-function pctChange(first, last){
-  if (!Number.isFinite(first) || !Number.isFinite(last) || first === 0) return null;
-  return ((last / first) - 1) * 100;
+const chartCache = new Map(); // ticker -> { t, data }
+async function fetchChart30D(ticker){
+  const now = Date.now();
+  const cached = chartCache.get(ticker);
+  if (cached && (now - cached.t) < 5*60*1000) return cached.data;
+
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?range=1mo&interval=1d`;
+  const r = await fetchViaProxies(url, { cache: "no-store" });
+  const j = await r.json();
+
+  const result = j && j.chart && j.chart.result && j.chart.result[0];
+  const closes = result && result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close;
+  const cleaned = Array.isArray(closes) ? closes.filter(x => typeof x === "number" && Number.isFinite(x)) : [];
+
+  chartCache.set(ticker, { t: now, data: cleaned });
+  return cleaned;
 }
 
-/* ----------------------------
-   Dashboard load + hydrate
----------------------------- */
+async function fetchQuotes(symbols){
+  if (!symbols.length) return {};
+  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbols.join(","))}`;
+  const r = await fetchViaProxies(url, { cache: "no-store" });
+  const j = await r.json();
+
+  const out = {};
+  const rows = (j && j.quoteResponse && j.quoteResponse.result) || [];
+  for (const row of rows){
+    out[row.symbol] = {
+      price: row.regularMarketPrice,
+      pct: row.regularMarketChangePercent
+    };
+  }
+  return out;
+}
+
 let DASH = null;
 let COMP_BY_ID = {};
 let COMPANY_ROWS = [];
@@ -448,7 +423,6 @@ function buildCompanyMap(dash){
   }
   return map;
 }
-
 function dedupeLatestState(rows){
   const best = new Map();
   for (const r of rows || []){
@@ -462,15 +436,16 @@ function dedupeLatestState(rows){
   }
   return Array.from(best.values());
 }
-
 function pressureFromRow(r){
-  const c1 = !!r.condition_1;
-  const c2 = !!r.condition_2;
-  const c3 = !!r.condition_3;
-  const c4 = !!r.condition_4;
-  return (c1?1:0)+(c2?1:0)+(c3?1:0)+(c4?1:0);
+  return (r.condition_1?1:0)+(r.condition_2?1:0)+(r.condition_3?1:0)+(r.condition_4?1:0);
 }
-
+function stateBadge(s){
+  const txt = safeText(s || "").toUpperCase();
+  return `<span class="chip state">${txt || "—"}</span>`;
+}
+function scopeBadge(inScope){
+  return inScope ? `<span class="scopeIn">IN</span>` : `<span class="scopeOut">OUT</span>`;
+}
 function fillStateOptions(){
   const sel = document.getElementById("stateSel");
   const seen = new Set();
@@ -481,77 +456,6 @@ function fillStateOptions(){
   const all = Array.from(seen).sort();
   sel.innerHTML = `<option value="all">All states</option>` + all.map(s => `<option value="${s}">${s}</option>`).join("");
 }
-
-function renderEvents(){
-  const body = document.getElementById("eventsBody");
-  const events = (DASH && DASH.events) || [];
-  if (!events.length){
-    body.innerHTML = `<tr><td colspan="4" style="color:rgba(255,255,255,.45);padding:14px 12px">No state transitions recorded</td></tr>`;
-    return;
-  }
-  const rows = events.slice(0, 25).map(e => {
-    const c = COMP_BY_ID[e.company_id] || {};
-    const ticker = safeText(c.ticker || e.ticker || "");
-    const name = safeText(c.name || "");
-    const asOf = safeText(e.as_of || "").slice(0,10) || "—";
-    const trans = `${safeText(e.prev_state || "").toUpperCase()} → ${safeText(e.new_state || "").toUpperCase()}`.trim();
-    return `
-      <tr>
-        <td><span class="chip">${ticker || "—"}</span></td>
-        <td>${name || "—"}</td>
-        <td>${asOf}</td>
-        <td style="font-weight:700">${trans || "—"}</td>
-      </tr>
-    `;
-  }).join("");
-  body.innerHTML = rows;
-}
-
-function renderStateTable(rows){
-  const body = document.getElementById("stateBody");
-  if (!rows.length){
-    body.innerHTML = `<tr><td colspan="13" style="color:rgba(255,255,255,.45);padding:14px 12px">No results</td></tr>`;
-    return;
-  }
-
-  body.innerHTML = rows.map(r => {
-    const c = r.company || {};
-    const ticker = safeText(c.ticker);
-    const name = safeText(c.name);
-    const bucket = safeText(c.bucket);
-    const state = safeText(r.state).toUpperCase();
-
-    const priceId = `p_${ticker}`;
-    const livePctId = `pc_${ticker}`;
-
-    const cvId = `cv_${ticker}`;
-    const pct30Id = `p30_${ticker}`;
-
-    return `
-      <tr>
-        <td>${name || "—"}</td>
-        <td><span class="chip">${ticker || "—"}</span></td>
-        <td style="color:rgba(255,255,255,.55)">${bucket || "—"}</td>
-        <td>${stateBadge(state)}</td>
-        <td>${pressureBadge(r.pressure)}</td>
-        <td>${cBadge(!!r.condition_1)}</td>
-        <td>${cBadge(!!r.condition_2)}</td>
-        <td>${cBadge(!!r.condition_3)}</td>
-        <td>${cBadge(!!r.condition_4)}</td>
-        <td>
-          <div class="sparkWrap">
-            <canvas class="spark" id="${cvId}" width="86" height="20" title="30-day close (Yahoo)"></canvas>
-            <span class="sparkPct" id="${pct30Id}">—</span>
-          </div>
-        </td>
-        <td id="${priceId}" style="font-weight:900">—</td>
-        <td id="${livePctId}" style="font-weight:900">—</td>
-        <td>${scopeBadge(!!c.in_scope)}</td>
-      </tr>
-    `;
-  }).join("");
-}
-
 function applyFilters(){
   const q = document.getElementById("q").value.trim().toLowerCase();
   const scope = document.getElementById("scopeSel").value;
@@ -591,6 +495,137 @@ function applyFilters(){
 
   renderStateTable(rows);
 }
+function renderEvents(){
+  const body = document.getElementById("eventsBody");
+  const events = (DASH && DASH.events) || [];
+  if (!events.length){
+    body.innerHTML = `<tr><td colspan="4" style="color:rgba(255,255,255,.45);padding:14px 12px">No state transitions recorded</td></tr>`;
+    return;
+  }
+  body.innerHTML = events.slice(0, 25).map(e => {
+    const c = COMP_BY_ID[e.company_id] || {};
+    const ticker = safeText(c.ticker || e.ticker || "");
+    const name = safeText(c.name || "");
+    const asOf = safeText(e.as_of || "").slice(0,10) || "—";
+    const trans = `${safeText(e.prev_state || "").toUpperCase()} → ${safeText(e.new_state || "").toUpperCase()}`.trim();
+    return `
+      <tr>
+        <td><span class="chip">${ticker || "—"}</span></td>
+        <td>${name || "—"}</td>
+        <td>${asOf}</td>
+        <td style="font-weight:700">${trans || "—"}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function renderStateTable(rows){
+  const body = document.getElementById("stateBody");
+  if (!rows.length){
+    body.innerHTML = `<tr><td colspan="13" style="color:rgba(255,255,255,.45);padding:14px 12px">No results</td></tr>`;
+    return;
+  }
+
+  body.innerHTML = rows.map(r => {
+    const c = r.company;
+    const ticker = safeText(c.ticker);
+    const name = safeText(c.name);
+    const bucket = safeText(c.bucket);
+    const state = safeText(r.state).toUpperCase();
+
+    const priceId = `p_${ticker}`;
+    const pctId = `pc_${ticker}`;
+    const cvId = `cv_${ticker}`;
+    const pct30Id = `p30_${ticker}`;
+
+    return `
+      <tr>
+        <td>${name || "—"}</td>
+        <td><span class="chip">${ticker || "—"}</span></td>
+        <td style="color:rgba(255,255,255,.55)">${bucket || "—"}</td>
+        <td>${stateBadge(state)}</td>
+        <td>${pressureBadge(r.pressure)}</td>
+        <td>${cBadge(!!r.condition_1)}</td>
+        <td>${cBadge(!!r.condition_2)}</td>
+        <td>${cBadge(!!r.condition_3)}</td>
+        <td>${cBadge(!!r.condition_4)}</td>
+        <td>
+          <div class="sparkWrap">
+            <canvas class="spark" id="${cvId}" width="86" height="20" title="30-day close (Yahoo)"></canvas>
+            <span class="sparkPct" id="${pct30Id}">—</span>
+          </div>
+        </td>
+        <td id="${priceId}" style="font-weight:900">—</td>
+        <td id="${pctId}" style="font-weight:900">—</td>
+        <td>${scopeBadge(!!c.in_scope)}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function setPctColor(el, pct){
+  if (!el) return;
+  const v = Number(pct);
+  if (!Number.isFinite(v)) { el.style.color = ""; return; }
+  el.style.color = (v >= 0) ? "var(--good)" : "var(--bad)";
+}
+
+async function refreshLive(){
+  const symbols = COMPANY_ROWS.map(r => r.company.ticker).filter(Boolean);
+
+  // Quotes (batch)
+  try{
+    const q = await fetchQuotes(symbols);
+    for (const sym of symbols){
+      const priceEl = document.getElementById(`p_${sym}`);
+      const pctEl = document.getElementById(`pc_${sym}`);
+      if (!priceEl || !pctEl) continue;
+
+      const row = q[sym];
+      if (!row){
+        priceEl.textContent = "—";
+        pctEl.textContent = "—";
+        pctEl.style.color = "";
+        continue;
+      }
+
+      priceEl.textContent = fmtPrice(row.price);
+      pctEl.textContent = fmtPct(row.pct);
+      setPctColor(pctEl, row.pct);
+    }
+  }catch(e){
+    console.warn("Quote refresh failed:", e);
+  }
+
+  // Charts (paced)
+  for (const sym of symbols){
+    const cv = document.getElementById(`cv_${sym}`);
+    const p30 = document.getElementById(`p30_${sym}`);
+    if (!cv || !p30) continue;
+
+    try{
+      const series = await fetchChart30D(sym);
+      renderSpark(cv, series);
+
+      if (series && series.length >= 2){
+        const first = series[0];
+        const last = series[series.length - 1];
+        const pct = (first && last) ? ((last - first) / first) * 100 : null;
+        p30.textContent = fmtPct(pct);
+        setPctColor(p30, pct);
+      }else{
+        p30.textContent = "—";
+        p30.style.color = "";
+      }
+    }catch(e){
+      renderSpark(cv, null);
+      p30.textContent = "—";
+      p30.style.color = "";
+    }
+
+    await new Promise(res => setTimeout(res, 120));
+  }
+}
 
 async function loadDashboard(){
   const r = await fetch("./dashboard.json", { cache: "no-store" });
@@ -602,10 +637,11 @@ function hydrate(){
   COMP_BY_ID = buildCompanyMap(DASH);
 
   const latest = dedupeLatestState(DASH.latest_state || []);
-  COMPANY_ROWS = latest.map(r => {
-    const c = COMP_BY_ID[r.company_id] || {};
-    return { ...r, company: c, pressure: pressureFromRow(r) };
-  });
+  COMPANY_ROWS = latest.map(r => ({
+    ...r,
+    company: (COMP_BY_ID[r.company_id] || {}),
+    pressure: pressureFromRow(r),
+  }));
 
   const tracked = (DASH.companies || []).length;
   const inScope = (DASH.companies || []).filter(c => !!c.in_scope).length;
@@ -627,85 +663,16 @@ function wire(){
   });
 }
 
-/* ----------------------------
-   Live refresh
----------------------------- */
-async function refreshLive(){
-  // You can restrict to in-scope if you want, but you asked for true live.
-  const symbols = COMPANY_ROWS.map(r => r.company && r.company.ticker).filter(Boolean);
-
-  // Quotes in one request
-  try{
-    const quotes = await yahooQuoteBatch(symbols);
-
-    for (const sym of symbols){
-      const priceEl = document.getElementById(`p_${sym}`);
-      const pctEl = document.getElementById(`pc_${sym}`);
-      if (!priceEl || !pctEl) continue;
-
-      const row = quotes[sym];
-      if (!row){
-        priceEl.textContent = "—";
-        pctEl.textContent = "—";
-        pctEl.style.color = "";
-        continue;
-      }
-
-      priceEl.textContent = fmtPrice(row.price);
-      const pctNum = Number(row.pct);
-      pctEl.textContent = fmtPct(row.pct);
-      pctEl.style.color = Number.isFinite(pctNum) ? (pctNum >= 0 ? "var(--good)" : "var(--bad)") : "";
-    }
-  }catch(e){
-    console.warn("Quote refresh failed", e);
-  }
-
-  // Charts per symbol with gentle pacing
-  for (const sym of symbols){
-    const cv = document.getElementById(`cv_${sym}`);
-    const pct30 = document.getElementById(`p30_${sym}`);
-    if (!cv || !pct30) continue;
-
-    try{
-      const closes = await yahooChart30D(sym);
-      renderSpark(cv, closes);
-
-      if (closes && closes.length >= 2){
-        const p = pctChange(closes[0], closes[closes.length - 1]);
-        if (p === null){
-          pct30.textContent = "—";
-          pct30.style.color = "";
-        } else {
-          pct30.textContent = fmtPct(p);
-          pct30.style.color = (p >= 0) ? "var(--good)" : "var(--bad)";
-        }
-      } else {
-        pct30.textContent = "—";
-        pct30.style.color = "";
-      }
-    }catch(e){
-      renderSpark(cv, null);
-      pct30.textContent = "—";
-      pct30.style.color = "";
-    }
-
-    await new Promise(res => setTimeout(res, 120));
-  }
-}
-
-/* ----------------------------
-   Boot
----------------------------- */
 (async function boot(){
   try{
     wire();
     DASH = await loadDashboard();
     hydrate();
 
-    // first live pull
+    // First run
     refreshLive();
 
-    // refresh every minute
+    // Refresh every 60s
     setInterval(() => { refreshLive(); }, 60 * 1000);
   }catch(e){
     console.error(e);
