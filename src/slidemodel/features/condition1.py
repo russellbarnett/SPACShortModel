@@ -1,113 +1,146 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Any, Dict, List, Tuple
 
-from .facts_extract import pick_tag_series, series_values, series_ends
+from slidemodel.features.facts_extract import (
+    QuarterPoint,
+    last_end_date,
+    pct_change,
+    pick_tag_series,
+)
 
-
-# Revenue tags (keep your original intent, but widen slightly)
+# Revenue tags (expanded)
 REVENUE_TAGS = [
     "Revenues",
     "SalesRevenueNet",
     "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "RevenueFromContractWithCustomerIncludingAssessedTax",
+    "OperatingRevenues",
+    "RevenuesAndOtherIncome",
+    "TotalRevenuesAndOtherIncome",
+    "RevenuesNetOfInterestExpense",
 ]
 
-# Gross profit tags (many ex-SPACs won't have this)
+# Profit tags (gross profit preferred)
 GROSS_PROFIT_TAGS = [
     "GrossProfit",
 ]
 
-# Operating income as fallback "margin" proxy
+# Operating profit / loss fallback
 OPERATING_INCOME_TAGS = [
     "OperatingIncomeLoss",
 ]
 
 
-@dataclass
-class Condition1Result:
-    revenue_tag: str
-    margin_tag: str
-    revenue_deceleration_2q: bool
-    margin_failure_2q: bool
-    condition_1: bool
-    last_date: str
+def _last_two(series: List[QuarterPoint]) -> Tuple[Tuple[str, float], Tuple[str, float]]:
+    if len(series) < 2:
+        raise ValueError("need at least 2 points")
+    return series[-2], series[-1]
 
 
-def _pct_change(new: float, old: float) -> float:
-    if old == 0:
-        return 0.0
-    return (new - old) / abs(old)
-
-
-def _two_quarter_checks(values: List[float], threshold_drop: float) -> bool:
+def _two_quarter_revenue_deceleration(rev_series: List[QuarterPoint]) -> bool:
     """
-    Simple rule: last 2 qtrs show negative change beyond threshold.
-    Example: revenue deceleration: threshold_drop = -0.05 means drop >5%
+    True if growth rate decelerates for 2 consecutive quarters.
+    Needs 3 points to compute two growth rates.
     """
-    if len(values) < 3:
+    if len(rev_series) < 3:
         return False
-    q0, q1, q2 = values[-3], values[-2], values[-1]
-    d1 = _pct_change(q1, q0)
-    d2 = _pct_change(q2, q1)
-    return (d1 <= threshold_drop) and (d2 <= threshold_drop)
+
+    (_, r1), (_, r2), (_, r3) = rev_series[-3], rev_series[-2], rev_series[-1]
+
+    g1 = pct_change(r1, r2)
+    g2 = pct_change(r2, r3)
+
+    if g1 is None or g2 is None:
+        return False
+
+    return g2 < g1
 
 
-def condition_1_from_facts(facts: Dict[str, Any]) -> Condition1Result:
+def _two_quarter_margin_failure(
+    rev_series: List[QuarterPoint],
+    profit_series: List[QuarterPoint],
+) -> bool:
     """
-    Condition 1: Revenue + margin pressure.
-
-    Margin preference order:
-      1) GrossProfit / Revenue, if GrossProfit available
-      2) OperatingIncomeLoss / Revenue, if gross profit is unavailable
+    If we have revenue + a profit series, check if "profit margin" worsens 2 quarters in a row.
+    Margin = profit / revenue (best-effort).
     """
+    if len(rev_series) < 3 or len(profit_series) < 3:
+        return False
 
-    rev_tag, rev_series = pick_tag_series(facts, REVENUE_TAGS)
-    rev_vals = series_values(rev_series)
-    last_date = series_ends(rev_series)[-1]
+    # Align on last 3 dates by index (good enough for our usage)
+    r = [v for _, v in rev_series[-3:]]
+    p = [v for _, v in profit_series[-3:]]
 
-    # Revenue deceleration: revenue shrinking two quarters in a row (tweak threshold if you want)
-    revenue_deceleration_2q = _two_quarter_checks(rev_vals, threshold_drop=-0.02)
+    def margin(profit: float, revenue: float) -> float:
+        if revenue == 0:
+            return 0.0
+        return profit / revenue
 
-    # Try gross profit route first
-    margin_tag = ""
-    margin_vals: List[float] = []
+    m1 = margin(p[0], r[0])
+    m2 = margin(p[1], r[1])
+    m3 = margin(p[2], r[2])
 
+    return (m2 < m1) and (m3 < m2)
+
+
+def _two_quarter_operating_loss_worsening(oi_series: List[QuarterPoint]) -> bool:
+    """
+    Fallback when revenue is missing: trigger if OperatingIncomeLoss is negative
+    and getting more negative over the last 2 quarters.
+    """
+    if len(oi_series) < 2:
+        return False
+
+    (_, a), (_, b) = _last_two(oi_series)
+
+    # OperatingIncomeLoss: negative is bad, more negative is worse
+    return (a < 0) and (b < a)
+
+
+def condition_1_from_facts(facts: Dict[str, Any]) -> Dict[str, Any]:
+    revenue_missing = False
+    used_profit_fallback = False
+
+    # Revenue series
     try:
-        gp_tag, gp_series = pick_tag_series(facts, GROSS_PROFIT_TAGS)
-        gp_vals = series_values(gp_series)
-
-        # Align lengths by taking the last N that match
-        n = min(len(gp_vals), len(rev_vals))
-        gp_vals = gp_vals[-n:]
-        r_vals = rev_vals[-n:]
-
-        # gross margin
-        margin_vals = [(gp_vals[i] / r_vals[i]) if r_vals[i] else 0.0 for i in range(n)]
-        margin_tag = gp_tag
-
+        rev_tag, rev_series = pick_tag_series(facts, REVENUE_TAGS)
     except KeyError:
-        # Fallback to operating income margin
-        op_tag, op_series = pick_tag_series(facts, OPERATING_INCOME_TAGS)
-        op_vals = series_values(op_series)
+        revenue_missing = True
+        rev_tag = ""
+        rev_series = []
 
-        n = min(len(op_vals), len(rev_vals))
-        op_vals = op_vals[-n:]
-        r_vals = rev_vals[-n:]
+    # Profit series: GrossProfit preferred, else OperatingIncomeLoss
+    try:
+        profit_tag, profit_series = pick_tag_series(facts, GROSS_PROFIT_TAGS)
+    except KeyError:
+        profit_tag, profit_series = pick_tag_series(facts, OPERATING_INCOME_TAGS)
+        used_profit_fallback = True
 
-        margin_vals = [(op_vals[i] / r_vals[i]) if r_vals[i] else 0.0 for i in range(n)]
-        margin_tag = op_tag
+    # Signals
+    if not revenue_missing:
+        revenue_deceleration_2q = _two_quarter_revenue_deceleration(rev_series)
+        margin_failure_2q = _two_quarter_margin_failure(rev_series, profit_series)
+        operating_loss_fallback = False
+        operating_loss_worsening_2q = False
+    else:
+        # No revenue: use operating-loss worsening as the C1 signal
+        revenue_deceleration_2q = False
+        margin_failure_2q = False
+        operating_loss_fallback = True
+        operating_loss_worsening_2q = _two_quarter_operating_loss_worsening(profit_series)
 
-    # Margin failure: margin getting worse two quarters in a row
-    margin_failure_2q = _two_quarter_checks(margin_vals, threshold_drop=-0.01)
+    condition_1 = bool(revenue_deceleration_2q or margin_failure_2q or operating_loss_worsening_2q)
 
-    condition_1 = bool(revenue_deceleration_2q or margin_failure_2q)
-
-    return Condition1Result(
-        revenue_tag=rev_tag,
-        margin_tag=margin_tag,
-        revenue_deceleration_2q=revenue_deceleration_2q,
-        margin_failure_2q=margin_failure_2q,
-        condition_1=condition_1,
-        last_date=last_date,
-    )
+    return {
+        "revenue_tag": rev_tag,
+        "profit_tag": profit_tag,
+        "revenue_missing": revenue_missing,
+        "profit_is_operating_fallback": used_profit_fallback,
+        "revenue_deceleration_2q": revenue_deceleration_2q,
+        "margin_failure_2q": margin_failure_2q,
+        "operating_loss_fallback": operating_loss_fallback,
+        "operating_loss_worsening_2q": operating_loss_worsening_2q,
+        "condition_1": condition_1,
+        "last_date": last_end_date(rev_series, profit_series),
+    }
