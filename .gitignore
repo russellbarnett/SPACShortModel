@@ -1,3 +1,8 @@
 .env
 data/slidemodel.sqlite3
 _backup_features/
+
+# local artifacts
+.venv/
+data/*.sqlite3
+MONITOR
