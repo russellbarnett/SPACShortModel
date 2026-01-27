@@ -169,6 +169,21 @@
       width:86px;height:20px;
       display:block;
     }
+
+    /* NEW: sparkline + 30D % label */
+    .sparkWrap{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .sparkPct{
+      font-weight:900;
+      font-size:11px;
+      min-width:44px;
+      text-align:right;
+      color:rgba(255,255,255,.75);
+    }
+
     .legend{
       display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;color:var(--muted);font-size:12px
     }
@@ -378,6 +393,17 @@ function renderSpark(canvas, data){
 }
 
 /**
+ * Compute 30D % change based on first and last points
+ */
+function pctFromSeries(series){
+  if (!series || series.length < 2) return null;
+  const first = Number(series[0]);
+  const last = Number(series[series.length - 1]);
+  if (!Number.isFinite(first) || !Number.isFinite(last) || first === 0) return null;
+  return ((last / first) - 1) * 100;
+}
+
+/**
  * Fetch 30D close series for one ticker (1mo, 1d)
  */
 const chartCache = new Map(); // ticker -> { t:ms, data:number[] }
@@ -564,6 +590,7 @@ function renderStateTable(rows){
     const priceId = `p_${ticker}`;
     const pctId = `pc_${ticker}`;
     const cvId = `cv_${ticker}`;
+    const p30Id = `p30_${ticker}`;
 
     return `
       <tr>
@@ -576,7 +603,12 @@ function renderStateTable(rows){
         <td>${cBadge(!!r.condition_2)}</td>
         <td>${cBadge(!!r.condition_3)}</td>
         <td>${cBadge(!!r.condition_4)}</td>
-        <td><canvas class="spark" id="${cvId}" width="86" height="20" title="30-day close (Yahoo)"></canvas></td>
+        <td>
+          <div class="sparkWrap" title="30-day close (Yahoo)">
+            <canvas class="spark" id="${cvId}" width="86" height="20"></canvas>
+            <span class="sparkPct" id="${p30Id}">—</span>
+          </div>
+        </td>
         <td id="${priceId}" style="font-weight:800">—</td>
         <td id="${pctId}" style="font-weight:800">—</td>
         <td>${scopeBadge(!!c.in_scope)}</td>
@@ -620,14 +652,27 @@ async function refreshLive(){
   // This is intentionally slower, to avoid hammering a proxy.
   for (const sym of symbols){
     const cv = document.getElementById(`cv_${sym}`);
+    const p30 = document.getElementById(`p30_${sym}`);
     if (!cv) continue;
+
     try{
       const series = await fetchChart30D(sym);
       renderSpark(cv, series);
+
+      if (p30){
+        const p = pctFromSeries(series);
+        p30.textContent = fmtPct(p);
+        const pn = Number(p);
+        p30.style.color = Number.isFinite(pn) ? (pn >= 0 ? "var(--good)" : "var(--bad)") : "";
+      }
     }catch(e){
-      // keep it graceful
       renderSpark(cv, null);
+      if (p30){
+        p30.textContent = "—";
+        p30.style.color = "";
+      }
     }
+
     await new Promise(res => setTimeout(res, 120)); // gentle pacing
   }
 }
