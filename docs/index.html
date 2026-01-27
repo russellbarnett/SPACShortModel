@@ -34,7 +34,9 @@
       padding:32px 18px 60px;
     }
     .wrap{max-width:1120px;margin:0 auto}
-    .top{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
+    .top{
+      display:flex;align-items:flex-start;gap:14px;margin-bottom:18px
+    }
     .logo{
       width:42px;height:42px;border-radius:12px;
       background:linear-gradient(135deg, rgba(139,92,246,.95), rgba(59,130,246,.65));
@@ -57,7 +59,11 @@
       -webkit-backdrop-filter: blur(10px);
       margin-top:14px;
     }
-    .card h2{margin:0 0 8px;font-size:18px;letter-spacing:-.01em}
+    .card h2{
+      margin:0 0 8px;
+      font-size:18px;
+      letter-spacing:-.01em;
+    }
     .card .hint{margin:0 0 12px;color:var(--muted);font-size:12px}
 
     .row{
@@ -78,16 +84,6 @@
       display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end;
       color:var(--muted);font-size:12px;
     }
-
-    .pillStatusOk{
-      border-color: rgba(46,204,113,.35);
-      color: rgba(200,255,225,.92);
-    }
-    .pillStatusBad{
-      border-color: rgba(255,77,77,.35);
-      color: rgba(255,190,190,.95);
-    }
-
     input[type="search"], select{
       height:38px;
       padding:0 12px;
@@ -99,7 +95,6 @@
       min-width:210px;
     }
     select{min-width:170px}
-
     .tableWrap{
       overflow:auto;border-radius:14px;border:1px solid var(--stroke);
       background:rgba(0,0,0,.16);
@@ -109,7 +104,7 @@
       border-collapse:separate;
       border-spacing:0;
       font-size:12px;
-      min-width:1040px;
+      min-width:980px;
     }
     thead th{
       text-align:left;
@@ -129,7 +124,6 @@
       white-space:nowrap;
     }
     tbody tr:hover td{background:rgba(255,255,255,.02)}
-
     .chip{
       display:inline-flex;align-items:center;justify-content:center;
       padding:4px 9px;border-radius:10px;
@@ -141,7 +135,6 @@
     .state{background:rgba(99,102,241,.18);border-color:rgba(99,102,241,.45)}
     .scopeIn{color:var(--good);font-weight:700}
     .scopeOut{color:rgba(255,255,255,.35);font-weight:700}
-
     .badgeOk{
       background:rgba(46,204,113,.14);
       border:1px solid rgba(46,204,113,.33);
@@ -154,36 +147,28 @@
       color:rgba(255,190,190,.95);
       padding:4px 9px;border-radius:9px;font-weight:800;font-size:11px;
     }
-
     .pressureStable{
       background:rgba(46,204,113,.12);
       border:1px solid rgba(46,204,113,.28);
       color:rgba(200,255,225,.88);
       padding:4px 9px;border-radius:9px;font-weight:800;font-size:11px;
-      text-transform:lowercase;
     }
     .pressureWatch{
       background:rgba(246,193,119,.14);
       border:1px solid rgba(246,193,119,.34);
       color:rgba(255,230,200,.94);
       padding:4px 9px;border-radius:9px;font-weight:900;font-size:11px;
-      text-transform:lowercase;
     }
     .pressureElev{
       background:rgba(255,77,77,.14);
       border:1px solid rgba(255,77,77,.35);
       color:rgba(255,190,190,.95);
       padding:4px 9px;border-radius:9px;font-weight:900;font-size:11px;
-      text-transform:lowercase;
     }
-
-    .spark{width:86px;height:20px;display:block}
-
-    .pct30{
-      font-weight:900;
-      letter-spacing:.01em;
+    .spark{
+      width:86px;height:20px;
+      display:block;
     }
-
     .legend{
       display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;color:var(--muted);font-size:12px
     }
@@ -239,8 +224,8 @@
       <div class="row">
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
           <h2 style="margin:0">Current State</h2>
-          <span class="pill" id="livePill" title="Live quotes fetched in your browser via your Worker proxy">
-            <span class="dot"></span> Live quotes: <span id="liveStatusTxt">starting…</span>
+          <span class="pill" title="Prices derived from the same Yahoo 30D chart series (daily closes)">
+            <span class="dot"></span> Pricing
           </span>
         </div>
         <div class="meta">
@@ -283,8 +268,8 @@
               <th>C3</th>
               <th>C4</th>
               <th>30D</th>
-              <th>Live Price</th>
-              <th>Live %</th>
+              <th>Price</th>
+              <th>%</th>
               <th>Scope</th>
             </tr>
           </thead>
@@ -302,38 +287,43 @@
       </div>
 
       <div class="foot">
-        30D charts are fetched via your Worker proxy and rendered in-browser. Fundamentals and conditions are generated nightly. Live quotes refresh automatically when the proxy is healthy.
+        30D charts and pricing are fetched in your browser from Yahoo Finance chart data (daily close series). Fundamentals and conditions are generated nightly.
       </div>
     </div>
   </div>
 
 <script>
 /**
- * IMPORTANT:
- * This page assumes you have a Cloudflare Worker that exposes:
- *   GET {PROXY_BASE}/quote?symbols=LCID,IONQ,OWLT
- *   GET {PROXY_BASE}/chart?symbol=IONQ&range=1mo&interval=1d
+ * We use ONLY Yahoo chart endpoint now.
+ * No quote endpoint at all.
  *
- * If your worker uses different routes, update these two builders:
- *   quoteUrl(symbols)
- *   chartUrl(symbol)
+ * Chart:
+ *  v8/finance/chart/TICKER?range=1mo&interval=1d
+ */
+const CHART_URL = (ticker) =>
+  `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?range=1mo&interval=1d`;
+
+/**
+ * GitHub Pages cannot call Yahoo directly due to CORS.
+ * We keep a proxy layer, but it only needs to support chart.
+ *
+ * If you already have a working Worker, set it here.
+ * Example:
+ *   const PROXY_BASE = "https://spac-yahoo-proxy.russellbarnett-co.workers.dev";
+ * and we will call:
+ *   ${PROXY_BASE}/chart/TICKER?range=1mo&interval=1d
  */
 const PROXY_BASE = "https://spac-yahoo-proxy.russellbarnett-co.workers.dev";
 
-function quoteUrl(symbols){
-  const qs = encodeURIComponent(symbols.join(","));
-  return `${PROXY_BASE}/quote?symbols=${qs}`;
-}
-function chartUrl(symbol){
-  const s = encodeURIComponent(symbol);
-  return `${PROXY_BASE}/chart?symbol=${s}&range=1mo&interval=1d`;
+function chartViaProxy(ticker){
+  // Worker route: /chart/TICKER?range=1mo&interval=1d
+  return `${PROXY_BASE}/chart/${encodeURIComponent(ticker)}?range=1mo&interval=1d`;
 }
 
-function fmtPct(x){
+function fmtPctNum(x){
   if (x === null || x === undefined || Number.isNaN(x)) return "—";
   const v = Number(x);
-  const s = (v >= 0 ? "+" : "") + v.toFixed(1) + "%";
-  return s;
+  return (v >= 0 ? "+" : "") + v.toFixed(1) + "%";
 }
 function fmtPrice(x){
   if (x === null || x === undefined || Number.isNaN(x)) return "—";
@@ -343,27 +333,21 @@ function safeText(x){
   return (x === null || x === undefined) ? "" : String(x);
 }
 
-function setLiveStatus(ok, msg){
-  const pill = document.getElementById("livePill");
-  const txt = document.getElementById("liveStatusTxt");
-  txt.textContent = msg;
-  pill.classList.remove("pillStatusOk","pillStatusBad");
-  pill.classList.add(ok ? "pillStatusOk" : "pillStatusBad");
-  pill.title = ok ? "Live quotes working via Worker proxy" : "Live quotes failing via Worker proxy";
-}
-
 function pressureBadge(n){
   if (n >= 2) return `<span class="pressureElev">${n} elevated</span>`;
   if (n === 1) return `<span class="pressureWatch">${n} watch</span>`;
   return `<span class="pressureStable">0 stable</span>`;
 }
+
 function cBadge(flag){
   return flag ? `<span class="badgeFlag">FLAG</span>` : `<span class="badgeOk">OK</span>`;
 }
+
 function stateBadge(s){
   const txt = safeText(s || "").toUpperCase();
   return `<span class="chip state">${txt || "—"}</span>`;
 }
+
 function scopeBadge(inScope){
   return inScope ? `<span class="scopeIn">IN</span>` : `<span class="scopeOut">OUT</span>`;
 }
@@ -410,113 +394,27 @@ function renderSpark(canvas, data){
   ctx.stroke();
 }
 
-function computePctChangeFromSeries(series){
-  if (!series || series.length < 2) return null;
-  const first = Number(series[0]);
-  const last = Number(series[series.length - 1]);
-  if (!Number.isFinite(first) || !Number.isFinite(last) || first === 0) return null;
-  return ((last - first) / first) * 100.0;
-}
-
 /**
- * Fetch helpers (strict + noisy on failure)
+ * Fetch 30D close series for one ticker (1mo, 1d)
+ * Returns cleaned close array.
  */
-async function fetchJsonStrict(url){
-  const r = await fetch(url, { cache: "no-store" });
-  const text = await r.text();
-  let j = null;
-  try { j = JSON.parse(text); } catch(e) {}
-  if (!r.ok){
-    const msg = `HTTP ${r.status} for ${url}`;
-    const err = new Error(msg);
-    err.status = r.status;
-    err.bodyText = text;
-    err.bodyJson = j;
-    throw err;
-  }
-  if (j === null){
-    const err = new Error(`Non-JSON response for ${url}`);
-    err.status = r.status;
-    err.bodyText = text;
-    throw err;
-  }
-  return j;
-}
-
-/**
- * Worker expected shapes (be flexible):
- * Quotes: either Yahoo's quoteResponse OR your own normalized shape.
- * We normalize to: { SYMBOL: { price, pct } }
- */
-function normalizeQuotes(j){
-  const out = {};
-
-  // Case A: Yahoo quoteResponse
-  if (j && j.quoteResponse && Array.isArray(j.quoteResponse.result)){
-    for (const row of j.quoteResponse.result){
-      if (!row || !row.symbol) continue;
-      out[row.symbol] = {
-        price: row.regularMarketPrice,
-        pct: row.regularMarketChangePercent
-      };
-    }
-    return out;
-  }
-
-  // Case B: your proxy returns { result: [...] }
-  if (j && Array.isArray(j.result)){
-    for (const row of j.result){
-      if (!row || !row.symbol) continue;
-      out[row.symbol] = {
-        price: row.price ?? row.regularMarketPrice,
-        pct: row.pct ?? row.regularMarketChangePercent
-      };
-    }
-    return out;
-  }
-
-  // Case C: already a map
-  if (j && typeof j === "object" && !Array.isArray(j)){
-    const keys = Object.keys(j);
-    if (keys.length && typeof j[keys[0]] === "object"){
-      return j;
-    }
-  }
-
-  return out;
-}
-
-/**
- * Chart normalize: return closes array
- * We accept:
- * - Yahoo chart.result[0].indicators.quote[0].close
- * - proxy { closes: [...] }
- */
-function normalizeChartCloses(j){
-  if (j && Array.isArray(j.closes)) return j.closes.filter(x => typeof x === "number" && Number.isFinite(x));
-
-  const result = j && j.chart && j.chart.result && j.chart.result[0];
-  const closes = result && result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close;
-  const cleaned = Array.isArray(closes) ? closes.filter(x => typeof x === "number" && Number.isFinite(x)) : [];
-  return cleaned;
-}
-
-const chartCache = new Map(); // ticker -> { t, data }
+const chartCache = new Map(); // ticker -> { t:ms, data:number[] }
 async function fetchChart30D(ticker){
   const now = Date.now();
   const cached = chartCache.get(ticker);
   if (cached && (now - cached.t) < 5 * 60 * 1000) return cached.data;
 
-  const j = await fetchJsonStrict(chartUrl(ticker));
-  const closes = normalizeChartCloses(j);
-  chartCache.set(ticker, { t: now, data: closes });
-  return closes;
-}
+  const url = chartViaProxy(ticker);
+  const r = await fetch(url, { cache: "no-store" });
+  if (!r.ok) throw new Error(`chart ${ticker} ${r.status}`);
+  const j = await r.json();
 
-async function fetchQuotes(symbols){
-  if (!symbols.length) return {};
-  const j = await fetchJsonStrict(quoteUrl(symbols));
-  return normalizeQuotes(j);
+  const result = j && j.chart && j.chart.result && j.chart.result[0];
+  const closes = result && result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close;
+
+  const cleaned = Array.isArray(closes) ? closes.filter(x => typeof x === "number" && Number.isFinite(x)) : [];
+  chartCache.set(ticker, { t: now, data: cleaned });
+  return cleaned;
 }
 
 let DASH = null;
@@ -602,6 +500,7 @@ function applyFilters(){
   }
 
   renderStateTable(rows);
+  refreshPricingForRows(rows);
 }
 
 function renderEvents(){
@@ -646,7 +545,6 @@ function renderStateTable(rows){
     const priceId = `p_${ticker}`;
     const pctId = `pc_${ticker}`;
     const cvId = `cv_${ticker}`;
-    const pct30Id = `p30_${ticker}`;
 
     return `
       <tr>
@@ -659,82 +557,60 @@ function renderStateTable(rows){
         <td>${cBadge(!!r.condition_2)}</td>
         <td>${cBadge(!!r.condition_3)}</td>
         <td>${cBadge(!!r.condition_4)}</td>
-        <td style="display:flex;align-items:center;gap:10px">
-          <canvas class="spark" id="${cvId}" width="86" height="20" title="30-day close"></canvas>
-          <span class="pct30" id="${pct30Id}">—</span>
-        </td>
-        <td id="${priceId}" style="font-weight:900">—</td>
-        <td id="${pctId}" style="font-weight:900">—</td>
+        <td><canvas class="spark" id="${cvId}" width="86" height="20" title="30-day close (Yahoo chart)"></canvas></td>
+        <td id="${priceId}" style="font-weight:800">—</td>
+        <td id="${pctId}" style="font-weight:800">—</td>
         <td>${scopeBadge(!!c.in_scope)}</td>
       </tr>
     `;
   }).join("");
 }
 
-async function refreshLive(){
-  const symbols = COMPANY_ROWS.map(r => r.company.ticker).filter(Boolean);
+/**
+ * Pricing is derived from chart closes:
+ * - Price = last close
+ * - % = (last - prev) / prev
+ */
+async function refreshPricingForRows(rows){
+  const symbols = rows.map(r => r.company.ticker).filter(Boolean);
 
-  // quotes (batch)
-  try{
-    setLiveStatus(true, "loading…");
-    const q = await fetchQuotes(symbols);
+  for (const sym of symbols){
+    const priceEl = document.getElementById(`p_${sym}`);
+    const pctEl = document.getElementById(`pc_${sym}`);
+    const cv = document.getElementById(`cv_${sym}`);
+    if (!priceEl || !pctEl) continue;
 
-    let any = false;
-    for (const sym of symbols){
-      const priceEl = document.getElementById(`p_${sym}`);
-      const pctEl = document.getElementById(`pc_${sym}`);
-      if (!priceEl || !pctEl) continue;
+    try{
+      const closes = await fetchChart30D(sym);
 
-      const row = q[sym];
-      if (!row){
+      // Spark
+      try{ renderSpark(cv, closes); }catch{}
+
+      if (!closes || closes.length < 2){
         priceEl.textContent = "—";
         pctEl.textContent = "—";
         pctEl.style.color = "";
-        continue;
-      }
+      } else {
+        const last = closes[closes.length - 1];
+        const prev = closes[closes.length - 2];
 
-      any = true;
-      priceEl.textContent = fmtPrice(row.price);
+        priceEl.textContent = fmtPrice(last);
 
-      const pctText = fmtPct(row.pct);
-      pctEl.textContent = pctText;
+        const pct = (prev && Number.isFinite(prev)) ? ((last - prev) / prev) * 100 : NaN;
+        pctEl.textContent = fmtPctNum(pct);
 
-      const pctNum = Number(row.pct);
-      pctEl.style.color = Number.isFinite(pctNum) ? (pctNum >= 0 ? "var(--good)" : "var(--bad)") : "";
-    }
-
-    setLiveStatus(true, any ? "OK" : "OK (no rows)");
-  }catch(e){
-    console.warn("Quote refresh failed", e);
-    const code = e && e.status ? String(e.status) : "error";
-    setLiveStatus(false, `FAIL (${code})`);
-
-    // keep UI alive: do not throw
-    // (prices remain as —)
-  }
-
-  // charts (per symbol, throttled)
-  for (const sym of symbols){
-    const cv = document.getElementById(`cv_${sym}`);
-    const pct30El = document.getElementById(`p30_${sym}`);
-    if (!cv) continue;
-    try{
-      const series = await fetchChart30D(sym);
-      renderSpark(cv, series);
-
-      const pct30 = computePctChangeFromSeries(series);
-      if (pct30El){
-        pct30El.textContent = fmtPct(pct30);
-        const n = Number(pct30);
-        pct30El.style.color = Number.isFinite(n) ? (n >= 0 ? "var(--good)" : "var(--bad)") : "";
+        if (Number.isFinite(pct)) pctEl.style.color = (pct >= 0 ? "var(--good)" : "var(--bad)");
+        else pctEl.style.color = "";
       }
     }catch(e){
-      renderSpark(cv, null);
-      if (pct30El){
-        pct30El.textContent = "—";
-        pct30El.style.color = "";
-      }
+      // graceful failure
+      priceEl.textContent = "—";
+      pctEl.textContent = "—";
+      pctEl.style.color = "";
+      try{ renderSpark(cv, null); }catch{}
     }
+
+    // gentle pacing (Worker and Yahoo)
     await new Promise(res => setTimeout(res, 120));
   }
 }
@@ -749,14 +625,11 @@ function hydrate(){
   COMP_BY_ID = buildCompanyMap(DASH);
 
   const latest = dedupeLatestState(DASH.latest_state || []);
-  COMPANY_ROWS = latest.map(r => {
-    const c = COMP_BY_ID[r.company_id] || {};
-    return {
-      ...r,
-      company: c,
-      pressure: pressureFromRow(r),
-    };
-  });
+  COMPANY_ROWS = latest.map(r => ({
+    ...r,
+    company: COMP_BY_ID[r.company_id] || {},
+    pressure: pressureFromRow(r),
+  }));
 
   const tracked = (DASH.companies || []).length;
   const inScope = (DASH.companies || []).filter(c => !!c.in_scope).length;
@@ -779,24 +652,21 @@ function wire(){
 
 (async function boot(){
   try{
-    setLiveStatus(true, "starting…");
     wire();
-
     DASH = await loadDashboard();
     hydrate();
 
-    // first render + live pulls
-    await refreshLive();
+    // refresh pricing periodically (daily closes, but safe to refresh)
+    setInterval(() => {
+      refreshPricingForRows(COMPANY_ROWS);
+    }, 5 * 60 * 1000);
 
-    // refresh every 60s
-    setInterval(() => { refreshLive(); }, 60 * 1000);
   }catch(e){
     console.error(e);
     document.getElementById("globalError").style.display = "block";
     document.getElementById("globalError").textContent = "Connection failed";
     document.getElementById("eventsBody").innerHTML = `<tr><td colspan="4" style="color:var(--bad);padding:14px 12px;font-weight:800">Failed to fetch</td></tr>`;
     document.getElementById("stateBody").innerHTML = `<tr><td colspan="13" style="color:var(--bad);padding:14px 12px;font-weight:800">Failed to fetch</td></tr>`;
-    setLiveStatus(false, "FAIL");
   }
 })();
 </script>
