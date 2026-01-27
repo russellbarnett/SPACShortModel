@@ -3,25 +3,21 @@ name: Nightly Dashboard
 on:
   workflow_dispatch:
   schedule:
-    # Runs every day at 03:15 UTC (pick whatever you want)
-    - cron: "15 3 * * *"
+    # 02:30 UTC daily (pick whatever you want)
+    - cron: "30 2 * * *"
 
 permissions:
   contents: write
 
-concurrency:
-  group: dashboard-nightly
-  cancel-in-progress: true
-
 jobs:
-  build:
+  build-dashboard:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.9"
@@ -34,24 +30,23 @@ jobs:
 
       - name: Run model + export dashboard
         env:
-          # MUST be a real email/name for SEC requests
-          SEC_USER_AGENT: "Russell Barnett russellbarnett.co@gmail.com"
-          # Optional: if you want the auto-discovery pipeline nightly
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
           WATCH_N: "20"
         run: |
           python -m slidemodel.cli init-db
           python -m slidemodel.cli evaluate
           python -m slidemodel.cli export-dashboard
 
-      - name: Commit and push docs/dashboard.json (and companies.yaml if it changed)
+      - name: Commit updated dashboard.json
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add docs/dashboard.json docs/index.html src/slidemodel/config/companies.yaml || true
+          git add docs/dashboard.json
 
+          # Only commit if something changed
           if git diff --cached --quiet; then
-            echo "No changes to commit."
+            echo "No dashboard changes to commit."
             exit 0
           fi
 
