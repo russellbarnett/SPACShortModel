@@ -1,75 +1,59 @@
-name: Update Dashboard
+name: Nightly Dashboard
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: "15 13 * * 1-5"   # Mon-Fri 13:15 UTC
-  workflow_dispatch: {}
+    # Runs every day at 03:15 UTC (pick whatever you want)
+    - cron: "15 3 * * *"
 
 permissions:
   contents: write
+
+concurrency:
+  group: dashboard-nightly
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.9"
 
-      - name: Install dependencies (force local slidemodel)
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Run model + export dashboard
         env:
-          PIP_NO_INPUT: "1"
-        run: |
-          python -m pip install --upgrade pip wheel setuptools
-
-          # IMPORTANT: do not allow any previously-installed slidemodel to survive
-          pip uninstall -y slidemodel || true
-
-          # Install third-party deps only (requirements.txt must NOT include slidemodel git line)
-          pip install --no-input -r requirements.txt
-
-          # Install *this repo* as the slidemodel package
-          pip install --no-input -e .
-
-      - name: Verify CLI includes export-dashboard
-        run: |
-          python -c "import slidemodel; print('slidemodel from:', slidemodel.__file__)"
-          python -m slidemodel.cli -h
-
-      - name: Init DB (if needed)
+          # MUST be a real email/name for SEC requests
+          SEC_USER_AGENT: "Russell Barnett russellbarnett.co@gmail.com"
+          # Optional: if you want the auto-discovery pipeline nightly
+          WATCH_N: "20"
         run: |
           python -m slidemodel.cli init-db
-
-      - name: Run model evaluation
-        env:
-          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
           python -m slidemodel.cli evaluate
-
-      - name: Export dashboard
-        run: |
           python -m slidemodel.cli export-dashboard
 
-      - name: Commit dashboard updates (docs/)
+      - name: Commit and push docs/dashboard.json (and companies.yaml if it changed)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add docs/
+          git add docs/dashboard.json docs/index.html src/slidemodel/config/companies.yaml || true
 
           if git diff --cached --quiet; then
-            echo "No dashboard changes to commit."
+            echo "No changes to commit."
             exit 0
           fi
 
-          git commit -m "Auto-update dashboard data"
+          git commit -m "Nightly dashboard update"
           git push
