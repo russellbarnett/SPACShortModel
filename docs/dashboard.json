@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-24T04:26:33Z",
+  "generated_at": "2026-02-25T04:27:50Z",
   "companies": [
     {
       "company_id": "HYLN",
@@ -176,7 +176,7 @@
     {
       "company_id": "ASTS",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 0,
       "condition_2": 1,
       "condition_3": 0,
@@ -194,7 +194,7 @@
     {
       "company_id": "AVPT",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 0,
       "condition_2": 0,
       "condition_3": 0,
@@ -221,7 +221,7 @@
     {
       "company_id": "BYND",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 0,
       "condition_2": 1,
       "condition_3": 0,
@@ -239,7 +239,7 @@
     {
       "company_id": "DNA",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 1,
       "condition_2": 0,
       "condition_3": 0,
@@ -257,7 +257,7 @@
     {
       "company_id": "EVGO",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 1,
       "condition_2": 0,
       "condition_3": 0,
@@ -275,7 +275,7 @@
     {
       "company_id": "HYLN",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 1,
       "condition_2": 1,
       "condition_3": 0,
@@ -293,7 +293,7 @@
     {
       "company_id": "IONQ",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 0,
       "condition_2": 0,
       "condition_3": 0,
@@ -311,7 +311,7 @@
     {
       "company_id": "JOBY",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 0,
       "condition_2": 1,
       "condition_3": 0,
@@ -329,11 +329,11 @@
     {
       "company_id": "LCID",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 1,
       "condition_2": 0,
       "condition_3": 0,
-      "condition_4": 0
+      "condition_4": 1
     },
     {
       "company_id": "OPEN",
@@ -347,7 +347,7 @@
     {
       "company_id": "OPEN",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 0,
       "condition_2": 0,
       "condition_3": 0,
@@ -365,7 +365,7 @@
     {
       "company_id": "OWLT",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 0,
       "condition_2": 1,
       "condition_3": 0,
@@ -392,7 +392,7 @@
     {
       "company_id": "RKLB",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 0,
       "condition_2": 1,
       "condition_3": 0,
@@ -410,7 +410,7 @@
     {
       "company_id": "SKIN",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 0,
       "condition_2": 0,
       "condition_3": 0,
@@ -428,7 +428,7 @@
     {
       "company_id": "SOUN",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 1,
       "condition_2": 0,
       "condition_3": 0,
@@ -446,7 +446,7 @@
     {
       "company_id": "SPCE",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 0,
       "condition_2": 1,
       "condition_3": 0,
@@ -464,7 +464,7 @@
     {
       "company_id": "STEM",
       "state": "MONITOR",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "condition_1": 0,
       "condition_2": 0,
       "condition_3": 0,
@@ -474,7 +474,7 @@
   "events": [
     {
       "company_id": "OWLT",
-      "as_of": "2026-02-24",
+      "as_of": "2026-02-25",
       "prev_state": "TRACK",
       "new_state": "MONITOR"
     },
@@ -487,129 +487,129 @@
   ],
   "live_quotes": {
     "ACHR": {
-      "price": 6.96,
-      "change": 0.21999999999999975,
-      "change_pct": 3.26409495548961,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 7.19,
+      "change": 0.3150000000000004,
+      "change_pct": 4.581818181818187,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "ASTS": {
-      "price": 83.9,
-      "change": 5.64800000000001,
-      "change_pct": 7.217706895670411,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 85.82,
+      "change": 4.2549999999999955,
+      "change_pct": 5.216698338748232,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "AVPT": {
-      "price": 9.96,
-      "change": -0.4399999999999995,
-      "change_pct": -4.230769230769226,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 10.13,
+      "change": 0.23000000000000043,
+      "change_pct": 2.3232323232323275,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "BYND": {
-      "price": 0.691,
-      "change": -0.026700000000000057,
-      "change_pct": -3.720217361014359,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 0.7237,
+      "change": 0.02265000000000006,
+      "change_pct": 3.230867983738686,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "DNA": {
       "price": 8.86,
-      "change": -0.19500000000000028,
-      "change_pct": -2.1535063500828304,
-      "as_of": "2026-02-24T04:26:24Z",
+      "change": -0.08999999999999986,
+      "change_pct": -1.0055865921787694,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "EVGO": {
-      "price": 2.76,
-      "change": -0.020000000000000018,
-      "change_pct": -0.7194244604316554,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 2.79,
+      "change": 0.03000000000000025,
+      "change_pct": 1.0869565217391397,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "HYLN": {
-      "price": 1.95,
-      "change": -0.05999999999999983,
-      "change_pct": -2.9850746268656634,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 1.99,
+      "change": 0.030000000000000027,
+      "change_pct": 1.5306122448979604,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "IONQ": {
-      "price": 30.78,
-      "change": -0.2397999999999989,
-      "change_pct": -0.7730546296236562,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 31.62,
+      "change": 0.5300000000000011,
+      "change_pct": 1.7047282084271507,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "JOBY": {
-      "price": 9.54,
-      "change": -0.14000000000000057,
-      "change_pct": -1.446280991735543,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 9.72,
+      "change": 0.28500000000000014,
+      "change_pct": 3.020667726550081,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "LCID": {
-      "price": 9.44,
-      "change": -0.08000000000000007,
-      "change_pct": -0.8403361344537823,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 9.92,
+      "change": 0.4499999999999993,
+      "change_pct": 4.7518479408658845,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "OPEN": {
-      "price": 4.78,
-      "change": -0.1299999999999999,
-      "change_pct": -2.647657841140527,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 5.11,
+      "change": 0.4500000000000002,
+      "change_pct": 9.656652360515025,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "OWLT": {
-      "price": 11.01,
-      "change": -0.4800000000000004,
-      "change_pct": -4.177545691906008,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 11.28,
+      "change": 0.3199999999999985,
+      "change_pct": 2.9197080291970665,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "QS": {
-      "price": 6.85,
-      "change": 0.08000000000000007,
-      "change_pct": 1.1816838995568697,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 7.035,
+      "change": 0.20500000000000007,
+      "change_pct": 3.0014641288433395,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "RKLB": {
-      "price": 70.21,
-      "change": 1.4549999999999983,
-      "change_pct": 2.1162097302014375,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 69.97,
+      "change": 1.0900000000000034,
+      "change_pct": 1.5824622531939656,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "SKIN": {
-      "price": 0.911,
-      "change": -0.04399999999999993,
-      "change_pct": -4.6073298429319305,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 0.8969,
+      "change": -0.02310000000000001,
+      "change_pct": -2.5108695652173925,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "SOUN": {
-      "price": 7.85,
-      "change": 0.21499999999999986,
-      "change_pct": 2.815979043876881,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 8.36,
+      "change": 0.5199999999999996,
+      "change_pct": 6.6326530612244845,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "SPCE": {
-      "price": 2.43,
-      "change": 0.0,
-      "change_pct": 0.0,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 2.55,
+      "change": 0.11999999999999966,
+      "change_pct": 4.938271604938257,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     },
     "STEM": {
-      "price": 10.62,
-      "change": -0.23000000000000043,
-      "change_pct": -2.119815668202769,
-      "as_of": "2026-02-24T04:26:24Z",
+      "price": 11.14,
+      "change": 0.6000000000000014,
+      "change_pct": 5.692599620493373,
+      "as_of": "2026-02-25T04:27:42Z",
       "source": "stooq"
     }
   }
