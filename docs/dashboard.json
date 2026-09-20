@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-19T07:21:26Z",
+  "generated_at": "2026-09-20T07:43:30Z",
   "companies": [
     {
       "company_id": "HYLN",
@@ -165,6 +165,15 @@
       "condition_4": 0
     },
     {
+      "company_id": "ACHR",
+      "state": "MONITOR",
+      "as_of": "2026-09-20",
+      "condition_1": 0,
+      "condition_2": 1,
+      "condition_3": 0,
+      "condition_4": 0
+    },
+    {
       "company_id": "ASTS",
       "state": "MONITOR",
       "as_of": "2026-01-26",
@@ -176,7 +185,7 @@
     {
       "company_id": "ASTS",
       "state": "MONITOR",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "condition_1": 0,
       "condition_2": 1,
       "condition_3": 0,
@@ -186,6 +195,15 @@
       "company_id": "AVPT",
       "state": "MONITOR",
       "as_of": "2026-01-26",
+      "condition_1": 1,
+      "condition_2": 0,
+      "condition_3": 0,
+      "condition_4": 0
+    },
+    {
+      "company_id": "AVPT",
+      "state": "MONITOR",
+      "as_of": "2026-09-20",
       "condition_1": 1,
       "condition_2": 0,
       "condition_3": 0,
@@ -212,7 +230,7 @@
     {
       "company_id": "BYND",
       "state": "MONITOR",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "condition_1": 0,
       "condition_2": 0,
       "condition_3": 0,
@@ -228,6 +246,15 @@
       "condition_4": 0
     },
     {
+      "company_id": "DNA",
+      "state": "MONITOR",
+      "as_of": "2026-09-20",
+      "condition_1": 0,
+      "condition_2": 0,
+      "condition_3": 0,
+      "condition_4": 0
+    },
+    {
       "company_id": "EVGO",
       "state": "MONITOR",
       "as_of": "2026-01-26",
@@ -239,7 +266,7 @@
     {
       "company_id": "EVGO",
       "state": "MONITOR",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "condition_1": 1,
       "condition_2": 0,
       "condition_3": 0,
@@ -257,7 +284,7 @@
     {
       "company_id": "HYLN",
       "state": "MONITOR",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "condition_1": 0,
       "condition_2": 0,
       "condition_3": 0,
@@ -275,7 +302,7 @@
     {
       "company_id": "IONQ",
       "state": "MONITOR",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "condition_1": 1,
       "condition_2": 1,
       "condition_3": 0,
@@ -293,7 +320,7 @@
     {
       "company_id": "JOBY",
       "state": "MONITOR",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "condition_1": 0,
       "condition_2": 1,
       "condition_3": 0,
@@ -311,7 +338,7 @@
     {
       "company_id": "LCID",
       "state": "MONITOR",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "condition_1": 1,
       "condition_2": 0,
       "condition_3": 0,
@@ -329,7 +356,7 @@
     {
       "company_id": "OPEN",
       "state": "MONITOR",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "condition_1": 0,
       "condition_2": 0,
       "condition_3": 0,
@@ -347,7 +374,7 @@
     {
       "company_id": "OWLT",
       "state": "MONITOR",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "condition_1": 0,
       "condition_2": 1,
       "condition_3": 0,
@@ -374,7 +401,7 @@
     {
       "company_id": "RKLB",
       "state": "MONITOR",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "condition_1": 0,
       "condition_2": 0,
       "condition_3": 0,
@@ -392,7 +419,7 @@
     {
       "company_id": "SKIN",
       "state": "MONITOR",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "condition_1": 0,
       "condition_2": 1,
       "condition_3": 0,
@@ -410,7 +437,7 @@
     {
       "company_id": "SOUN",
       "state": "MONITOR",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "condition_1": 1,
       "condition_2": 1,
       "condition_3": 0,
@@ -428,7 +455,7 @@
     {
       "company_id": "SPCE",
       "state": "MONITOR",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "condition_1": 1,
       "condition_2": 0,
       "condition_3": 0,
@@ -442,12 +469,21 @@
       "condition_2": 0,
       "condition_3": 0,
       "condition_4": 0
+    },
+    {
+      "company_id": "STEM",
+      "state": "MONITOR",
+      "as_of": "2026-09-20",
+      "condition_1": 0,
+      "condition_2": 0,
+      "condition_3": 0,
+      "condition_4": 0
     }
   ],
   "events": [
     {
       "company_id": "OWLT",
-      "as_of": "2026-09-19",
+      "as_of": "2026-09-20",
       "prev_state": "TRACK",
       "new_state": "MONITOR"
     },
